@@ -1,5 +1,4 @@
 @Repository
+public interface JugadorRepository extends JpaRepository<Jugador, Long> {
 
-public interface JugadorRepository extends JpaRepository<Jugador, Integer> {
-    
 }
