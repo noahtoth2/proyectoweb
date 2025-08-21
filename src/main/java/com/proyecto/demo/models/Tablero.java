@@ -1,11 +1,24 @@
-public class Tablero {
-    private int id;
-    private Barco barco;
-    private int[][] tablero;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OnetoMany;
 
-    public Tablero(Barco barco, int filas, int columnas) {
-        this.barco = barco;
-        this.tablero = new int[filas][columnas];
+@Entity
+public class Tablero {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.Auto)
+    private Long id;
+
+    @OnetoMany(mappedBy = "tablero")
+    private List<Barco> barcos= new ArrayList<>();
+
+    @OnetoMany(mappedBy = "tablero")
+    private List<Celda> celdas= new ArrayList<>();
+
+
+    public Tablero() {
     }
 
     public Barco getBarco() {
