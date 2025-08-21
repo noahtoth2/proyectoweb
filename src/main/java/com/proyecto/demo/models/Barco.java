@@ -1,6 +1,10 @@
 
 
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OnetoOne;
 
 @Entity
 public class Barco {
@@ -11,21 +15,27 @@ public class Barco {
 
     private double velocidad;
     private Posicion posicion;
-    private Jugador jugador;
-    private Modelo modelo;
 
-    public Barco(double velocidad, Posicion posicion, Jugador jugador, Modelo modelo) {
-        this.velocidad = velocidad;
-        this.posicion = posicion;
-        this.jugador = jugador;
-        this.modelo = modelo;
+
+    @OnetoOne
+    private Modelo modelo = new Modelo;
+    @OnetoOne
+    private Jugador jugador = new Jugador;
+
+    public Barco() {
     }
 
-    public Barco(double velocidad, Posicion posicion, Jugador jugador, Modelo modelo) {
+    public Barco(double velocidad, Posicion posicion) {
         this.velocidad = velocidad;
         this.posicion = posicion;
-        this.jugador = jugador;
-        this.modelo = modelo;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public double getVelocidad() {
