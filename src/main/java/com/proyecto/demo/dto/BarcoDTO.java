@@ -1,8 +1,8 @@
 package com.edu.proyecto.demo.dto;
 
-public class Barco{
+public class BarcoDTO{
 
-    private int id;
+    private Long id;
     private double velocidad;
     private Posicion posicion;
 
