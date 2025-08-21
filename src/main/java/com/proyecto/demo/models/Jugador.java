@@ -18,7 +18,7 @@ public class Jugador{
 
     private String nombre;
     
-    @OnetoMany
+    @OnetoMany(mappedBy = "jugador")
     private List<Barco> barcos = new ArrayList<>();
     
     public Jugador(){
