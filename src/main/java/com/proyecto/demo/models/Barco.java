@@ -47,7 +47,7 @@ public class Barco {
         return posicion;
     }
 
-    public void setPosicion(double posicion) {
+    public void setPosicion(Posicion posicion) {
         this.posicion = posicion;
     }
 

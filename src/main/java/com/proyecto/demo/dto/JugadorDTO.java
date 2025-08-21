@@ -1,7 +1,7 @@
 package com.edu.proyecto.demo.dto;
 
 public class JugadorDTO{
-    private long id;
+    private Long id;
     private String nombre;
 
 
@@ -12,7 +12,7 @@ public class JugadorDTO{
         this.nombre=nombre;
     }
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
     public void setId(Long id){
