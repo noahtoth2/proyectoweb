@@ -8,7 +8,7 @@ import jakarta.persistence.OnetoOne;
 @Entity
 public class Jugador {
 
-    @id
+    @Id
     @GeneratedValue(strategy=GenerationType.Auto)
     private long id;
 

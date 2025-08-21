@@ -1,5 +1,3 @@
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,7 +7,7 @@ import jakarta.persistence.OnetoOne;
 @Entity
 public class Barco {
 
-    @id
+    @Id
     @GeneratedValue(strategy=GenerationType.Auto)
     private long id;
 
