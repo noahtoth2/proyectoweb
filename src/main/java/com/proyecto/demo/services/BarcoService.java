@@ -3,8 +3,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BarcoService {
-    private List<Barco> barcos = new ArrayList<>();
-    private int nextId = 1;
+    @Autowired
+    private BarcoRepository barcoRepository;
 
     // Crear
     public Barco crearBarco(double velocidad, Posicion posicion, Jugador jugador, Modelo modelo) {
