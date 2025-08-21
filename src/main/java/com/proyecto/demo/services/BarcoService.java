@@ -44,4 +44,6 @@ public class BarcoService {
     public boolean eliminarBarco(int id) {
         return barcos.removeIf(b -> b.getId() == id);
     }
+
+    
 }

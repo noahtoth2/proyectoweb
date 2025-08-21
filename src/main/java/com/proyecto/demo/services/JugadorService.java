@@ -41,4 +41,8 @@ public class JugadorService {
     public boolean eliminarJugador(int id) {
         return jugadores.removeIf(j -> j.getId() == id);
     }
+
+    public List<Jugador> listarJugadores() {
+        return jugadorRepository.findAll();
+    }
 }
