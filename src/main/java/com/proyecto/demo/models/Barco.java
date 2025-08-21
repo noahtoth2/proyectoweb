@@ -1,5 +1,14 @@
+
+
+
+
+@Entity
 public class Barco {
-    private int id;
+
+    @id
+    @GeneratedValue(strategy=GenerationType.Auto)
+    private long id;
+
     private double velocidad;
     private Posicion posicion;
     private Jugador jugador;
