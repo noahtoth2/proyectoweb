@@ -1,9 +1,9 @@
-public class Modelos {
+public class Modelo {
     private int id;
     private String nombre;
     private String color;
 
-    public Modelos(int id, String nombre, String color) {
+    public Modelo(int id, String nombre, String color) {
         this.id = id;
         this.nombre = nombre;
         this.color = color;
