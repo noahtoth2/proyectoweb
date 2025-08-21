@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OnetoOne;
-
+import jakarta.persistence.OnetoMany;
 
 @Entity
 public class Jugador{
@@ -15,8 +18,8 @@ public class Jugador{
 
     private String nombre;
     
-    @OnetoOne
-    Barco barco = new Barco;
+    @OnetoMany
+    private List<Barco> barcos = new ArrayList<>();
     
     public Jugador(){
     }
@@ -43,11 +46,9 @@ public class Jugador{
         this.id = id;
     }
 
-    public Barco getBarco(){
-        return barco;
+    public List<Barco> getBarcos(){
+        return barcos;
     }
 
-    public void serBarco(Barco barco){
-        this.barco = barco;
-    }
+    
 }
