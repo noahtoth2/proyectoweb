@@ -1,19 +1,41 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OnetoMany;
+
+
+@Entity
 public class Modelo {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.Auto)
+    private Long id;
+    
+
     private String nombre;
     private String color;
 
-    public Modelo(int id, String nombre, String color) {
-        this.id = id;
+    @OnetoMany(mappedBy = "modelo")
+    private List<Barco> barcos= new ArrayList<>();
+
+
+    public Modelo(){
+    }
+
+    public Modelo(String nombre, String color) {
         this.nombre = nombre;
         this.color = color;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -31,5 +53,9 @@ public class Modelo {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public List<Barco> getBarcos(){
+        return barcos;
     }
 }
