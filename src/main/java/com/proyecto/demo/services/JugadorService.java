@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class JugadorService {
-    private List<Jugador> jugadores = new ArrayList<>();
-    private int nextId = 1;
+    @Autowired
+    private JugadorRepository jugadorRepository;
 
     // Crear
     public Jugador crearJugador(String nombre) {
