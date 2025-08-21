@@ -45,5 +45,7 @@ public class BarcoService {
         return barcos.removeIf(b -> b.getId() == id);
     }
 
-    
+    public List<Barco> listarBarcos() {
+        return barcoRepository.findAll();
+    }
 }
