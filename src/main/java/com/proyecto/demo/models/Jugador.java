@@ -6,7 +6,7 @@ import jakarta.persistence.OnetoOne;
 
 
 @Entity
-public class Jugador {
+public class Jugador{
 
     @Id
     @GeneratedValue(strategy=GenerationType.Auto)

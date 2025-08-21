@@ -1,10 +1,36 @@
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OnetoOne;
+
+@Entity
 public class Posicion {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.Auto)
+    private Long id;
+
     private int x;
     private int y;
+
+    @OnetoOne
+    private Barco barco = new Barco;
+
+    public Posicion(){
+    }
 
     public Posicion(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getX() {
@@ -23,8 +49,12 @@ public class Posicion {
         this.y = y;
     }
 
-    @Override
-    public String toString() {
-        return "Posicion{x=" + x + ", y=" + y + '}';
+    public Barco getBarco(){
+        return barco;
     }
+
+    public void setBarco(Barco barco){
+        this.barco = barco;
+    }
+
 }

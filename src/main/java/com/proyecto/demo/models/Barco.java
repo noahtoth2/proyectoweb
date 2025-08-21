@@ -12,9 +12,9 @@ public class Barco {
     private Long id;
 
     private double velocidad;
+
+    @OnetoOne
     private Posicion posicion;
-
-
     @OnetoOne
     private Modelo modelo = new Modelo;
     @OnetoOne
@@ -23,9 +23,8 @@ public class Barco {
     public Barco() {
     }
 
-    public Barco(double velocidad, Posicion posicion) {
+    public Barco(double velocidad) {
         this.velocidad = velocidad;
-        this.posicion = posicion;
     }
 
     public Long getId() {
