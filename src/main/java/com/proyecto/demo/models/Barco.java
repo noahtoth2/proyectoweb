@@ -9,7 +9,7 @@ public class Barco {
 
     @Id
     @GeneratedValue(strategy=GenerationType.Auto)
-    private long id;
+    private Long id;
 
     private double velocidad;
     private Posicion posicion;
