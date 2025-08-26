@@ -45,7 +45,12 @@ public class BarcoService {
         return barcos.removeIf(b -> b.getId() == id);
     }
 
-    public List<Barco> listarBarcos() {
-        return barcoRepository.findAll();
+    public List<BarcoDTO> listarBarcos() {
+        // TODO Encapsular esto en el PersonMapper
+        List<BarcoDTO> barcoDTOs = new ArrayList<>();
+        for (Barco  barco: BarcoRepository.findAll()) {
+            barcoDTOs.add(BarcoMapper.toDTO(barco));
+        }
+        return barcoDTOs;
     }
 }
