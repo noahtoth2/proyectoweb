@@ -7,7 +7,7 @@ public class BarcoService {
     private BarcoRepository barcoRepository;
 
     // Crear
-    public Barco crearBarco(double velocidad, Posicion posicion, Jugador jugador, Modelo modelo) {
+    public Barco crearBarco(BarcoDTO barco){
         Barco barco = new Barco(velocidad, posicion, jugador, modelo);
         barco.setId(nextId++);
         barcos.add(barco);
