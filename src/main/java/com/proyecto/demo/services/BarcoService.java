@@ -2,6 +2,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import co.edu.proyecto.demo.dto.BarcoDTO;
+import co.edu.proyecto.demo.mappers.BarcoMapper;
+import co.edu.proyecto.demo.models.Barco;
+import co.edu.proyecto.demo.repository.BarcoRepository;
+
 public class BarcoService {
     @Autowired
     private BarcoRepository barcoRepository;
