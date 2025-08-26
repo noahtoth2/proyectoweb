@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OnetoOne;
 
 @Entity
-public class Tablero {
+public class Celda {
 
     @Id
     @GeneratedValue(strategy=GenerationType.Auto)
