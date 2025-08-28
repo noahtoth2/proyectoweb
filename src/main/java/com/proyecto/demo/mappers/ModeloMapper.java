@@ -1,7 +1,7 @@
-package com.edu.proyecto.demo.mappers;
+package com.proyecto.demo.mappers;
 
-import co.edu.proyecto.demo.dto.ModeloDTO;
-import co.edu.proyecto.demo.models.Modelo;
+import com.proyecto.demo.dto.ModeloDTO;
+import com.proyecto.demo.models.Modelo;
 
 public class ModeloMapper(){
 

@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OnetoMany;
+import jakarta.persistence.OneToMany;
 
 
 @Entity
@@ -19,7 +19,7 @@ public class Modelo {
     private String nombre;
     private String color;
 
-    @OnetoMany(mappedBy = "modelo")
+    @OneToMany(mappedBy = "modelo")
     private List<Barco> barcos= new ArrayList<>();
 
 

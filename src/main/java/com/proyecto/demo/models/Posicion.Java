@@ -2,7 +2,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OnetoOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Posicion {
@@ -14,7 +14,7 @@ public class Posicion {
     private int x;
     private int y;
 
-    @OnetoOne
+    @OneToOne
     private Barco barco = new Barco;
 
     public Posicion(){

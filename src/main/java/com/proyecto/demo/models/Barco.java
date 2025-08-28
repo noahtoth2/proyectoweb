@@ -2,7 +2,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OnetoOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Barco {
@@ -13,11 +13,11 @@ public class Barco {
 
     private double velocidad;
 
-    @OnetoOne
+    @OneToOne
     private Posicion posicion;
-    @OnetoOne
+    @OneToOne
     private Modelo modelo = new Modelo;
-    @OnetoOne
+    @OneToOne
     private Jugador jugador = new Jugador;
 
     public Barco() {

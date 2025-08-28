@@ -2,7 +2,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OnetoMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Tablero {
@@ -11,10 +11,10 @@ public class Tablero {
     @GeneratedValue(strategy=GenerationType.Auto)
     private Long id;
 
-    @OnetoMany(mappedBy = "tablero")
+    @OneToMany(mappedBy = "tablero")
     private List<Barco> barcos= new ArrayList<>();
 
-    @OnetoMany(mappedBy = "tablero")
+    @OneToMany(mappedBy = "tablero")
     private List<Celda> celdas= new ArrayList<>();
 
 
