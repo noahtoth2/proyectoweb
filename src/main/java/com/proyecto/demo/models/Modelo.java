@@ -1,3 +1,5 @@
+package com.proyecto.demo.models;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ import jakarta.persistence.OneToMany;
 public class Modelo {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.Auto)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
 

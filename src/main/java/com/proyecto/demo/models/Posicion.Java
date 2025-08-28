@@ -1,3 +1,5 @@
+package com.proyecto.demo.models;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,14 +10,14 @@ import jakarta.persistence.OneToOne;
 public class Posicion {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.Auto)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     private int x;
     private int y;
 
     @OneToOne
-    private Barco barco = new Barco;
+    private Barco barco = new Barco(); 
 
     public Posicion(){
     }

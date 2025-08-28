@@ -1,14 +1,18 @@
+package com.proyecto.demo.models;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList; 
+import java.util.List;
 
 @Entity
 public class Tablero {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.Auto)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     @OneToMany(mappedBy = "tablero")

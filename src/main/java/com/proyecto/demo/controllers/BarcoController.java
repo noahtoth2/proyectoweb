@@ -1,5 +1,5 @@
-import co.edu.proyecto.demo.dto.BarcoDTO;
-import co.edu.proyecto.demo.services.Barco;
+import com.proyecto.demo.dto.BarcoDTO;
+import com.proyecto.demo.services.Barco;
 
 @Controller
 public class BarcoController {

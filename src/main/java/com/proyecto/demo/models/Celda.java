@@ -1,3 +1,5 @@
+package com.proyecto.demo.models;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +10,7 @@ import jakarta.persistence.OneToOne;
 public class Celda {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.Auto)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     private char tipocelda;
@@ -16,7 +18,7 @@ public class Celda {
     private int y;
 
     @OneToOne
-    private Tablero tablero = new Tablero;
+    private Tablero tablero = new Tablero();
 
 
 
