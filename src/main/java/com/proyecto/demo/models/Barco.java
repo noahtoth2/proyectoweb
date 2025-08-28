@@ -2,7 +2,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+<<<<<<< HEAD
 import jakarta.persistence.OneToOne;
+=======
+>>>>>>> c6792885b9bdc81704afc459580f6c7ce3652fd4
 
 @Entity
 public class Barco {

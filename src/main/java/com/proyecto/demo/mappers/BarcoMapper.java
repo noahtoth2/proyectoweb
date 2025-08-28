@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 package com.proyecto.demo.mappers;
 
 import com.proyecto.demo.dto.BarcoDTO;
 import com.proyecto.demo.models.Barco;
+=======
+
+package com.proyecto.demo.mappers;
+
+
+import com.proyecto.demo.dto.BarcoDTO;
+import com.proyecto.demo.models.*; 
+>>>>>>> c6792885b9bdc81704afc459580f6c7ce3652fd4
 
 public class BarcoMapper {
     public static BarcoDTO toDTO(Barco barco) {

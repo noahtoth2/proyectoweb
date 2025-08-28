@@ -5,8 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OnetoOne;
-import jakarta.persistence.OnetoMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Jugador{
@@ -18,7 +17,7 @@ public class Jugador{
 
     private String nombre;
     
-    @OnetoMany(mappedBy = "jugador")
+    @OneToMany(mappedBy = "jugador")
     private List<Barco> barcos = new ArrayList<>();
     
     public Jugador(){

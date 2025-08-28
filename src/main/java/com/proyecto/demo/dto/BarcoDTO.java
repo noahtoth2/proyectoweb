@@ -1,4 +1,4 @@
-package com.edu.proyecto.demo.dto;
+package com.proyecto.demo.dto;
 
 public class BarcoDTO{
 
