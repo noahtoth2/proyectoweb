@@ -1,3 +1,5 @@
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,7 @@ import jakarta.persistence.OneToMany;
 public class Jugador{
 
     @Id
-    @GeneratedValue(strategy=GenerationType.Auto)
+    @GeneratedValue(strategy=GenerationType.AUTO) 
     private Long id;
 
 
