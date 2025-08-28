@@ -1,48 +1,44 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.edu.proyecto.demo.dto.JugadorDTO;
+import com.edu.proyecto.demo.mappers.JugadorMapper;
+import com.edu.proyecto.demo.models.Jugador;
+import com.edu.proyecto.demo.repository.JugadorRepository;
+
 @Service
 public class JugadorService {
     @Autowired
     private JugadorRepository jugadorRepository;
 
-    // Crear
-    public Jugador crearJugador(String nombre) {
-        Jugador jugador = new Jugador(nombre, 0, "");
-        jugador.setId(nextId++);
-        jugadores.add(jugador);
-        return jugador;
-    }
-
-    // Leer (obtener todos)
-    public List<Jugador> obtenerJugadores() {
-        return jugadores;
-    }
-
-    // Leer (obtener por id)
-    public Jugador obtenerJugadorPorId(int id) {
-        Optional<Jugador> jugador = jugadores.stream()
-            .filter(j -> j.getId() == id)
-            .findFirst();
-        return jugador.orElse(null);
-    }
-
-    // Actualizar
-    public boolean actualizarJugador(int id, String nuevoNombre) {
-        Jugador jugador = obtenerJugadorPorId(id);
-        if (jugador != null) {
-            jugador.setNombre(nuevoNombre);
-            return true;
+    public List<JugadorDTO> listarJugadores() {
+        List<JugadorDTO> jugadorDTOs = new ArrayList<>();
+        for (Jugador jugador : jugadorRepository.findAll()) {
+            jugadorDTOs.add(JugadorMapper.toDTO(jugador));
         }
-        return false;
+        return jugadorDTOs;
     }
 
-    // Eliminar
-    public boolean eliminarJugador(int id) {
-        return jugadores.removeIf(j -> j.getId() == id);
+    public JugadorDTO recuperarJugador(Long id) {
+        return JugadorMapper.toDTO(jugadorRepository.findById(id).orElseThrow());
     }
 
-    public List<Jugador> listarJugadores() {
-        return jugadorRepository.findAll();
+    public void crear(JugadorDTO jugadorDTO) {
+        Jugador entity = JugadorMapper.toEntity(jugadorDTO);
+        entity.setId(null);
+        jugadorRepository.save(entity);
+    }
+
+    public void actualizarJugador(JugadorDTO jugadorDTO) {
+        Jugador entity = JugadorMapper.toEntity(jugadorDTO);
+        // TODO: Chequear que el id sea != null
+        jugadorRepository.save(entity);
+    }
+
+    public void borrarJugador(Long jugadorId) {
+        jugadorRepository.deleteById(jugadorId);
     }
 }
