@@ -1,15 +1,15 @@
-package com.edu.proyecto.demo.dto;
+package com.proyecto.demo.dto;
 
-public class ModelosDTO{
+public class ModeloDTO{
     private Long id;
     private String nombre;
     private String color;
 
 
-    public ModelosDTO(){
+    public ModeloDTO(){
 
     }
-    public ModelosDTO(String nombre,String color){
+    public ModeloDTO(String nombre,String color){
         this.nombre=nombre;
         this.color=color;
     }
@@ -18,7 +18,7 @@ public class ModelosDTO{
         return id;
     }
     public void setId(Long id){
-        this.id=id
+        this.id=id;
     }
     public String getNombre(){
         return nombre;

@@ -1,16 +1,16 @@
-package com.edu.proyecto.demo.dto;
+package com.proyecto.demo.dto;
 
-public class posicionDTO{
+public class PosicionDTO{
     private Long id;
         private int x;
         private int y;
 
 
 
-    public posicionDTO(){
+    public PosicionDTO(){
 
     }
-    public posicionDTO(int x,int y){
+    public PosicionDTO(int x,int y){
         this.x=x;
         this.y=y;
     }
@@ -19,12 +19,12 @@ public class posicionDTO{
         return id;
     }
     public void setId(Long id){
-        this.id=id
+        this.id=id;
     }
     public int getX(){
         return x;
     }
-    public void setX(){int x
+    public void setX(int x){
         this.x=x;
     }
     public int getY(){

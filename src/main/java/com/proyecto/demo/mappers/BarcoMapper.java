@@ -10,9 +10,8 @@ public class BarcoMapper {
     public static BarcoDTO toDTO(Barco barco) {
         BarcoDTO barcoDTO = new BarcoDTO();
         barcoDTO.setId(barco.getId());
-        barcoDTO.setCedula(barco.getCedula());
-        barcoDTO.setFirstName(barco.getFirstName());
-        barcoDTO.setLastName(barco.getLastName());
+        barcoDTO.setVelocidad(barco.getVelocidad());
+        
         return barcoDTO;
 
     }
