@@ -3,7 +3,7 @@ package com.proyecto.demo.mappers;
 import com.proyecto.demo.dto.ModeloDTO;
 import com.proyecto.demo.models.Modelo;
 
-public class ModeloMapper(){
+public class ModeloMapper{
 
     public static ModeloDTO toDTO(Modelo modelo){
         ModeloDTO modeloDTO = new ModeloDTO();
@@ -14,13 +14,13 @@ public class ModeloMapper(){
         return modeloDTO;
     }
 
-    public static Model toEntity(ModeloDTO modeloDTO){
+    public static Modelo toEntity(ModeloDTO modeloDTO){
         Modelo modelo = new Modelo();
         modelo.setId(modeloDTO.getId());
         modelo.setColor(modeloDTO.getColor());
-        modelo.setNombre(modeloDTO.setNombre());
+        modelo.setNombre(modeloDTO.getNombre());
 
-        return model;
+        return modelo;
     }
 
     

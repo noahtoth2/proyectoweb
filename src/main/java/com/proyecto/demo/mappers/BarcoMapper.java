@@ -3,7 +3,7 @@ package com.proyecto.demo.mappers;
 
 
 import com.proyecto.demo.dto.BarcoDTO;
-import com.proyecto.demo.models.*; 
+import com.proyecto.demo.models.Barco; 
 
 
 public class BarcoMapper {
@@ -19,9 +19,8 @@ public class BarcoMapper {
     public static Barco toEntity(BarcoDTO barcoDTO) {
         Barco barco = new Barco();
         barco.setId(barcoDTO.getId());
-        barco.setCedula(barcoDTO.getCedula());
-        barco.setFirstName(barcoDTO.getFirstName());
-        barco.setLastName(barcoDTO.getLastName());
+        barco.setVelocidad(barcoDTO.getVelocidad());
+        
         return barco;
     }
 }

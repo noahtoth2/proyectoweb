@@ -17,3 +17,4 @@ public class JugadorMapper {
         jugador.setNombre(jugadorDTO.getNombre());
         return jugador;
     }
+}
