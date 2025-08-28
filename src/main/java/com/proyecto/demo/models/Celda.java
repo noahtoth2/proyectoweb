@@ -16,7 +16,7 @@ public class Celda {
     private int y;
 
     @OneToOne
-    private Tablero tablero = new Tablero;
+    private Tablero tablero = new Tablero();
 
 
 
