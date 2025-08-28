@@ -10,7 +10,7 @@ import jakarta.persistence.OneToOne;
 public class Barco {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.Auto)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     private double velocidad;
@@ -18,9 +18,9 @@ public class Barco {
     @OneToOne
     private Posicion posicion;
     @OneToOne
-    private Modelo modelo = new Modelo;
+    private Modelo modelo = new Modelo();
     @OneToOne
-    private Jugador jugador = new Jugador;
+    private Jugador jugador = new Jugador();
 
     public Barco() {
     }
@@ -45,7 +45,7 @@ public class Barco {
         this.velocidad = velocidad;
     }
 
-    public double getPosicion() {
+    public Posicion getPosicion() {
         return posicion;
     }
 
@@ -61,11 +61,11 @@ public class Barco {
         this.jugador = jugador;
     }
 
-    public  getModelo() {
-        return modelo;
+    public Modelo getModelo() {
+    return modelo;
     }
 
-    public void setModelo(String modelo) {
+    public void setModelo(Modelo modelo) {
         this.modelo = modelo;
     }
     

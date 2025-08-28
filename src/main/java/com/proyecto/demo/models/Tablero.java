@@ -1,12 +1,13 @@
 package com.proyecto.demo.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.util.ArrayList; 
-import java.util.List;
 
 @Entity
 public class Tablero {
@@ -25,19 +26,19 @@ public class Tablero {
     public Tablero() {
     }
 
-    public Barco getBarco() {
-        return barco;
+    public List<Barco> getBarcos() {
+        return barcos;
     }
 
-    public void setBarco(Barco barco) {
-        this.barco = barco;
+    public void setBarcos(List<Barco> barcos) {
+        this.barcos = barcos;
     }
 
-    public int[][] getTablero() {
-        return tablero;
+    public List<Celda> getCeldas() {
+        return celdas;
     }
 
-    public void setTablero(int[][] tablero) {
-        this.tablero = tablero;
+    public void setCeldas(List<Celda> celdas) {
+        this.celdas = celdas;
     }
 }
