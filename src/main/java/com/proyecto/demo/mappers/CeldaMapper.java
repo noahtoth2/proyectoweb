@@ -8,8 +8,8 @@ import com.proyecto.demo.models.Celda;
 public class CeldaMapper {
     public static CeldaDTO toDTO(Celda celda) {
         CeldaDTO celdaDTO = new CeldaDTO();
-        celdaTO.setId(celda.getId());
-        celdaDTO.setTipoCelda(celda.getTipoCelda());
+        celdaDTO.setId(celda.getId());
+        celdaDTO.SetTipoCelda(celda.getTipoCelda()); 
         celdaDTO.setX(celda.getX());
         celdaDTO.setY(celda.getY());
 

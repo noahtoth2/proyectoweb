@@ -4,21 +4,20 @@ public class BarcoDTO{
 
     private Long id;
     private double velocidad;
-    private Posicion posicion;
+    
 
     public BarcoDTO(){
 
     }
-    public BarcoDTO(double velocidad,Posicion posicion){
+    public BarcoDTO(double velocidad){
         this.velocidad=velocidad;
-        this.posicion=posicion;
     }
 
     public long getId(){
         return id;
     }
     public void setId(long id){
-        this.id=id
+        this.id=id;
     }
     public double getVelocidad(){
         return velocidad;
@@ -26,12 +25,6 @@ public class BarcoDTO{
     public void setVelocidad(double velocidad){
         this.velocidad=velocidad;
     }
-    public Posicion getPosicion(){
-        return posicion;
-
-    }
-    public void setPosicion(Posicion posicion){
-        this.posicion=posicion;
-    }
+   
 }
 

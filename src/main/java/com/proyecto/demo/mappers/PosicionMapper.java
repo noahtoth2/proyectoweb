@@ -8,7 +8,7 @@ import com.proyecto.demo.models.Posicion;
 public class PosicionMapper {
     public static PosicionDTO toDTO(Posicion posicion) {
         PosicionDTO posicionDTO = new PosicionDTO();
-        posicionTO.setId(posicion.getId());
+        posicionDTO.setId(posicion.getId());
         posicionDTO.setX(posicion.getX());
         posicionDTO.setY(posicion.getY());
 
@@ -20,7 +20,7 @@ public class PosicionMapper {
         Posicion posicion = new Posicion();
         posicion.setId(posicionDTO.getId());
         posicion.setX(posicionDTO.getX());
-        posicion.setY(posicionTO.getY());
+        posicion.setY(posicionDTO.getY());
         
         return posicion;
     }

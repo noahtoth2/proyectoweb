@@ -8,7 +8,7 @@ import com.proyecto.demo.models.Tablero;
 public class TableroMapper {
     public static TableroDTO toDTO(Tablero tablero) {
         TableroDTO tableroDTO = new TableroDTO();
-        tableroTO.setId(tablero.getId());
+        tableroDTO.setId(tablero.getId());
 
         return tableroDTO;
 
