@@ -1,13 +1,14 @@
+package com.proyecto.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.edu.proyecto.demo.dto.JugadorDTO;
-import com.edu.proyecto.demo.mappers.JugadorMapper;
-import com.edu.proyecto.demo.models.Jugador;
-import com.edu.proyecto.demo.repository.JugadorRepository;
+import com.proyecto.demo.dto.JugadorDTO;
+import com.proyecto.demo.mappers.JugadorMapper;
+import com.proyecto.demo.models.Jugador;
+import com.proyecto.demo.repository.JugadorRepository;
 
 @Service
 public class JugadorService {
