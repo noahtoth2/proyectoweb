@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.edu.proyecto.demo.dto.BarcoDTO;
-import co.edu.proyecto.demo.mappers.BarcoMapper;
-import co.edu.proyecto.demo.models.Barco;
-import co.edu.proyecto.demo.repository.BarcoRepository;
+import com.proyecto.demo.dto.BarcoDTO;
+import com.proyecto.demo.mappers.BarcoMapper;
+import com.proyecto.demo.models.Barco;
+import com.proyecto.demo.repository.BarcoRepository;
 
 public class BarcoService {
     @Autowired
