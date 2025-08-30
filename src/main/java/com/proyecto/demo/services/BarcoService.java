@@ -1,6 +1,9 @@
+package com.proyecto.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,29 +21,29 @@ public class BarcoService {
     public List<BarcoDTO> listarBarcos() {
         // TODO Encapsular esto en el PersonMapper
         List<BarcoDTO> barcoDTOs = new ArrayList<>();
-        for (Barco  barco: BarcoRepository.findAll()) {
+        for (Barco  barco: barcoRepository.findAll()) {
             barcoDTOs.add(BarcoMapper.toDTO(barco));
         }
         return barcoDTOs;
     }
 
-    public PersonDTO recuperarBarco(Long id) {
+    public BarcoDTO recuperarBarco(Long id) {
         return BarcoMapper.toDTO(barcoRepository.findById(id).orElseThrow());
     }
 
     public void crear(BarcoDTO barcoDTO) {
         Barco entity = BarcoMapper.toEntity(barcoDTO);
         entity.setId(null);
-        BarcoRepository.save(entity);
+        barcoRepository.save(entity);
     }
 
     public void actualizarBarco(BarcoDTO barcoDTO) {
         Barco entity = BarcoMapper.toEntity(barcoDTO);
         // TODO Chequear que el id sea != null
-        BarcoRepository.save(entity);
+        barcoRepository.save(entity);
     }
 
     public void borrarBarco(Long barcoId) {
-        BarcoRepository.deleteById(barcoId);
+        barcoRepository.deleteById(barcoId);
     }
 }
