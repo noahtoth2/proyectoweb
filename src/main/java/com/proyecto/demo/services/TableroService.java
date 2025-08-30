@@ -21,8 +21,8 @@ public class TableroService {
     public List<TableroDTO> listarTableros() {
         // TODO Encapsular esto en el PersonMapper
         List<TableroDTO> tableroDTOs = new ArrayList<>();
-        for (Tablero  barco: tableroRepository.findAll()) {
-            tableroDTOs.add(TableroMapper.toDTO(barco));
+        for (Tablero  tablero: tableroRepository.findAll()) {
+            tableroDTOs.add(TableroMapper.toDTO(tablero));
         }
         return tableroDTOs;
     }
