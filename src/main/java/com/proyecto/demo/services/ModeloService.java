@@ -17,29 +17,29 @@ public class ModeloService {
     public List<ModeloDTO> listarModelos() {
         List<ModeloDTO> modeloDTOs = new ArrayList<>();
         for (Modelo modelo : modeloRepository.findAll()) {
-            jugadorDTOs.add(JugadorMapper.toDTO(jugador));
+            modeloDTOs.add(ModeloMapper.toDTO(modelo));
         }
-        return jugadorDTOs;
+        return modeloDTOs;
     }
 
-    public JugadorDTO recuperarJugador(Long id) {
-        return JugadorMapper.toDTO(jugadorRepository.findById(id).orElseThrow());
+    public ModeloDTO recuperarJugador(Long id) {
+        return ModeloMapper.toDTO(ModeloRepository.findById(id).orElseThrow());
     }
 
-    public void crear(JugadorDTO jugadorDTO) {
-        Jugador entity = JugadorMapper.toEntity(jugadorDTO);
+    public void crear(ModeloDTO modeloDTO) {
+        Modelo entity = ModeloMapper.toEntity(ModeloDTO);
         entity.setId(null);
-        jugadorRepository.save(entity);
+        modeloRepository.save(entity);
     }
 
-    public void actualizarJugador(JugadorDTO jugadorDTO) {
-        Jugador entity = JugadorMapper.toEntity(jugadorDTO);
+    public void actualizarModelo(ModeloDTO modeloDTO) {
+        Modelo entity = ModeloMapper.toEntity(modeloDTO);
         // TODO: Chequear que el id sea != null
-        jugadorRepository.save(entity);
+        modeloRepository.save(entity);
     }
 
-    public void borrarJugador(Long jugadorId) {
-        jugadorRepository.deleteById(jugadorId);
+    public void borrarModelo(Long modeloId) {
+        modeloRepository.deleteById(modeloId);
     }
 }
 
