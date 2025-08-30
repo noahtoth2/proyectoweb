@@ -10,6 +10,7 @@ import com.proyecto.demo.mappers.BarcoMapper;
 import com.proyecto.demo.models.Barco;
 import com.proyecto.demo.repository.BarcoRepository;
 
+@Service
 public class BarcoService {
     @Autowired
     private BarcoRepository barcoRepository;
