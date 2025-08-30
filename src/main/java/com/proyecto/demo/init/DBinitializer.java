@@ -71,23 +71,23 @@ public class DbInitializer implements CommandLineRunne{
 
 
         Posicion posicionini = posicionRepository.save(
-                         new Posicion("0","0"));
+                         new Posicion(0,0));
 
 
         Barco barco1 = barcoRepository.save(
-                       new Barco("10"));
+                       new Barco(10));
         
         Barco barco2 = barcoRepository.save(
-                       new Barco("3.5"));
+                       new Barco(3.5));
 
         Barco barco3 = barcoRepository.save(
-                       new Barco("4.8"));
+                       new Barco(4.8));
 
         Barco barco4 = barcoRepository.save(
-                       new Barco("8.7"));
+                       new Barco(8.7));
 
         Barco barco5 = barcoRepository.save(
-                       new Barco("6.6"));
+                       new Barco(6.6));
         
     }
 
