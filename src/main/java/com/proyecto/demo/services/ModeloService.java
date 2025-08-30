@@ -1,13 +1,14 @@
+package com.proyecto.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.edu.proyecto.demo.dto.ModeloDTO;
-import com.edu.proyecto.demo.mappers.ModeloMapper;
-import com.edu.proyecto.demo.models.Modelo;
-import com.edu.proyecto.demo.repository.ModeloRepository;
+import com.proyecto.demo.dto.ModeloDTO;
+import com.proyecto.demo.mappers.ModeloMapper;
+import com.proyecto.demo.models.Modelo;
+import com.proyecto.demo.repository.ModeloRepository;
 
 @Service
 public class ModeloService {
@@ -23,11 +24,11 @@ public class ModeloService {
     }
 
     public ModeloDTO recuperarJugador(Long id) {
-        return ModeloMapper.toDTO(ModeloRepository.findById(id).orElseThrow());
+        return ModeloMapper.toDTO(modeloRepository.findById(id).orElseThrow());
     }
 
     public void crear(ModeloDTO modeloDTO) {
-        Modelo entity = ModeloMapper.toEntity(ModeloDTO);
+        Modelo entity = ModeloMapper.toEntity(modeloDTO);
         entity.setId(null);
         modeloRepository.save(entity);
     }
