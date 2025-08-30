@@ -27,7 +27,7 @@ public class TableroService {
         return tableroDTOs;
     }
 
-    public TableroDTO recuperarBarco(Long id) {
+    public TableroDTO recuperarTablero(Long id) {
         return TableroMapper.toDTO(tableroRepository.findById(id).orElseThrow());
     }
 
@@ -37,13 +37,13 @@ public class TableroService {
         tableroRepository.save(entity);
     }
 
-    public void actualizarBarco(TableroDTO tableroDTO) {
+    public void actualizarTablero(TableroDTO tableroDTO) {
         Tablero entity = TableroMapper.toEntity(tableroDTO);
         // TODO Chequear que el id sea != null
         tableroRepository.save(entity);
     }
 
-    public void borrarBarco(Long barcoId) {
+    public void borrarTablero(Long barcoId) {
         tableroRepository.deleteById(barcoId);
     }
 }
