@@ -43,7 +43,7 @@ public class TableroService {
         tableroRepository.save(entity);
     }
 
-    public void borrarTablero(Long barcoId) {
-        tableroRepository.deleteById(barcoId);
+    public void borrarTablero(Long tableroId) {
+        tableroRepository.deleteById(tableroId);
     }
 }
