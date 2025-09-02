@@ -4,23 +4,31 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 @Entity
 public class Barco {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private double velocidad;
 
     @OneToOne
     private Posicion posicion;
-    @OneToOne
-    private Modelo modelo = new Modelo();
-    @OneToOne
-    private Jugador jugador = new Jugador();
+
+    @ManyToOne
+    private Modelo modelo;
+
+    @ManyToOne
+    private Jugador jugador;
+
+    @ManyToOne
+    @JoinColumn(name = "tablero_id") // clave foránea hacia Tablero
+    private Tablero tablero;
 
     public Barco() {
     }
@@ -62,11 +70,18 @@ public class Barco {
     }
 
     public Modelo getModelo() {
-    return modelo;
+        return modelo;
     }
 
     public void setModelo(Modelo modelo) {
         this.modelo = modelo;
     }
-    
+
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    public void setTablero(Tablero tablero) {
+        this.tablero = tablero;
+    }
 }

@@ -17,7 +17,7 @@ public class Posicion {
     private int y;
 
     @OneToOne
-    private Barco barco = new Barco(); 
+    private Barco barco; 
 
     public Posicion(){
     }
