@@ -13,12 +13,14 @@
             
         <tr>
             <th>Velocidad</th>
+            <th>Ver</th>
             
         </tr>
         </thead>
         <tbody>
         <tr th:each="barco : ${listadoBarcos}">
             <td th:text="${barco.velocidad}"></td>
+            <td><a th:href="@{/barco/view/{idBarco}(idBarco=${barco.id})}">Ver</a></td>
             
         </tr>
     </tbody>
