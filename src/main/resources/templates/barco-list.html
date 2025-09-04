@@ -17,6 +17,7 @@
             <th>Velocidad</th>
             <th>Ver</th>
             <th>Editar</th>
+            <th>Borrar</th>
             
         </tr>
         </thead>
@@ -25,6 +26,7 @@
             <td th:text="${barco.velocidad}"></td>
             <td><a th:href="@{/barco/view/{idBarco}(idBarco=${barco.id})}">Ver</a></td>
             <td><a th:href="@{/barco/edit-form/{idBarco}(idBarco=${barco.id})}">Editar</a></td>
+            <td><a th:href="@{/barco/delete/{idBarco}(idBarco=${barco.id})}">Delete</a></td>
             
         </tr>
     </tbody>
