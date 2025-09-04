@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Barcos View</title>
+</head>
+<body>
+    <h1>Barcos View </h1>
+
+    <ul>
+        <li th:text="${barco.velocidad}"></li>
+        <li th:text="${barco.jugador}"></li>
+        <li th:text="${barco.posicion}"></li>
+        <li th:text="${barco.modelo}"></li>
+    </ul>
+</body>
+</html>
