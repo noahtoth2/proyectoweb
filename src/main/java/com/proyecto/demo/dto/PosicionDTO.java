@@ -2,15 +2,15 @@ package com.proyecto.demo.dto;
 
 public class PosicionDTO{
     private Long id;
-        private int x;
-        private int y;
+        private Integer x;
+        private Integer y;
 
 
 
     public PosicionDTO(){
 
     }
-    public PosicionDTO(int x,int y){
+    public PosicionDTO(Integer x,Integer y){
         this.x=x;
         this.y=y;
     }
@@ -21,16 +21,16 @@ public class PosicionDTO{
     public void setId(Long id){
         this.id=id;
     }
-    public int getX(){
+    public Integer getX(){
         return x;
     }
-    public void setX(int x){
+    public void setX(Integer x){
         this.x=x;
     }
-    public int getY(){
+    public Integer getY(){
         return y;
     }
-    public void setY(int y){
+    public void setY(Integer y){
         this.y=y;
     }
     

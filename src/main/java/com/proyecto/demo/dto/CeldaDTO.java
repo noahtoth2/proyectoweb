@@ -3,14 +3,14 @@ package com.proyecto.demo.dto;
 public class CeldaDTO{
 
     private Long id;
-    private char tipocelda;
-    private int x;
-    private int y;
+    private Character tipocelda;
+    private Integer x;
+    private Integer y;
 
     public CeldaDTO(){
     }
 
-    public CeldaDTO(char tipocelda, int x, int y){
+    public CeldaDTO(Character tipocelda, Integer x, Integer y){
         this.tipocelda = tipocelda;
         this.x = x;
         this.y = y;
@@ -24,27 +24,27 @@ public class CeldaDTO{
         this.id = id;
     }
 
-    public char getTipoCelda(){
+    public Character getTipoCelda(){
         return tipocelda;
     }
 
-    public void SetTipoCelda(char tipocelda){
+    public void setTipoCelda(Character tipocelda){
         this.tipocelda = tipocelda;
     }
 
-    public int getX(){
+    public Integer getX(){
         return x;
     }
 
-    public void setX(int x){
+    public void setX(Integer x){
         this.x = x;
     }
 
-    public int getY(){
+    public Integer getY(){
         return y;
     }
 
-    public void setY(int y){
+    public void setY(Integer y){
         this.y = y;
     }
     
