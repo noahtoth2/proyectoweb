@@ -16,6 +16,7 @@
         <tr>
             <th>Velocidad</th>
             <th>Ver</th>
+            <th>Editar</th>
             
         </tr>
         </thead>
@@ -23,6 +24,7 @@
         <tr th:each="barco : ${listadoBarcos}">
             <td th:text="${barco.velocidad}"></td>
             <td><a th:href="@{/barco/view/{idBarco}(idBarco=${barco.id})}">Ver</a></td>
+            <td><a th:href="@{/barco/edit-form/{idBarco}(idBarco=${barco.id})}">Editar</a></td>
             
         </tr>
     </tbody>
