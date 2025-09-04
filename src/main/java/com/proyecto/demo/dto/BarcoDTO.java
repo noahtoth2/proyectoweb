@@ -3,26 +3,26 @@ package com.proyecto.demo.dto;
 public class BarcoDTO{
 
     private Long id;
-    private double velocidad;
+    private Double velocidad;
     
 
     public BarcoDTO(){
 
     }
-    public BarcoDTO(double velocidad){
+    public BarcoDTO(Double velocidad){
         this.velocidad=velocidad;
     }
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
-    public void setId(long id){
+    public void setId(Long id){
         this.id=id;
     }
-    public double getVelocidad(){
+    public Double getVelocidad(){
         return velocidad;
     }
-    public void setVelocidad(double velocidad){
+    public void setVelocidad(Double velocidad){
         this.velocidad=velocidad;
     }
    
