@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit barco</title>
+</head>
+
+<body>
+    <form action="/barco/create" method="post">
+
+        <label for="txtVelocidad">Velocidad</label>
+        <input type="text" name="velocidad" id="txtVelocidad" th:value="${barco.velocidad}">
+
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+
+</html>
