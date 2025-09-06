@@ -14,8 +14,8 @@ public class Celda {
     private Long id;
 
     private Character tipocelda;
-    private int x;
-    private int y;
+    private Integer x;
+    private Integer y;
 
     @ManyToOne 
     private Tablero tablero;
@@ -25,7 +25,7 @@ public class Celda {
     public Celda() {
     }
 
-    public Celda(Character tipocelda, int x, int y){
+    public Celda(Character tipocelda, Integer x, Integer y){
         this.tipocelda = tipocelda;
         this.x = x;
         this.y = y;
@@ -51,15 +51,15 @@ public class Celda {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(Integer x) {
         this.x = x;
     }
 
-    public int getY() {
+    public Integer getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(Integer y) {
         this.y = y;
     }
 
