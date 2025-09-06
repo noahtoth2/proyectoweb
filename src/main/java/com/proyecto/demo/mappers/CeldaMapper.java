@@ -9,7 +9,7 @@ public class CeldaMapper {
     public static CeldaDTO toDTO(Celda celda) {
         CeldaDTO celdaDTO = new CeldaDTO();
         celdaDTO.setId(celda.getId());
-        celdaDTO.SetTipoCelda(celda.getTipoCelda()); 
+        celdaDTO.setTipoCelda(celda.getTipoCelda()); 
         celdaDTO.setX(celda.getX());
         celdaDTO.setY(celda.getY());
 

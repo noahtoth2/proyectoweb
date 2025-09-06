@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableros List</title>
+</head>
+<body>
+    <h1>Tableros List</h1>
+
+    <a th:href="@{/tablero/create-form}">Crear Tablero</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Borrar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="tablero : ${listadoTableros}">
+                <td th:text="${tablero.id}"></td>
+                <td><a th:href="@{/tablero/view/{idTablero}(idTablero=${tablero.id})}">Ver</a></td>
+                <td><a th:href="@{/tablero/edit-form/{idTablero}(idTablero=${tablero.id})}">Editar</a></td>
+                <td><a th:href="@{/tablero/delete/{idTablero}(idTablero=${tablero.id})}">Borrar</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

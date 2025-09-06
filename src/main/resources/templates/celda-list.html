@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Celdas List</title>
+</head>
+<body>
+    <h1>Celdas List</h1>
+
+    <a th:href="@{/celda/create-form}">Crear Celda</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo Celda</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Borrar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="celda : ${listadoCeldas}">
+                <td th:text="${celda.tipoCelda}"></td>
+                <td th:text="${celda.x}"></td>
+                <td th:text="${celda.y}"></td>
+                <td><a th:href="@{/celda/view/{idCelda}(idCelda=${celda.id})}">Ver</a></td>
+                <td><a th:href="@{/celda/edit-form/{idCelda}(idCelda=${celda.id})}">Editar</a></td>
+                <td><a th:href="@{/celda/delete/{idCelda}(idCelda=${celda.id})}">Borrar</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

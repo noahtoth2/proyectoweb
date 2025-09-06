@@ -13,19 +13,19 @@ public class Celda {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    private char tipocelda;
+    private Character tipocelda;
     private int x;
     private int y;
 
     @ManyToOne 
-    private Tablero tablero = new Tablero();
+    private Tablero tablero;
 
 
 
     public Celda() {
     }
 
-    public Celda(char tipocelda, int x, int y){
+    public Celda(Character tipocelda, int x, int y){
         this.tipocelda = tipocelda;
         this.x = x;
         this.y = y;
@@ -39,11 +39,11 @@ public class Celda {
         this.id = id;
     }
 
-    public char getTipoCelda(){
+    public Character getTipoCelda(){
         return tipocelda;
     }
 
-    public void setTipoCelda(char tipocelda){
+    public void setTipoCelda(Character tipocelda){
         this.tipocelda = tipocelda;
     }
 

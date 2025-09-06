@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Celda</title>
+</head>
+<body>
+    <form action="/celda/create" method="post">
+
+        <label for="txtTipoCelda">Tipo Celda</label>
+        <input type="text" name="tipoCelda" id="txtTipoCelda" th:value="${celda.tipoCelda}">
+
+        <label for="txtX">X</label>
+        <input type="number" name="x" id="txtX" th:value="${celda.x}">
+
+        <label for="txtY">Y</label>
+        <input type="number" name="y" id="txtY" th:value="${celda.y}">
+
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>
