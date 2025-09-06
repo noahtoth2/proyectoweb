@@ -47,7 +47,7 @@ public class Celda {
         this.tipocelda = tipocelda;
     }
 
-    public int getX() {
+    public Integer getX() {
         return x;
     }
 
