@@ -1,5 +1,9 @@
 package com.proyecto.demo.init;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,7 +20,7 @@ import com.proyecto.demo.repository.PosicionRepository;
 import com.proyecto.demo.repository.TableroRepository;
 
 @Component
-public class DBinitializer implements CommandLineRunner{
+public class DBinitializer implements CommandLineRunner {
 
     @Autowired
     private BarcoRepository barcoRepository;
@@ -37,58 +41,63 @@ public class DBinitializer implements CommandLineRunner{
     private TableroRepository tableroRepository;
 
     @Override
-    public void run(String... args) throws Exception{
-       
-        Modelo modelo1 = modeloRepository.save(new Modelo("buque", "verde"));
-        /* 
-        Modelo modelo2 = modeloRepository.save(
-                       new Modelo("crucero", "blanco"));
+    public void run(String... args) throws Exception {
+        Random random = new Random();
 
+        // Crear 10 modelos
+        List<Modelo> modelos = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            Modelo modelo = new Modelo("Modelo " + i, generarColorAleatorio());
+            modeloRepository.save(modelo);
+            modelos.add(modelo);
+        }
 
-        */ 
-        Jugador jugador1 = jugadorRepository.save(new Jugador("Juan"));
-        /* 
-        Jugador jugador2 = jugadorRepository.save(
-                         new Jugador("Martin"));
+        // Crear 5 jugadores
+        List<Jugador> jugadores = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            Jugador jugador = new Jugador("Jugador " + i);
+            jugadorRepository.save(jugador);
+            jugadores.add(jugador);
+        }
 
-        Jugador jugador3 = jugadorRepository.save(
-                         new Jugador("Laura"));
+        // Crear 50 barcos (10 por jugador)
+        int barcoCount = 0;
+        for (Jugador jugador : jugadores) {
+            for (int i = 0; i < 10; i++) {
+                double velocidad = 5 + (15 - 5) * random.nextDouble(); // Velocidad entre 5 y 15
 
-        Jugador jugador4 = jugadorRepository.save(
-                         new Jugador("Julian"));
+                Barco barco = new Barco(velocidad);
 
-        Jugador jugador5 = jugadorRepository.save(
-                         new Jugador("Danna"));
+                // Asignar jugador
+                barco.setJugador(jugador);
 
-        Jugador jugador6 = jugadorRepository.save(
-                         new Jugador("Camilo"));
+                // Asignar modelo aleatorio
+                Modelo modeloRandom = modelos.get(random.nextInt(modelos.size()));
+                barco.setModelo(modeloRandom);
 
+                // Asignar posición única (por ejemplo x=barcoCount, y=barcoCount)
+                Posicion posicion = new Posicion(barcoCount, barcoCount);
+                posicionRepository.save(posicion);
+                barco.setPosicion(posicion);
 
-         */
-        Posicion posicionini = posicionRepository.save(
-                         new Posicion(0,0));
+                // Guardar barco
+                barcoRepository.save(barco);
 
+                // Añadir barco al jugador
+                jugador.getBarcos().add(barco);
+                barcoCount++;
+            }
+            jugadorRepository.save(jugador);
+        }
 
-        Barco barco1 = barcoRepository.save(new Barco(10));
-        /* 
-        Barco barco2 = barcoRepository.save(new Barco(3.5));
+        System.out.println("Base de datos inicializada con 5 jugadores, 10 modelos y 50 barcos.");
+    }
 
-        Barco barco3 = barcoRepository.save(new Barco(4.8));
-
-        Barco barco4 = barcoRepository.save(new Barco(8.7));
-
-        Barco barco5 = barcoRepository.save(new Barco(6.6));
-       
-    */
-
-       //Barco1
-       barco1.setJugador(jugador1);
-       barco1.setPosicion(posicionini);
-       barco1.setModelo(modelo1);
-       barcoRepository.save(barco1);
-       jugador1.getBarcos().add(barco1);
-       jugadorRepository.save(jugador1);
-    }   
-
-
+    private String generarColorAleatorio() {
+        String[] colores = {
+            "Rojo", "Verde", "Azul", "Blanco", "Negro",
+            "Amarillo", "Gris", "Naranja", "Rosa", "Marrón"
+        };
+        return colores[new Random().nextInt(colores.length)];
+    }
 }
