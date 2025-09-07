@@ -50,12 +50,39 @@ public class JugadorService {
     
 
     public void actualizarJugador(JugadorDTO jugadorDTO) {
-        Jugador entity = JugadorMapper.toEntity(jugadorDTO);
-        // TODO: Chequear que el id sea != null
-        jugadorRepository.save(entity);
+    Jugador jugador = jugadorRepository.findById(jugadorDTO.getId()).orElseThrow();
+
+    // Desasociar todos los barcos actuales
+    for (Barco barco : jugador.getBarcos()) {
+        barco.setJugador(null);
+        barcoRepository.save(barco);
     }
 
+    // Asociar los barcos seleccionados
+    if (jugadorDTO.getBarcosIds() != null) {
+        for (Long barcoId : jugadorDTO.getBarcosIds()) {
+            Barco barco = barcoRepository.findById(barcoId).orElse(null);
+            if (barco != null) {
+                barco.setJugador(jugador);
+                barcoRepository.save(barco);
+            }
+        }
+    }
+    jugador.setNombre(jugadorDTO.getNombre());
+    jugadorRepository.save(jugador);
+}
+
     public void borrarJugador(Long jugadorId) {
+     Jugador jugador = jugadorRepository.findById(jugadorId).orElse(null);
+    if (jugador != null) {
+        // Desasociar los barcos
+        for (Barco barco : jugador.getBarcos()) {
+            barco.setJugador(null);
+            barcoRepository.save(barco);
+        }
+        // Ahora sí elimina el jugador
         jugadorRepository.deleteById(jugadorId);
     }
+}
+
 }

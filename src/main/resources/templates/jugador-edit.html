@@ -3,12 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <title>Editar Jugador</title>
+    <script>
+        let barcosSeleccionados = [];
+
+        window.onload = function() {
+            // Inicializa barcosSeleccionados y agrega botón "Quitar" a los barcos ya asociados
+            document.querySelectorAll('#listaBarcos li').forEach(function(li) {
+                const barcoId = li.getAttribute('data-id');
+                barcosSeleccionados.push(barcoId);
+
+                const btnQuitar = document.createElement('button');
+                btnQuitar.type = 'button';
+                btnQuitar.textContent = 'Quitar';
+                btnQuitar.onclick = function() {
+                    quitarBarco(li, barcoId);
+                };
+                li.appendChild(btnQuitar);
+            });
+        };
+
+        function agregarBarco() {
+            const select = document.getElementById('barcos');
+            const selectedOption = select.options[select.selectedIndex];
+            const barcoId = selectedOption.value;
+            const barcoTexto = selectedOption.text;
+
+            if (!barcosSeleccionados.includes(barcoId)) {
+                barcosSeleccionados.push(barcoId);
+
+                const ul = document.getElementById('listaBarcos');
+                const li = document.createElement('li');
+                li.textContent = barcoTexto;
+                li.setAttribute('data-id', barcoId);
+
+                const btnQuitar = document.createElement('button');
+                btnQuitar.type = 'button';
+                btnQuitar.textContent = 'Quitar';
+                btnQuitar.onclick = function() {
+                    quitarBarco(li, barcoId);
+                };
+                li.appendChild(btnQuitar);
+
+                ul.appendChild(li);
+            }
+        }
+
+        function quitarBarco(li, barcoId) {
+            const ul = document.getElementById('listaBarcos');
+            ul.removeChild(li);
+            barcosSeleccionados = barcosSeleccionados.filter(id => id !== barcoId);
+        }
+
+        function prepararEnvio() {
+            // Elimina inputs previos
+            document.querySelectorAll('.input-barco-id').forEach(e => e.remove());
+            // Agrega un input hidden por cada barco seleccionado
+            barcosSeleccionados.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'barcosIds';
+                input.value = id;
+                input.className = 'input-barco-id';
+                document.getElementById('formJugador').appendChild(input);
+            });
+            return true;
+        }
+    </script>
 </head>
 <body>
-    <form action="/jugador/update" method="post">
+    <form id="formJugador" action="/jugador/update" method="post" onsubmit="return prepararEnvio();">
         <input type="hidden" name="id" th:value="${jugador.id}">
         <label for="txtNombre">Nombre</label>
         <input type="text" name="nombre" id="txtNombre" th:value="${jugador.nombre}">
+
+        <label for="barcos">Agregar Barco</label>
+        <select id="barcos">
+            <option th:each="barco : ${barcosDisponibles}"
+                    th:value="${barco.id}"
+                    th:text="'Barco ' + ${barco.id} + ' - Velocidad: ' + ${barco.velocidad}">
+            </option>
+        </select>
+        <button type="button" onclick="agregarBarco()">Agregar Barco</button>
+
+        <h3>Barcos Asociados:</h3>
+        <ul id="listaBarcos">
+            <li th:each="barco : ${jugador.barcos}"
+                th:text="'Barco ' + ${barco.id} + ' - Velocidad: ' + ${barco.velocidad}"
+                th:attr="data-id=${barco.id}">
+                <!-- El botón quitar se agrega por JS al cargar la página -->
+            </li>
+        </ul>
+
         <button type="submit">Guardar</button>
     </form>
 </body>

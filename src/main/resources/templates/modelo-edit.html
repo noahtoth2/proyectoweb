@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Modelo</title>
+</head>
+<body>
+    <form action="/modelo/update" method="post">
+        <input type="hidden" name="id" th:value="${modelo.id}">
+
+        <label for="txtNombre">Nombre</label>
+        <input type="text" name="nombre" id="txtNombre" th:value="${modelo.nombre}">
+
+        <label for="txtColor">Color</label>
+        <input type="text" name="color" id="txtColor" th:value="${modelo.color}">
+
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>

@@ -11,8 +11,10 @@
         <li>Barcos:
             <ul>
                 <li th:each="barco : ${jugador.barcos}">
+                    ID: <span th:text="${barco.id}"></span>,
                     Velocidad: <span th:text="${barco.velocidad}"></span>
                 </li>
+                <li th:if="${#lists.isEmpty(jugador.barcos)}">Sin barcos asociados</li>
             </ul>
         </li>
     </ul>
