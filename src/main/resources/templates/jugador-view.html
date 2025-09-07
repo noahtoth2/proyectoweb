@@ -1,22 +1,118 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Jugador View</title>
+    <title>Ver Jugador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --card-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-radius: 12px;
+            padding: 30px 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        ul li > ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        ul li > ul > li {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--gray);
+        }
+
+        ul li > ul > li:empty {
+            font-style: italic;
+            color: var(--danger);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            color: var(--secondary);
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .icon {
+            margin-right: 8px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Jugador View</h1>
-    <ul>
-        <li>Nombre: <span th:text="${jugador.nombre}"></span></li>
-        <li>Barcos:
-            <ul>
-                <li th:each="barco : ${jugador.barcos}">
-                    ID: <span th:text="${barco.id}"></span>,
-                    Velocidad: <span th:text="${barco.velocidad}"></span>
-                </li>
-                <li th:if="${#lists.isEmpty(jugador.barcos)}">Sin barcos asociados</li>
-            </ul>
-        </li>
-    </ul>
+    <div class="container">
+        <h1><i class="fas fa-user icon"></i> Ver Jugador</h1>
+        <ul>
+            <li><strong>Nombre:</strong> <span th:text="${jugador.nombre}"></span></li>
+            <li><strong>Barcos:</strong>
+                <ul>
+                    <li th:each="barco : ${jugador.barcos}">
+                        ID: <span th:text="${barco.id}"></span>,
+                        Velocidad: <span th:text="${barco.velocidad}"></span>
+                    </li>
+                    <li th:if="${#lists.isEmpty(jugador.barcos)}" style="color: var(--danger); font-style: italic;">
+                        Sin barcos asociados
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <a class="back-link" th:href="@{/jugador/list}">
+            <i class="fas fa-arrow-left icon"></i> Volver a la lista de jugadores
+        </a>
+    </div>
 </body>
 </html>
