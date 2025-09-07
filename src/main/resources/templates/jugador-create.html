@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Jugador</title>
+    <script>
+        let barcosSeleccionados = [];
+
+        function agregarBarco() {
+            const select = document.getElementById('barcos');
+            const selectedOption = select.options[select.selectedIndex];
+            const barcoId = selectedOption.value;
+            const barcoTexto = selectedOption.text;
+
+            // Evitar duplicados
+            if (!barcosSeleccionados.includes(barcoId)) {
+                barcosSeleccionados.push(barcoId);
+
+                // Mostrar en la lista
+                const ul = document.getElementById('listaBarcos');
+                const li = document.createElement('li');
+                li.textContent = barcoTexto;
+                li.setAttribute('data-id', barcoId);
+
+                // Botón para quitar barco
+                const btnQuitar = document.createElement('button');
+                btnQuitar.type = 'button';
+                btnQuitar.textContent = 'Quitar';
+                btnQuitar.onclick = function() {
+                    ul.removeChild(li);
+                    barcosSeleccionados = barcosSeleccionados.filter(id => id !== barcoId);
+                };
+                li.appendChild(btnQuitar);
+
+                ul.appendChild(li);
+            }
+        }
+
+        function prepararEnvio() {
+            // Elimina inputs previos
+            document.querySelectorAll('.input-barco-id').forEach(e => e.remove());
+            // Agrega un input hidden por cada barco seleccionado
+            barcosSeleccionados.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'barcosIds';
+                input.value = id;
+                input.className = 'input-barco-id';
+                document.getElementById('formJugador').appendChild(input);
+            });
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <form id="formJugador" action="/jugador/create" method="post" onsubmit="return prepararEnvio();">
+        <label for="txtNombre">Nombre</label>
+        <input type="text" name="nombre" id="txtNombre" th:value="${jugador.nombre}">
+
+        <label for="barcos">Selecciona Barco</label>
+        <select id="barcos">
+            <option th:each="barco : ${barcosDisponibles}"
+                    th:value="${barco.id}"
+                    th:text="'Barco ' + ${barco.id} + ' - Velocidad: ' + ${barco.velocidad}">
+            </option>
+        </select>
+        <button type="button" onclick="agregarBarco()">Agregar Barco</button>
+
+        <h3>Barcos Seleccionados:</h3>
+        <ul id="listaBarcos"></ul>
+
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>

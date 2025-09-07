@@ -20,7 +20,7 @@ public class CeldaDTO{
         return id;
     }
 
-    public void setId(Long Id){
+    public void setId(Long id){
         this.id = id;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.proyecto.demo.dto.JugadorDTO;
+import com.proyecto.demo.services.BarcoService;
 import com.proyecto.demo.services.JugadorService;
 
 @Controller
@@ -21,7 +22,8 @@ public class JugadorController {
 
     @Autowired
     private JugadorService jugadorService;
-
+    @Autowired
+    private BarcoService barcoService;
     // Listar jugadores
     @GetMapping("/list")
     public ModelAndView listarJugadores() {
@@ -45,6 +47,7 @@ public class JugadorController {
     public ModelAndView createForm() {
         ModelAndView modelAndView = new ModelAndView("jugador-create");
         modelAndView.addObject("jugador", new JugadorDTO());
+        modelAndView.addObject("barcosDisponibles", barcoService.listarBarcosDisponibles());
         return modelAndView;
     }
 
@@ -56,11 +59,12 @@ public class JugadorController {
     }
 
     // Formulario para editar
-    @GetMapping("/edit-form/{idJugador}")
+     @GetMapping("/edit-form/{idJugador}")
     public ModelAndView editForm(@PathVariable Long idJugador) {
         ModelAndView modelAndView = new ModelAndView("jugador-edit");
         JugadorDTO jugador = jugadorService.recuperarJugador(idJugador);
         modelAndView.addObject("jugador", jugador);
+        modelAndView.addObject("barcosDisponibles", barcoService.listarBarcosDisponibles());
         return modelAndView;
     }
 

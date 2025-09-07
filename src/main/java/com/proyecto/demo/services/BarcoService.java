@@ -43,4 +43,14 @@ public class BarcoService {
     public void borrarBarco(Long barcoId) {
         barcoRepository.deleteById(barcoId);
     }
+
+    public List<BarcoDTO> listarBarcosDisponibles() {
+    List<BarcoDTO> barcoDTOs = new ArrayList<>();
+    for (Barco barco : barcoRepository.findAll()) {
+        if (barco.getJugador() == null) { // Solo barcos sin jugador
+            barcoDTOs.add(BarcoMapper.toDTO(barco));
+        }
+    }
+    return barcoDTOs;
+}
 }

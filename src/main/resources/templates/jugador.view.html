@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Jugador View</title>
+</head>
+<body>
+    <h1>Jugador View</h1>
+    <ul>
+        <li>Nombre: <span th:text="${jugador.nombre}"></span></li>
+        <li>Barcos:
+            <ul>
+                <li th:each="barco : ${jugador.barcos}">
+                    Velocidad: <span th:text="${barco.velocidad}"></span>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>

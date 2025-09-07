@@ -86,7 +86,8 @@ public class DBinitializer implements CommandLineRunner{
        barco1.setPosicion(posicionini);
        barco1.setModelo(modelo1);
        barcoRepository.save(barco1);
-       
+       jugador1.getBarcos().add(barco1);
+       jugadorRepository.save(jugador1);
     }   
 
 

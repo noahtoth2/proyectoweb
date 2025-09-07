@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Jugadores List</title>
+</head>
+<body>
+    <h1>Jugadores List</h1>
+
+    <a th:href="@{/jugador/create-form}">Crear Jugador</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Barcos</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Borrar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="jugador : ${listadoJugadores}">
+                <td th:text="${jugador.nombre}"></td>
+                <td>
+                    <ul>
+                        <li th:each="barco : ${jugador.barcos}">
+                            Velocidad: <span th:text="${barco.velocidad}"></span>
+                        </li>
+                    </ul>
+                </td>
+                <td><a th:href="@{/jugador/view/{idJugador}(idJugador=${jugador.id})}">Ver</a></td>
+                <td><a th:href="@{/jugador/edit-form/{idJugador}(idJugador=${jugador.id})}">Editar</a></td>
+                <td><a th:href="@{/jugador/delete/{idJugador}(idJugador=${jugador.id})}">Borrar</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

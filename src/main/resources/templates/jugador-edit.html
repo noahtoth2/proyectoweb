@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Jugador</title>
+</head>
+<body>
+    <form action="/jugador/update" method="post">
+        <input type="hidden" name="id" th:value="${jugador.id}">
+        <label for="txtNombre">Nombre</label>
+        <input type="text" name="nombre" id="txtNombre" th:value="${jugador.nombre}">
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>

@@ -7,13 +7,17 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto.demo.dto.JugadorDTO;
 import com.proyecto.demo.mappers.JugadorMapper;
+import com.proyecto.demo.models.Barco;
 import com.proyecto.demo.models.Jugador;
+import com.proyecto.demo.repository.BarcoRepository;
 import com.proyecto.demo.repository.JugadorRepository;
 
 @Service
 public class JugadorService {
     @Autowired
     private JugadorRepository jugadorRepository;
+    @Autowired
+    private BarcoRepository barcoRepository;
 
     public List<JugadorDTO> listarJugadores() {
         List<JugadorDTO> jugadorDTOs = new ArrayList<>();
@@ -28,10 +32,22 @@ public class JugadorService {
     }
 
     public void crear(JugadorDTO jugadorDTO) {
+        
+        
         Jugador entity = JugadorMapper.toEntity(jugadorDTO);
         entity.setId(null);
-        jugadorRepository.save(entity);
+        entity = jugadorRepository.save(entity);
+          if (jugadorDTO.getBarcosIds() != null) {
+            for (Long barcoId : jugadorDTO.getBarcosIds()) {
+                Barco barco = barcoRepository.findById(barcoId).orElse(null);
+                if (barco != null) {
+                    barco.setJugador(entity); // Asigna el jugador al barco
+                    barcoRepository.save(barco); // Guarda el barco actualizado
+                }
+            }
+        }
     }
+    
 
     public void actualizarJugador(JugadorDTO jugadorDTO) {
         Jugador entity = JugadorMapper.toEntity(jugadorDTO);
