@@ -38,7 +38,7 @@ public class BarcoController {
     // Ver un barco
     @GetMapping("{idBarco}")
     public BarcoDTO recuperarBarco(@PathVariable Long idBarco) {
-        log.info("Recibi peticion de buscar una persona");
+        log.info("Recibi peticion de buscar un barco");
         return barcoService.recuperarBarco(idBarco);
     }
 
