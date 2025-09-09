@@ -15,7 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.proyecto.demo.dto.BarcoDTO;
 import com.proyecto.demo.services.BarcoService;
 
-@Controller
+@RestController
 @RequestMapping("/barco")
 public class BarcoController {
 
@@ -24,56 +24,45 @@ public class BarcoController {
 
     // Listar barcos
     @GetMapping("/list")
-    public ModelAndView listarBarcos() {
-        ModelAndView modelAndView = new ModelAndView("barco-list");
+    public ResponseEntity<List<BarcoDTO>> listarBarcos() {
+         log.info("Recibi peticion de listar barcos");
         List<BarcoDTO> barcos = barcoService.listarBarcos();
-        modelAndView.addObject("listadoBarcos", barcos);
-        return modelAndView;
+        return ResponseEntity.status(HttpStatus.OK).body(barcos);
+    }
+    @GetMapping("/list/{page}")
+    public List<BarcoDTO> listarBarcos(@PathVariable Integer page) {
+        log.info("Recibi peticion de listar barcos");
+        return barcoService.listarBarcos(PageRequest.of(page, 20));
     }
 
     // Ver un barco
-    @GetMapping("/view/{idBarco}")
-    public ModelAndView recuperarBarco(@PathVariable Long idBarco) {
-        ModelAndView modelAndView = new ModelAndView("barco-view");
-        BarcoDTO barco = barcoService.recuperarBarco(idBarco);
-        modelAndView.addObject("barco", barco);
-        return modelAndView;
+    @GetMapping("{idBarco}")
+    public BarcoDTO recuperarBarco(@PathVariable Long idBarco) {
+        log.info("Recibi peticion de buscar una persona");
+        return barcoService.recuperarBarco(idBarco);
     }
 
-    // Formulario para crear
-    @GetMapping("/create-form")
-    public ModelAndView createForm() {
-        ModelAndView modelAndView = new ModelAndView("barco-create");
-        modelAndView.addObject("barco", new BarcoDTO());
-        return modelAndView;
-    }
+    
 
     // Crear barco y redireccionar
-    @PostMapping("/create")
-    public RedirectView create(@ModelAttribute BarcoDTO barcoDTO) {
-        barcoService.crear(barcoDTO);
-        return new RedirectView("/barco/list");
+    @PostMapping
+    public BarcoDTO create(@RequestBody BarcoDTO barcoDTO) {
+       
+        return barcoService.crear(barcoDTO);;
     }
 
-    // Formulario para editar
-    @GetMapping("/edit-form/{idBarco}")
-    public ModelAndView editForm(@PathVariable Long idBarco) {
-        ModelAndView modelAndView = new ModelAndView("barco-edit");
-        BarcoDTO barco = barcoService.recuperarBarco(idBarco);
-        modelAndView.addObject("barco", barco);
-        return modelAndView;
-    }
+   
 
     // Actualizar barco y redireccionar
-    @PostMapping("/update")
-    public RedirectView update(@ModelAttribute BarcoDTO barcoDTO) {
-        barcoService.actualizarBarco(barcoDTO);
-        return new RedirectView("/barco/list");
+    @PutMapping
+    public BarcoDTO update(@RequestBody BarcoDTO barcoDTO) {
+        
+        return barcoService.actualizarBarco(barcoDTO);
     }
 
     // Eliminar barco y redireccionar
-    @GetMapping("/delete/{idBarco}")
-    public RedirectView delete(@PathVariable Long idBarco) {
-        barcoService.borrarBarco(idBarco);
-        return new RedirectView("/barco/list");}
+    @DeleteMapping("{idBarco}")
+    public void delete(@PathVariable Long idBarco) {
+        
+        return barcoService.borrarBarco(idBarco);
     }
