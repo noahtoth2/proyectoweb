@@ -43,7 +43,6 @@ public class BarcoController {
     }
 
     
-
     // Crear barco y redireccionar
     @PostMapping
     public BarcoDTO create(@RequestBody BarcoDTO barcoDTO) {
