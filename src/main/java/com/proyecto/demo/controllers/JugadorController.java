@@ -2,54 +2,58 @@ package com.proyecto.demo.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.demo.dto.JugadorDTO;
 import com.proyecto.demo.services.BarcoService;
 import com.proyecto.demo.services.JugadorService;
 
-@Controller
+@RestController
 @RequestMapping("/jugador")
 public class JugadorController {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private JugadorService jugadorService;
     @Autowired
     private BarcoService barcoService;
+
     // Listar jugadores
     @GetMapping("/list")
-    public ModelAndView listarJugadores() {
-        ModelAndView modelAndView = new ModelAndView("jugador-list");
+    public ResponseEntity<List<JugadorDTO>> listarJugadores() {
         List<JugadorDTO> jugadores = jugadorService.listarJugadores();
-        modelAndView.addObject("listadoJugadores", jugadores);
-        return modelAndView;
+        return ResponseEntity.status(HttpStatus.OK).body(personas);
     }
 
     // Ver un jugador
-    @GetMapping("/view/{idJugador}")
-    public ModelAndView recuperarJugador(@PathVariable Long idJugador) {
-        ModelAndView modelAndView = new ModelAndView("jugador-view");
-        JugadorDTO jugador = jugadorService.recuperarJugador(idJugador);
-        modelAndView.addObject("jugador", jugador);
-        return modelAndView;
+    @GetMapping("{idJugador}")
+    public JugadorDTO recuperarJugador(@PathVariable Long idJugador) {
+        return jugadorService.recuperarJugador(idJugador);
     }
 
     // Formulario para crear
-    @GetMapping("/create-form")
-    public ModelAndView createForm() {
-        ModelAndView modelAndView = new ModelAndView("jugador-create");
-        modelAndView.addObject("jugador", new JugadorDTO());
-        modelAndView.addObject("barcosDisponibles", barcoService.listarBarcosDisponibles());
-        return modelAndView;
-    }
+    //@GetMapping("/create-form")
+    //public ModelAndView createForm() {
+     //   ModelAndView modelAndView = new ModelAndView("jugador-create");
+     //   modelAndView.addObject("jugador", new JugadorDTO());
+     //   modelAndView.addObject("barcosDisponibles", barcoService.listarBarcosDisponibles());
+     //   return modelAndView;
+    //}
 
     // Crear jugador y redireccionar
     @PostMapping("/create")
