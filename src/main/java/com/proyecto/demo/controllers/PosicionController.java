@@ -24,22 +24,17 @@ public class PosicionController {
 
     // Listar posiciones
     @GetMapping("/list")
-    public ModelAndView listarPosiciones() {
-        ModelAndView modelAndView = new ModelAndView("posicion-list");
+    public ResponseEntity<List<PosicionDTO>> listarPosiciones() {
         List<PosicionDTO> posiciones = posicionService.listarBarcos();
-        modelAndView.addObject("listadoPosiciones", posiciones);
-        return modelAndView;
+        return ResponseEntity.status(HttpStatus.OK).body(posiciones);
     }
 
     // Ver una posición
-    @GetMapping("/view/{idPosicion}")
-    public ModelAndView recuperarPosicion(@PathVariable Long idPosicion) {
-        ModelAndView modelAndView = new ModelAndView("posicion-view");
-        PosicionDTO posicion = posicionService.recuperarBarco(idPosicion);
-        modelAndView.addObject("posicion", posicion);
-        return modelAndView;
+    @GetMapping("{idPosicion}")
+    public PosicionDTO recuperarPosicion(@PathVariable Long idPosicion) {
+        return posicionService.recuperarBarco(idPosicion);
     }
-
+/*
     // Formulario para crear
     @GetMapping("/create-form")
     public ModelAndView createForm() {
@@ -47,14 +42,13 @@ public class PosicionController {
         modelAndView.addObject("posicion", new PosicionDTO());
         return modelAndView;
     }
-
+*/
     // Crear posición y redireccionar
     @PostMapping("/create")
-    public RedirectView create(@ModelAttribute PosicionDTO posicionDTO) {
-        posicionService.crear(posicionDTO);
-        return new RedirectView("/posicion/list");
+    public PosicionDTO create(@RequestBody PosicionDTO posicionDTO) {
+        return  posicionService.crear(posicionDTO);
     }
-
+/*
     // Formulario para editar
     @GetMapping("/edit-form/{idPosicion}")
     public ModelAndView editForm(@PathVariable Long idPosicion) {
@@ -63,18 +57,16 @@ public class PosicionController {
         modelAndView.addObject("posicion", posicion);
         return modelAndView;
     }
-
+*/
     // Actualizar posición y redireccionar
-    @PostMapping("/update")
-    public RedirectView update(@ModelAttribute PosicionDTO posicionDTO) {
-        posicionService.actualizarBarco(posicionDTO);
-        return new RedirectView("/posicion/list");
+    @PutMapping("/update")
+    public PosicionDTO update(@ModelAttribute PosicionDTO posicionDTO) {
+        return posicionService.actualizarPosicion(posicionDTO);
     }
 
     // Eliminar posición y redireccionar
-    @GetMapping("/delete/{idPosicion}")
-    public RedirectView delete(@PathVariable Long idPosicion) {
+    @DeleteMapping("{idPosicion}")
+    public void delete(@PathVariable Long idPosicion) {
         posicionService.borrarBarco(idPosicion);
-        return new RedirectView("/posicion/list");
     }
 }

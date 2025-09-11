@@ -37,7 +37,7 @@ public class PosicionService {
         posicionRepository.save(entity);
     }
 
-    public void actualizarBarco(PosicionDTO posicionDTO) {
+    public void actualizarPosicion(PosicionDTO posicionDTO) {
         Posicion entity = PosicionMapper.toEntity(posicionDTO);
         // TODO Chequear que el id sea != null
         posicionRepository.save(entity);
