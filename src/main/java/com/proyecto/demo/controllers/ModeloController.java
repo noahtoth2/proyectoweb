@@ -30,6 +30,7 @@ public class ModeloController {
     @Autowired
     private ModeloService modeloService;
 
+
     // Listar modelos
     @GetMapping("/list")
     public ResponseEntity<List<ModeloDTO>> listarModelos() {
@@ -39,26 +40,32 @@ public class ModeloController {
 
     // Ver un modelo
     @GetMapping("{idModelo}")
-    public ModeloDTO recuperarModelo(@PathVariable Long idModelo) {
-        return modeloService.recuperarJugador(idModelo);
+    public ResponseEntity<ModeloDTO> recuperarModelo(@PathVariable Long idModelo) {
+        ModeloDTO modelo = modeloService.recuperarModelo(idModelo);
+        return ResponseEntity.status(HttpStatus.OK).body(modelo);
     }
-    
-    // Crear modelo y redireccionar
+
+
+    // Crear modelo
     @PostMapping
-    public ModeloDTO create(@RequestBody ModeloDTO modeloDTO) {
-        return modeloService.crear(modeloDTO);
+    public ResponseEntity<ModeloDTO> create(@RequestBody ModeloDTO modeloDTO) {
+        ModeloDTO created = modeloService.crear(modeloDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // Actualizar modelo y redireccionar
+    // Actualizar modelo
     @PutMapping
-    public ModeloDTO update(@RequestBody ModeloDTO modeloDTO) {
-        return modeloService.actualizarModelo(modeloDTO);
+    public ResponseEntity<MdeoloDTO> update(@RequestBody ModeloDTO modeloDTO) {
+        ModeloDTO updated = modeloService.actualizarModelo(modeloDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
-    // Eliminar modelo y redireccionar
+    // Eliminar modelo
     @DeleteMapping("{idModelo}")
-    public void delete(@PathVariable Long idModelo) {
-            modeloService.borrarModelo(idModelo);
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long idModelo) {
+        modeloService.borrarModelo(idModelo);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
