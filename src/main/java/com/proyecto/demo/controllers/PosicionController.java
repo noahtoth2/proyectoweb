@@ -19,6 +19,8 @@ import com.proyecto.demo.services.PosicionService;
 @RequestMapping("/posicion")
 public class PosicionController {
 
+    private static final Logger log = LoggerFactory.getLogger(PosicionController.class);
+
     @Autowired
     private PosicionService posicionService;
 
