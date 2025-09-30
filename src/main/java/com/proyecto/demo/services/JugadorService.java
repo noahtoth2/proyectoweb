@@ -31,46 +31,47 @@ public class JugadorService {
         return JugadorMapper.toDTO(jugadorRepository.findById(id).orElseThrow());
     }
 
-    public void crear(JugadorDTO jugadorDTO) {
-        
-        
+    public JugadorDTO crear(JugadorDTO jugadorDTO) {
         Jugador entity = JugadorMapper.toEntity(jugadorDTO);
         entity.setId(null);
         entity = jugadorRepository.save(entity);
-          if (jugadorDTO.getBarcosIds() != null) {
+        
+        if (jugadorDTO.getBarcosIds() != null) {
             for (Long barcoId : jugadorDTO.getBarcosIds()) {
                 Barco barco = barcoRepository.findById(barcoId).orElse(null);
                 if (barco != null) {
-                    barco.setJugador(entity); // Asigna el jugador al barco
-                    barcoRepository.save(barco); // Guarda el barco actualizado
+                    barco.setJugador(entity);
+                    barcoRepository.save(barco);
                 }
             }
         }
+        return JugadorMapper.toDTO(entity);
     }
     
 
-    public void actualizarJugador(JugadorDTO jugadorDTO) {
-    Jugador jugador = jugadorRepository.findById(jugadorDTO.getId()).orElseThrow();
+    public JugadorDTO actualizarJugador(JugadorDTO jugadorDTO) {
+        Jugador jugador = jugadorRepository.findById(jugadorDTO.getId()).orElseThrow();
 
-    // Desasociar todos los barcos actuales
-    for (Barco barco : jugador.getBarcos()) {
-        barco.setJugador(null);
-        barcoRepository.save(barco);
-    }
+        // Desasociar todos los barcos actuales
+        for (Barco barco : jugador.getBarcos()) {
+            barco.setJugador(null);
+            barcoRepository.save(barco);
+        }
 
-    // Asociar los barcos seleccionados
-    if (jugadorDTO.getBarcosIds() != null) {
-        for (Long barcoId : jugadorDTO.getBarcosIds()) {
-            Barco barco = barcoRepository.findById(barcoId).orElse(null);
-            if (barco != null) {
-                barco.setJugador(jugador);
-                barcoRepository.save(barco);
+        // Asociar los barcos seleccionados
+        if (jugadorDTO.getBarcosIds() != null) {
+            for (Long barcoId : jugadorDTO.getBarcosIds()) {
+                Barco barco = barcoRepository.findById(barcoId).orElse(null);
+                if (barco != null) {
+                    barco.setJugador(jugador);
+                    barcoRepository.save(barco);
+                }
             }
         }
+        jugador.setNombre(jugadorDTO.getNombre());
+        Jugador saved = jugadorRepository.save(jugador);
+        return JugadorMapper.toDTO(saved);
     }
-    jugador.setNombre(jugadorDTO.getNombre());
-    jugadorRepository.save(jugador);
-}
 
     public void borrarJugador(Long jugadorId) {
      Jugador jugador = jugadorRepository.findById(jugadorId).orElse(null);

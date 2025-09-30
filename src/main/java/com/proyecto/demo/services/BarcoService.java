@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.demo.dto.BarcoDTO;
@@ -24,20 +25,30 @@ public class BarcoService {
         return barcoDTOs;
     }
 
+    public List<BarcoDTO> listarBarcos(PageRequest pageRequest) {
+        List<BarcoDTO> barcoDTOs = new ArrayList<>();
+        for (Barco barco : barcoRepository.findAll(pageRequest).getContent()) {
+            barcoDTOs.add(BarcoMapper.toDTO(barco));
+        }
+        return barcoDTOs;
+    }
+
     public BarcoDTO recuperarBarco(Long id) {
         return BarcoMapper.toDTO(barcoRepository.findById(id).orElseThrow());
     }
 
-    public void crear(BarcoDTO barcoDTO) {
+    public BarcoDTO crear(BarcoDTO barcoDTO) {
         Barco entity = BarcoMapper.toEntity(barcoDTO);
         entity.setId(null);
-        barcoRepository.save(entity);
+        Barco saved = barcoRepository.save(entity);
+        return BarcoMapper.toDTO(saved);
     }
 
-    public void actualizarBarco(BarcoDTO barcoDTO) {
+    public BarcoDTO actualizarBarco(BarcoDTO barcoDTO) {
         Barco entity = BarcoMapper.toEntity(barcoDTO);
         // TODO Chequear que el id sea != null
-        barcoRepository.save(entity);
+        Barco saved = barcoRepository.save(entity);
+        return BarcoMapper.toDTO(saved);
     }
 
     public void borrarBarco(Long barcoId) {

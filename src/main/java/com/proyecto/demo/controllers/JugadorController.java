@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.demo.dto.JugadorDTO;
@@ -26,7 +24,7 @@ import com.proyecto.demo.services.JugadorService;
 @RequestMapping("/jugador")
 public class JugadorController {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(JugadorController.class);
 
     @Autowired
     private JugadorService jugadorService;
@@ -37,51 +35,34 @@ public class JugadorController {
     @GetMapping("/list")
     public ResponseEntity<List<JugadorDTO>> listarJugadores() {
         List<JugadorDTO> jugadores = jugadorService.listarJugadores();
-        return ResponseEntity.status(HttpStatus.OK).body(personas);
+        return ResponseEntity.status(HttpStatus.OK).body(jugadores);
     }
 
     // Ver un jugador
     @GetMapping("{idJugador}")
-    public JugadorDTO recuperarJugador(@PathVariable Long idJugador) {
-        return jugadorService.recuperarJugador(idJugador);
-    }
-
-    // Formulario para crear
-    //@GetMapping("/create-form")
-    //public ModelAndView createForm() {
-     //   ModelAndView modelAndView = new ModelAndView("jugador-create");
-     //   modelAndView.addObject("jugador", new JugadorDTO());
-     //   modelAndView.addObject("barcosDisponibles", barcoService.listarBarcosDisponibles());
-     //   return modelAndView;
-    //}
-
-    // Crear jugador y redireccionar
-    @PostMapping("/create")
-    public RedirectView create(@ModelAttribute JugadorDTO jugadorDTO) {
-        jugadorService.crear(jugadorDTO);
-        return new RedirectView("/jugador/list");
-    }
-
-    // Formulario para editar
-     @GetMapping("/edit-form/{idJugador}")
-    public ModelAndView editForm(@PathVariable Long idJugador) {
-        ModelAndView modelAndView = new ModelAndView("jugador-edit");
+    public ResponseEntity<JugadorDTO> recuperarJugador(@PathVariable Long idJugador) {
         JugadorDTO jugador = jugadorService.recuperarJugador(idJugador);
-        modelAndView.addObject("jugador", jugador);
-        modelAndView.addObject("barcosDisponibles", barcoService.listarBarcosDisponibles());
-        return modelAndView;
+        return ResponseEntity.status(HttpStatus.OK).body(jugador);
     }
 
-    // Actualizar jugador y redireccionar
-    @PostMapping("/update")
-    public RedirectView update(@ModelAttribute JugadorDTO jugadorDTO) {
-        jugadorService.actualizarJugador(jugadorDTO);
-        return new RedirectView("/jugador/list");
+    // Crear jugador
+    @PostMapping
+    public ResponseEntity<JugadorDTO> create(@RequestBody JugadorDTO jugadorDTO) {
+        JugadorDTO created = jugadorService.crear(jugadorDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // Eliminar jugador y redireccionar
-    @GetMapping("/delete/{idJugador}")
-    public RedirectView delete(@PathVariable Long idJugador) {
+    // Actualizar jugador
+    @PutMapping
+    public ResponseEntity<JugadorDTO> update(@RequestBody JugadorDTO jugadorDTO) {
+        JugadorDTO updated = jugadorService.actualizarJugador(jugadorDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
+    }
+
+    // Eliminar jugador
+    @DeleteMapping("{idJugador}")
+    public ResponseEntity<Void> delete(@PathVariable Long idJugador) {
         jugadorService.borrarJugador(idJugador);
-        return new RedirectView("/jugador/list");}
+        return ResponseEntity.noContent().build();
     }
+}

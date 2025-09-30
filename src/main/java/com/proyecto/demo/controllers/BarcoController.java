@@ -3,14 +3,12 @@ package com.proyecto.demo.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.PageRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.proyecto.demo.dto.BarcoDTO;
 import com.proyecto.demo.services.BarcoService;
@@ -19,49 +17,52 @@ import com.proyecto.demo.services.BarcoService;
 @RequestMapping("/barco")
 public class BarcoController {
 
+    private static final Logger log = LoggerFactory.getLogger(BarcoController.class);
+
     @Autowired
     private BarcoService barcoService;
 
     // Listar barcos
     @GetMapping("/list")
     public ResponseEntity<List<BarcoDTO>> listarBarcos() {
-         log.info("Recibi peticion de listar barcos");
+        log.info("Recibi peticion de listar barcos");
         List<BarcoDTO> barcos = barcoService.listarBarcos();
         return ResponseEntity.status(HttpStatus.OK).body(barcos);
     }
+
     @GetMapping("/list/{page}")
-    public List<BarcoDTO> listarBarcos(@PathVariable Integer page) {
+    public ResponseEntity<List<BarcoDTO>> listarBarcos(@PathVariable Integer page) {
         log.info("Recibi peticion de listar barcos");
-        return barcoService.listarBarcos(PageRequest.of(page, 20));
+        List<BarcoDTO> barcos = barcoService.listarBarcos(PageRequest.of(page, 20));
+        return ResponseEntity.status(HttpStatus.OK).body(barcos);
     }
 
     // Ver un barco
     @GetMapping("{idBarco}")
-    public BarcoDTO recuperarBarco(@PathVariable Long idBarco) {
+    public ResponseEntity<BarcoDTO> recuperarBarco(@PathVariable Long idBarco) {
         log.info("Recibi peticion de buscar un barco");
-        return barcoService.recuperarBarco(idBarco);
+        BarcoDTO barco = barcoService.recuperarBarco(idBarco);
+        return ResponseEntity.status(HttpStatus.OK).body(barco);
     }
 
-    
     // Crear barco y redireccionar
     @PostMapping
-    public BarcoDTO create(@RequestBody BarcoDTO barcoDTO) {
-       
-        return barcoService.crear(barcoDTO);;
+    public ResponseEntity<BarcoDTO> create(@RequestBody BarcoDTO barcoDTO) {
+        BarcoDTO created = barcoService.crear(barcoDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
-
-   
 
     // Actualizar barco y redireccionar
     @PutMapping
-    public BarcoDTO update(@RequestBody BarcoDTO barcoDTO) {
-        
-        return barcoService.actualizarBarco(barcoDTO);
+    public ResponseEntity<BarcoDTO> update(@RequestBody BarcoDTO barcoDTO) {
+        BarcoDTO updated = barcoService.actualizarBarco(barcoDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
     // Eliminar barco y redireccionar
     @DeleteMapping("{idBarco}")
-    public void delete(@PathVariable Long idBarco) {
-        
-        return barcoService.borrarBarco(idBarco);
+    public ResponseEntity<Void> delete(@PathVariable Long idBarco) {
+        barcoService.borrarBarco(idBarco);
+        return ResponseEntity.noContent().build();
     }
+}
