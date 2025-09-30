@@ -55,7 +55,7 @@ public class ModeloController {
 
     // Actualizar modelo
     @PutMapping
-    public ResponseEntity<MdeoloDTO> update(@RequestBody ModeloDTO modeloDTO) {
+    public ResponseEntity<ModeloDTO> update(@RequestBody ModeloDTO modeloDTO) {
         ModeloDTO updated = modeloService.actualizarModelo(modeloDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
