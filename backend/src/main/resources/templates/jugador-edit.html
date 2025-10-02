@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Jugador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #0d9488;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background: var(--secondary);
+        }
+
+        h3 {
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        ul#listaBarcos {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul#listaBarcos li {
+            background: #f1f5f9;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        ul#listaBarcos li button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        ul#listaBarcos li button:hover {
+            background: #dc2626;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+
+    <script>
+        let barcosSeleccionados = [];
+
+        window.onload = function() {
+            // Inicializa barcos ya asociados al jugador
+            document.querySelectorAll('#listaBarcos li').forEach(function(li) {
+                const barcoId = li.getAttribute('data-id');
+                barcosSeleccionados.push(barcoId);
+
+                const btnQuitar = document.createElement('button');
+                btnQuitar.type = 'button';
+                btnQuitar.textContent = 'Quitar';
+                btnQuitar.onclick = function () {
+                    quitarBarco(li, barcoId);
+                };
+                li.appendChild(btnQuitar);
+            });
+        };
+
+        function agregarBarco() {
+            const select = document.getElementById('barcos');
+            const selectedOption = select.options[select.selectedIndex];
+            const barcoId = selectedOption.value;
+            const barcoTexto = selectedOption.text;
+
+            if (!barcosSeleccionados.includes(barcoId)) {
+                barcosSeleccionados.push(barcoId);
+
+                const ul = document.getElementById('listaBarcos');
+                const li = document.createElement('li');
+                li.textContent = barcoTexto;
+                li.setAttribute('data-id', barcoId);
+
+                const btnQuitar = document.createElement('button');
+                btnQuitar.type = 'button';
+                btnQuitar.textContent = 'Quitar';
+                btnQuitar.onclick = function () {
+                    quitarBarco(li, barcoId);
+                };
+                li.appendChild(btnQuitar);
+
+                ul.appendChild(li);
+            }
+        }
+
+        function quitarBarco(li, barcoId) {
+            const ul = document.getElementById('listaBarcos');
+            ul.removeChild(li);
+            barcosSeleccionados = barcosSeleccionados.filter(id => id !== barcoId);
+        }
+
+        function prepararEnvio() {
+            // Elimina inputs anteriores
+            document.querySelectorAll('.input-barco-id').forEach(e => e.remove());
+
+            // Agrega los actuales
+            barcosSeleccionados.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'barcosIds';
+                input.value = id;
+                input.className = 'input-barco-id';
+                document.getElementById('formJugador').appendChild(input);
+            });
+            return true;
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <h1><i class="fas fa-user-edit"></i> Editar Jugador</h1>
+
+        <form id="formJugador" action="/jugador/update" method="post" onsubmit="return prepararEnvio();">
+            <input type="hidden" name="id" th:value="${jugador.id}">
+
+            <label for="txtNombre">Nombre</label>
+            <input type="text" name="nombre" id="txtNombre" th:value="${jugador.nombre}" placeholder="Nombre del jugador">
+
+            <label for="barcos">Agregar Barco</label>
+            <select id="barcos">
+                <option disabled selected>Seleccione un barco...</option>
+                <option th:each="barco : ${barcosDisponibles}"
+                        th:value="${barco.id}"
+                        th:text="'Barco ' + ${barco.id} + ' - Velocidad: ' + ${barco.velocidad}">
+                </option>
+            </select>
+
+            <button type="button" class="btn btn-add" onclick="agregarBarco()">
+                <i class="fas fa-plus"></i> Agregar Barco
+            </button>
+
+            <h3><i class="fas fa-ship"></i> Barcos Asociados:</h3>
+            <ul id="listaBarcos">
+                <li th:each="barco : ${jugador.barcos}"
+                    th:text="'Barco ' + ${barco.id} + ' - Velocidad: ' + ${barco.velocidad}"
+                    th:attr="data-id=${barco.id}">
+                    <!-- Botón quitar se agrega con JS -->
+                </li>
+            </ul>
+
+            <button type="submit" class="btn btn-submit">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

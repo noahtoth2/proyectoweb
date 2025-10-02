@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Celdas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .create-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .create-btn:hover {
+            background: var(--secondary);
+        }
+
+        table {
+            width: 100%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        thead {
+            background: var(--primary);
+            color: white;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        a.action-link {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        a.action-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                background: white;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                box-shadow: var(--card-shadow);
+                padding: 10px;
+            }
+
+            td {
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--gray);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1><i class="fas fa-table-cells"></i> Lista de Celdas</h1>
+        <a class="create-btn" th:href="@{/celda/create-form}">
+            <i class="fas fa-plus"></i> Crear Celda
+        </a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo Celda</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Borrar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="celda : ${listadoCeldas}">
+                <td data-label="Tipo Celda" th:text="${celda.tipoCelda}"></td>
+                <td data-label="X" th:text="${celda.x}"></td>
+                <td data-label="Y" th:text="${celda.y}"></td>
+                <td data-label="Ver">
+                    <a class="action-link" th:href="@{/celda/view/{idCelda}(idCelda=${celda.id})}">
+                        <i class="fas fa-eye"></i> Ver
+                    </a>
+                </td>
+                <td data-label="Editar">
+                    <a class="action-link" th:href="@{/celda/edit-form/{idCelda}(idCelda=${celda.id})}">
+                        <i class="fas fa-pen"></i> Editar
+                    </a>
+                </td>
+                <td data-label="Borrar">
+                    <a class="action-link" th:href="@{/celda/delete/{idCelda}(idCelda=${celda.id})}">
+                        <i class="fas fa-trash"></i> Borrar
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
