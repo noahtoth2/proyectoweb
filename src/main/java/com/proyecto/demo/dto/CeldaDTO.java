@@ -8,7 +8,7 @@ public class CeldaDTO{
     private Integer y;
 
     public CeldaDTO(){
-    }
+    }hhh
 
     public CeldaDTO(Character tipocelda, Integer x, Integer y){
         this.tipocelda = tipocelda;
