@@ -2,26 +2,31 @@ package com.proyecto.demo.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.data.domain.PageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.demo.dto.BarcoDTO;
 import com.proyecto.demo.services.BarcoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/barco")
-@Tag(name = "Barcos", description = "Operaciones relacionadas con los barcos")
+@Tag(name = "Controlador de Barcos", description = "Gestiona todas las operaciones CRUD para los barcos del juego, incluyendo listar, crear, actualizar, eliminar y buscar barcos por ID")
 public class BarcoController {
 
     private static final Logger log = LoggerFactory.getLogger(BarcoController.class);
@@ -29,10 +34,7 @@ public class BarcoController {
     @Autowired
     private BarcoService barcoService;
 
-    @Operation(summary = "Listar todos los barcos")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de barcos obtenida correctamente")
-    })
+    @Operation(summary = "Listar todos los barcos", description = "Obtiene una lista completa de todos los barcos registrados en el sistema")
     @GetMapping("/list")
     public ResponseEntity<List<BarcoDTO>> listarBarcos() {
         log.info("Recibi peticion de listar barcos");
@@ -40,62 +42,49 @@ public class BarcoController {
         return ResponseEntity.status(HttpStatus.OK).body(barcos);
     }
 
-    @Operation(summary = "Listar barcos paginados")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista paginada de barcos obtenida correctamente")
-    })
+    @Operation(summary = "Listar barcos con paginación", description = "Obtiene una lista paginada de barcos, mostrando 20 barcos por página")
     @GetMapping("/list/{page}")
     public ResponseEntity<List<BarcoDTO>> listarBarcos(
-            @Parameter(description = "Número de página a consultar") @PathVariable Integer page) {
+            @Parameter(description = "Número de página a consultar (empezando desde 0)", required = true, example = "0") 
+            @PathVariable Integer page) {
         log.info("Recibi peticion de listar barcos paginados");
         List<BarcoDTO> barcos = barcoService.listarBarcos(PageRequest.of(page, 20));
         return ResponseEntity.status(HttpStatus.OK).body(barcos);
     }
 
-    @Operation(summary = "Recuperar un barco por ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Barco encontrado"),
-        @ApiResponse(responseCode = "404", description = "Barco no encontrado")
-    })
+    @Operation(summary = "Obtener barco por ID", description = "Recupera la información completa de un barco específico mediante su identificador único")
     @GetMapping("{idBarco}")
     public ResponseEntity<BarcoDTO> recuperarBarco(
-            @Parameter(description = "ID del barco a recuperar") @PathVariable Long idBarco) {
+            @Parameter(description = "Identificador único del barco a buscar", required = true, example = "1") 
+            @PathVariable Long idBarco) {
         log.info("Recibi peticion de buscar un barco");
         BarcoDTO barco = barcoService.recuperarBarco(idBarco);
         return ResponseEntity.status(HttpStatus.OK).body(barco);
     }
 
-    @Operation(summary = "Crear un nuevo barco")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Barco creado correctamente")
-    })
+    @Operation(summary = "Crear nuevo barco", description = "Registra un nuevo barco en el sistema con los datos proporcionados")
     @PostMapping
     public ResponseEntity<BarcoDTO> create(
-            @Parameter(description = "Datos del nuevo barco") @RequestBody BarcoDTO barcoDTO) {
+            @Parameter(description = "Objeto BarcoDTO con los datos del nuevo barco (jugadorId, modeloId, velocidad, posición)", required = true) 
+            @RequestBody BarcoDTO barcoDTO) {
         BarcoDTO created = barcoService.crear(barcoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @Operation(summary = "Actualizar un barco existente")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Barco actualizado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Barco no encontrado")
-    })
+    @Operation(summary = "Actualizar barco existente", description = "Modifica los datos de un barco ya registrado en el sistema")
     @PutMapping
     public ResponseEntity<BarcoDTO> update(
-            @Parameter(description = "Datos del barco actualizado") @RequestBody BarcoDTO barcoDTO) {
+            @Parameter(description = "Objeto BarcoDTO con los datos actualizados del barco (debe incluir el ID)", required = true) 
+            @RequestBody BarcoDTO barcoDTO) {
         BarcoDTO updated = barcoService.actualizarBarco(barcoDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
-    @Operation(summary = "Eliminar un barco por ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Barco eliminado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Barco no encontrado")
-    })
+    @Operation(summary = "Eliminar barco", description = "Elimina permanentemente un barco del sistema mediante su ID")
     @DeleteMapping("{idBarco}")
     public ResponseEntity<Void> delete(
-            @Parameter(description = "ID del barco a eliminar") @PathVariable Long idBarco) {
+            @Parameter(description = "Identificador único del barco a eliminar", required = true, example = "1") 
+            @PathVariable Long idBarco) {
         barcoService.borrarBarco(idBarco);
         return ResponseEntity.noContent().build();
     }

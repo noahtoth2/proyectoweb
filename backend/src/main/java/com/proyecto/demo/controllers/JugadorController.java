@@ -20,8 +20,13 @@ import com.proyecto.demo.dto.JugadorDTO;
 import com.proyecto.demo.services.BarcoService;
 import com.proyecto.demo.services.JugadorService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/jugador")
+@Tag(name = "Controlador de Jugadores", description = "Gestiona todas las operaciones CRUD para los jugadores del juego, incluyendo registro, consulta, actualización y eliminación de jugadores")
 public class JugadorController {
 
     private static final Logger log = LoggerFactory.getLogger(JugadorController.class);
@@ -31,37 +36,45 @@ public class JugadorController {
     @Autowired
     private BarcoService barcoService;
 
-    // Listar jugadores
+    @Operation(summary = "Listar todos los jugadores", description = "Obtiene una lista completa de todos los jugadores registrados en el sistema")
     @GetMapping("/list")
     public ResponseEntity<List<JugadorDTO>> listarJugadores() {
         List<JugadorDTO> jugadores = jugadorService.listarJugadores();
         return ResponseEntity.status(HttpStatus.OK).body(jugadores);
     }
 
-    // Ver un jugador
+    @Operation(summary = "Obtener jugador por ID", description = "Recupera la información completa de un jugador específico mediante su identificador único")
     @GetMapping("{idJugador}")
-    public ResponseEntity<JugadorDTO> recuperarJugador(@PathVariable Long idJugador) {
+    public ResponseEntity<JugadorDTO> recuperarJugador(
+            @Parameter(description = "Identificador único del jugador a buscar", required = true, example = "1") 
+            @PathVariable Long idJugador) {
         JugadorDTO jugador = jugadorService.recuperarJugador(idJugador);
         return ResponseEntity.status(HttpStatus.OK).body(jugador);
     }
 
-    // Crear jugador
+    @Operation(summary = "Crear nuevo jugador", description = "Registra un nuevo jugador en el sistema con el nombre proporcionado")
     @PostMapping
-    public ResponseEntity<JugadorDTO> create(@RequestBody JugadorDTO jugadorDTO) {
+    public ResponseEntity<JugadorDTO> create(
+            @Parameter(description = "Objeto JugadorDTO con los datos del nuevo jugador (nombre requerido)", required = true) 
+            @RequestBody JugadorDTO jugadorDTO) {
         JugadorDTO created = jugadorService.crear(jugadorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // Actualizar jugador
+    @Operation(summary = "Actualizar jugador existente", description = "Modifica los datos de un jugador ya registrado en el sistema")
     @PutMapping
-    public ResponseEntity<JugadorDTO> update(@RequestBody JugadorDTO jugadorDTO) {
+    public ResponseEntity<JugadorDTO> update(
+            @Parameter(description = "Objeto JugadorDTO con los datos actualizados del jugador (debe incluir el ID)", required = true) 
+            @RequestBody JugadorDTO jugadorDTO) {
         JugadorDTO updated = jugadorService.actualizarJugador(jugadorDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
-    // Eliminar jugador
+    @Operation(summary = "Eliminar jugador", description = "Elimina permanentemente un jugador del sistema mediante su ID")
     @DeleteMapping("{idJugador}")
-    public ResponseEntity<Void> delete(@PathVariable Long idJugador) {
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "Identificador único del jugador a eliminar", required = true, example = "1") 
+            @PathVariable Long idJugador) {
         jugadorService.borrarJugador(idJugador);
         return ResponseEntity.noContent().build();
     }
