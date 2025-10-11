@@ -1,1 +1,28 @@
-<p>barco-list works!</p>
+<div class="barco-list-container">
+  <h2>🚢 Lista de Barcos</h2>
+  
+  <div *ngIf="loading" class="loading">
+    <p>Cargando barcos...</p>
+  </div>
+  
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+    <button (click)="loadBarcos()">Reintentar</button>
+  </div>
+  
+  <div *ngIf="!loading && !error" class="barcos-grid">
+    <div *ngFor="let barco of barcos" class="barco-card">
+      <h3>Barco #{{ barco.id }}</h3>
+      <div class="barco-details">
+        <p><strong>Velocidad:</strong> {{ barco.velocidad }}</p>
+        <p *ngIf="barco.jugador"><strong>Jugador:</strong> {{ barco.jugador.nombre }}</p>
+        <p *ngIf="barco.modelo"><strong>Modelo:</strong> {{ barco.modelo.nombre }} ({{ barco.modelo.color }})</p>
+        <p *ngIf="barco.posicion"><strong>Posición:</strong> X: {{ barco.posicion.x }}, Y: {{ barco.posicion.y }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="!loading && !error && barcos.length === 0" class="no-data">
+    <p>No hay barcos registrados.</p>
+  </div>
+</div>
