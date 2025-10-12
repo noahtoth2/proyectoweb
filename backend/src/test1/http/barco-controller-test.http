@@ -1,0 +1,42 @@
+@host=http://localhost:8080
+
+###
+GET {{host}}/barco/list
+
+###
+GET {{host}}/barco/1
+
+###
+GET {{host}}/barco/555
+
+###
+GET {{host}}/barco/list/2
+
+###
+POST {{host}}/barco
+Content-Type: application/json
+
+{
+    "cedula": "6444",
+    "firstName": "Name38413",
+    "lastName": "LastName113513"
+}
+
+
+###
+PUT {{host}}/barco
+Content-Type: application/json
+
+{
+  "id": 1,
+  "cedula": "124443",
+  "firstName": "Alice12",
+  "lastName": "Alisson12"
+}
+
+###
+DELETE {{host}}/barco/1
+
+
+###
+GET {{host}}/barco/search?searchText=Bob

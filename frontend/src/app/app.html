@@ -1,42 +1,9 @@
-<div class="container">
-  <nav class="navbar">
-    <h1>🚢 Juego Proyecto Web</h1>
-    <ul class="nav-links">
-      <li><a routerLink="/barcos">Barcos</a></li>
-      <li><a routerLink="/jugadores">Jugadores</a></li>
-      <li><a routerLink="/modelos">Modelos</a></li>
-      <li><a routerLink="/posiciones">Posiciones</a></li>
-    </ul>
-  </nav>
+<div>
+<h1>Hola!!!!</h1>
+<app-barco-view></app-barco-view>
+<p>{{dato}}</p>
 
-  <main class="main-content">
-    <div class="welcome">
-      <h2>¡Bienvenido al Juego de Barcos!</h2>
-      <p>Selecciona una opción del menú para comenzar</p>
-      
-      <div class="cards">
-        <div class="card" routerLink="/barcos">
-          <h3>🚢 Barcos</h3>
-          <p>Gestiona la flota de barcos</p>
-        </div>
-        
-        <div class="card" routerLink="/jugadores">
-          <h3>👥 Jugadores</h3>
-          <p>Administra los jugadores</p>
-        </div>
-        
-        <div class="card" routerLink="/modelos">
-          <h3>🎨 Modelos</h3>
-          <p>Configura modelos de barcos</p>
-        </div>
-        
-        <div class="card" routerLink="/posiciones">
-          <h3>📍 Posiciones</h3>
-          <p>Consulta posiciones en el tablero</p>
-        </div>
-      </div>
-    </div>
-    
-    <router-outlet></router-outlet>
-  </main>
+<app-barco-list></app-barco-list>
+
 </div>
+  
