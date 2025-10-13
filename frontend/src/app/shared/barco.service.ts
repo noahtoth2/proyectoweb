@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Barco } from '../model/barco';
 import { Observable } from 'rxjs';
@@ -13,4 +13,6 @@ export class BarcoService {
   findAll(): Observable<Barco[]>{
     return this.http.get<Barco[]>(this.baseUrl+"/barco/list");
   }
+
+ 
 }
