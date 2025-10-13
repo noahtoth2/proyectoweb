@@ -17,9 +17,11 @@ POST {{host}}/barco
 Content-Type: application/json
 
 {
-    "cedula": "6444",
-    "firstName": "Name38413",
-    "lastName": "LastName113513"
+     "velocidad" : 123;
+     "posicionId" : 1;
+     "modeloId" : 2;
+     "jugadorId" :3 ;
+     "tableroId" : 4;
 }
 
 
@@ -28,10 +30,11 @@ PUT {{host}}/barco
 Content-Type: application/json
 
 {
-  "id": 1,
-  "cedula": "124443",
-  "firstName": "Alice12",
-  "lastName": "Alisson12"
+  "velocidad" : 123;
+     "posicionId" : 1;
+     "modeloId" : 2;
+     "jugadorId" :3 ;
+     "tableroId" : 4;
 }
 
 ###
