@@ -1,0 +1,46 @@
+
+@host=http://localhost:8080
+
+###
+GET {{host}}/barco/list
+
+###
+GET {{host}}/barco/1
+
+###
+GET {{host}}/barco/555
+
+###
+GET {{host}}/barco/list/2
+
+###
+POST {{host}}/barco
+Content-Type: application/json
+
+{
+     "velocidad" : 123;
+     "posicionId" : 1;
+     "modeloId" : 2;
+     "jugadorId" :3 ;
+     "tableroId" : 4;
+}
+
+
+###
+PUT {{host}}/barco
+Content-Type: application/json
+
+{
+  "velocidad" : 123;
+     "posicionId" : 1;
+     "modeloId" : 2;
+     "jugadorId" :3 ;
+     "tableroId" : 4;
+}
+
+###
+DELETE {{host}}/barco/1
+
+
+###
+GET {{host}}/barco/search?searchText=Bob
