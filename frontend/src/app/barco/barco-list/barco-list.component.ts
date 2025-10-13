@@ -16,8 +16,11 @@ export class BarcoListComponent  {
   barcoService=inject(BarcoService);
 
   ngOnInit(): void {
+    
     this.barcoService.findAll().subscribe(
+      
       data=> this.barcos.set(data)
+    
     
     );
 }

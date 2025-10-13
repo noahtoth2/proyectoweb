@@ -1,10 +1,11 @@
-<p>barco list </p>
+<p>Barco List</p>
 
 <ul>
-  
   @for (b of barcos(); track $index) {
-    <li>{{$index}} {{b.id}}  {{b.velocidad}}  {{b.posicionId}} {{b.jugadorId}} {{b.tableroId}}
+
+    <li>{{$index}} {{b.id}}  {{b.velocidad}}  {{b.posicionId}} {{b.jugadorId}} {{b.tableroId}}</li>
     
-    </li>
   }
 </ul>
+  
+
