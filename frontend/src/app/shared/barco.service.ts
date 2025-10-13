@@ -7,12 +7,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BarcoService {
-  baseUrl="http://localhost:8080";
-  http=inject(HttpClient);
+  baseUrl = "http://localhost:8080";
+  http = inject(HttpClient);
 
-  findAll(): Observable<Barco[]>{
+  findAll(): Observable<Barco[]> {
     return this.http.get<Barco[]>(`${this.baseUrl}/barco/list`);
   }
-
- 
 }
