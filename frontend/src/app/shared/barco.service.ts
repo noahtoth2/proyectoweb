@@ -11,7 +11,7 @@ export class BarcoService {
   http=inject(HttpClient);
 
   findAll(): Observable<Barco[]>{
-    return this.http.get<Barco[]>(this.baseUrl+"/barco/list");
+    return this.http.get<Barco[]>(${this.baseUrl}/barco/list);
   }
 
  
