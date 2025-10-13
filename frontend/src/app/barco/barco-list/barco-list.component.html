@@ -1,7 +1,10 @@
 <p>barco list </p>
-<ul>
-  @for (b of barcos(): track $index){
-    <li>Id: { {$index}{b.id}} Velocidad: {{b.velocidad}} PosicionId: {{b.posicionId}}</li>
 
+<ul>
+  
+  @for (b of barcos(); track $index) {
+    <li>{{$index}} {{b.id}}  {{b.velocidad}}  {{b.posicionId}} {{b.jugadorId}} {{b.tableroId}}
+    
+    </li>
   }
 </ul>

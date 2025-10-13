@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Barco } from '../../model/barco';
 import { BarcoService } from '../../shared/barco.service';
 
@@ -14,7 +13,7 @@ templateUrl: './barco-list.component.html',
 })
 export class BarcoListComponent  {
   barcos=signal<Barco[]>([]);
-  barcoService=inject(HttpClient);
+  barcoService=inject(BarcoService);
 
   ngOnInit(): void {
     this.barcoService.findAll().subscribe(
