@@ -1,0 +1,162 @@
+
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg, #f8faff 0%, #e7ecff 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px 50px;
+  width: 380px;
+  text-align: center;
+}
+
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.login-header h1 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 10px 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  border-color: #4c6fff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 111, 255, 0.15);
+}
+
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.show-password-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+}
+
+.show-password-btn:hover {
+  color: #4c6fff;
+}
+
+
+.btn-primary {
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 12px 0;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1e4ed8;
+}
+
+.btn-secondary {
+  background-color: #f4f4f4;
+  color: #333;
+  border: none;
+  padding: 12px 0;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e2e2e2;
+}
+
+
+.divider {
+  margin: 10px 0;
+  font-size: 13px;
+  color: #888;
+}
+
+
+.register-text {
+  font-size: 14px;
+  color: #555;
+  margin-top: 20px;
+}
+
+.register-link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
