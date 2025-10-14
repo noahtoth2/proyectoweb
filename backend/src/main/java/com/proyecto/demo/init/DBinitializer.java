@@ -44,7 +44,6 @@ public class DBinitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Random random = new Random();
 
-        // Crear 10 modelos
         List<Modelo> modelos = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             Modelo modelo = new Modelo("Modelo " + i, generarColorAleatorio());
@@ -52,7 +51,6 @@ public class DBinitializer implements CommandLineRunner {
             modelos.add(modelo);
         }
 
-        // Crear 5 jugadores
         List<Jugador> jugadores = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             Jugador jugador = new Jugador("Jugador " + i);
@@ -60,37 +58,29 @@ public class DBinitializer implements CommandLineRunner {
             jugadores.add(jugador);
         }
 
-        // Crear 50 barcos (10 por jugador)
         int barcoCount = 0;
         for (Jugador jugador : jugadores) {
             for (int i = 0; i < 10; i++) {
-                double velocidad = 5 + (15 - 5) * random.nextDouble(); // Velocidad entre 5 y 15
+                double velocidad = 5 + (15 - 5) * random.nextDouble();
 
                 Barco barco = new Barco(velocidad);
 
-                // Asignar jugador
                 barco.setJugador(jugador);
 
-                // Asignar modelo aleatorio
                 Modelo modeloRandom = modelos.get(random.nextInt(modelos.size()));
                 barco.setModelo(modeloRandom);
 
-                // Asignar posición única (por ejemplo x=barcoCount, y=barcoCount)
                 Posicion posicion = new Posicion(barcoCount, barcoCount);
                 posicionRepository.save(posicion);
                 barco.setPosicion(posicion);
 
-                // Guardar barco
                 barcoRepository.save(barco);
 
-                // Añadir barco al jugador
                 jugador.getBarcos().add(barco);
                 barcoCount++;
             }
             jugadorRepository.save(jugador);
         }
-
-        System.out.println("Base de datos inicializada con 5 jugadores, 10 modelos y 50 barcos.");
     }
 
     private String generarColorAleatorio() {

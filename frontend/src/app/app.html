@@ -1,8 +1,13 @@
-<p>dato</p>
+<nav class="navbar">
+  <h1>Juego Proyecto Web</h1>
+  <ul class="nav-links">
+    <li><a routerLink="/barco/list" routerLinkActive="active">Barcos</a></li>
+    <li><a routerLink="/jugadores" routerLinkActive="active">Jugadores</a></li>
+    <li><a routerLink="/modelos" routerLinkActive="active">Modelos</a></li>
+    <li><a routerLink="/posiciones" routerLinkActive="active">Posiciones</a></li>
+  </ul>
+</nav>
 
-<app-barco-list></app-barco-list>
-
-
-
-
-  
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

@@ -2,8 +2,6 @@ package com.proyecto.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +16,6 @@ public class CeldaService {
     private CeldaRepository celdaRepository;
 
     public List<CeldaDTO> listarCeldas() {
-        // TODO Encapsular esto en el PersonMapper
         List<CeldaDTO> celdaDTOs = new ArrayList<>();
         for (Celda  celda: celdaRepository.findAll()) {
             celdaDTOs.add(CeldaMapper.toDTO(celda));
@@ -38,7 +35,6 @@ public class CeldaService {
 
     public void actualizarCelda(CeldaDTO celdaDTO) {
         Celda entity = CeldaMapper.toEntity(celdaDTO);
-        // TODO Chequear que el id sea != null
         celdaRepository.save(entity);
     }
 

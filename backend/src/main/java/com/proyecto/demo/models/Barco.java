@@ -27,7 +27,7 @@ public class Barco {
     private Jugador jugador;
 
     @ManyToOne
-    @JoinColumn(name = "tablero_id") // clave foránea hacia Tablero
+    @JoinColumn(name = "tablero_id")
     private Tablero tablero;
 
     public Barco() {

@@ -1,14 +1,46 @@
 
-<div>
-<p>Barco View</p>
+<div class="barco-detail">
+  <h2>Detalles del Barco</h2>
 
-<ul>
-<li>Nombre: {{barco().id}}</li>
-<li>velocidad: {{barco().velocidad}}</li>
-<li>Posicion: {{barco().posicionId}}</li>
+  @if (isLoading()) {
+    <div class="loading">Cargando datos del barco...</div>
+  }
 
-<li>Jugador: {{barco().jugadorId}}</li>
-<li>Tablero: {{barco().tableroId}}</li>
-</ul>
+  @if (error()) {
+    <div class="error">{{error()}}</div>
+  }
 
+  @if (!isLoading() && !error()) {
+    <div class="barco-info">
+      <div class="info-item">
+        <label>ID:</label>
+        <span>{{barco().id}}</span>
+      </div>
+      <div class="info-item">
+        <label>Velocidad:</label>
+        <span>{{barco().velocidad}}</span>
+      </div>
+      <div class="info-item">
+        <label>Posición ID:</label>
+        <span>{{barco().posicionId}}</span>
+      </div>
+      <div class="info-item">
+        <label>Modelo ID:</label>
+        <span>{{barco().modeloId}}</span>
+      </div>
+      <div class="info-item">
+        <label>Jugador ID:</label>
+        <span>{{barco().jugadorId}}</span>
+      </div>
+      <div class="info-item">
+        <label>Tablero ID:</label>
+        <span>{{barco().tableroId}}</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-edit" (click)="editBarco()">Editar Barco</button>
+      <button class="btn-back" (click)="goBack()">Volver a la Lista</button>
+    </div>
+  }
 </div>

@@ -2,8 +2,6 @@ package com.proyecto.demo.controllers;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -29,15 +27,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Controlador de Posiciones", description = "Gestiona todas las operaciones CRUD para las posiciones de los barcos en el tablero, incluyendo coordenadas X e Y")
 public class PosicionController {
 
-    private static final Logger log = LoggerFactory.getLogger(PosicionController.class);
-
     @Autowired
     private PosicionService posicionService;
 
     @Operation(summary = "Listar todas las posiciones", description = "Obtiene una lista completa de todas las posiciones registradas en el sistema")
     @GetMapping("/list")
     public ResponseEntity<List<PosicionDTO>> listarPosiciones() {
-        log.info("Recibi peticion de listar posiciones");
         List<PosicionDTO> posiciones = posicionService.listarPosiciones();
         return ResponseEntity.status(HttpStatus.OK).body(posiciones);
     }
@@ -47,7 +42,6 @@ public class PosicionController {
     public ResponseEntity<List<PosicionDTO>> listarPosiciones(
             @Parameter(description = "Número de página a consultar (empezando desde 0)", required = true, example = "0") 
             @PathVariable Integer page) {
-        log.info("Recibi peticion de listar posiciones");
         List<PosicionDTO> posiciones = posicionService.listarPosiciones(PageRequest.of(page, 20));
         return ResponseEntity.status(HttpStatus.OK).body(posiciones);
     }
@@ -57,7 +51,6 @@ public class PosicionController {
     public ResponseEntity<PosicionDTO> recuperarPosicion(
             @Parameter(description = "Identificador único de la posición a buscar", required = true, example = "1") 
             @PathVariable Long idPosicion) {
-        log.info("Recibi peticion de buscar una posicion");
         PosicionDTO posicion = posicionService.recuperarPosicion(idPosicion);
         return ResponseEntity.status(HttpStatus.OK).body(posicion);
     }

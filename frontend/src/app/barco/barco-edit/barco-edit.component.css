@@ -4,13 +4,45 @@ form {
   margin: 0 auto;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
   width: 100%;
   padding: 8px;
   margin: 5px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: #ff4444;
+  box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+}
+
+input.ng-valid.ng-touched {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.error {
+  color: #ff4444;
+  font-size: 12px;
+  margin: 5px 0;
+  padding: 5px;
+  background-color: #ffebee;
+  border-left: 3px solid #ff4444;
+  border-radius: 3px;
+}
+
+div {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
 }
 
 button {
@@ -21,6 +53,7 @@ button {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
+  width: 100%;
 }
 
 button:hover {

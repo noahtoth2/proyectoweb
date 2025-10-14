@@ -35,7 +35,6 @@ public class ModeloService {
 
     public void actualizarModelo(ModeloDTO modeloDTO) {
         Modelo entity = ModeloMapper.toEntity(modeloDTO);
-        // TODO: Chequear que el id sea != null
         modeloRepository.save(entity);
     }
 
@@ -43,7 +42,6 @@ public class ModeloService {
         Modelo modelo = modeloRepository.findById(modeloId)
                 .orElseThrow(() -> new RuntimeException("Modelo no encontrado con ID: " + modeloId));
         
-        // Verificar si el modelo tiene barcos relacionados
         if (modelo.getBarcos() != null && !modelo.getBarcos().isEmpty()) {
             throw new RuntimeException("No se puede eliminar el modelo '" + modelo.getNombre() + 
                                      "' porque está relacionado con " + modelo.getBarcos().size() + 

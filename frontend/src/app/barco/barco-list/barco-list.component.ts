@@ -17,18 +17,15 @@ export class BarcoListComponent implements OnInit {
 
   ngOnInit(): void {
     this.barcoService.findAll().subscribe(
-      
-      data=> this.barcos.set(data)
-    
-    
+      data => this.barcos.set(data)
     );
   }
 
   editarBarco(id: number): void {
-    this.router.navigate(['/barco', id, 'edit']);
+    this.router.navigate(['/barco/edit', id]);
   }
 
   verDetalle(id: number): void {
-    this.router.navigate(['/barco', id]);
+    this.router.navigate(['/barco/view', id]);
   }
 }

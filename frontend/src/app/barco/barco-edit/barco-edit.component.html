@@ -1,9 +1,86 @@
-<form (ngSubmit)="guardar()">
-  <input type="text" name="velocidad" [(ngModel)]="barco().velocidad" id="txtVelocidad">
-  <input type="text" name="posicionId" [(ngModel)]="barco().posicionId" id="txtPosicionId">
-  <input type="text" name="modeloId" [(ngModel)]="barco().modeloId" id="txtModeloId">
-  <input type="text" name="jugadorId" [(ngModel)]="barco().jugadorId" id="txtJugadorId">
-  <input type="text" name="tableroId" [(ngModel)]="barco().tableroId" id="txtTableroId">
+<form (ngSubmit)="guardar()" #barcoForm="ngForm">
+  <div>
+    <label for="txtVelocidad">Velocidad:</label>
+    <input type="number" name="velocidad" [(ngModel)]="barco.velocidad" #velocidad="ngModel"
+           id="txtVelocidad" step="0.01" min="0" max="100" required>
+    @if (velocidad.invalid && velocidad.touched) {
+      <p class="error">
+        @if (velocidad.errors?.['required']) {
+          La velocidad no debe ser vacía
+        }
+        @if (velocidad.errors?.['min']) {
+          La velocidad debe ser mayor a 0
+        }
+        @if (velocidad.errors?.['max']) {
+          La velocidad debe ser menor a 100
+        }
+      </p>
+    }
+  </div>
   
-  <button>Guardar</button>
+  <div>
+    <label for="txtPosicionId">Posición ID:</label>
+    <input type="number" name="posicionId" [(ngModel)]="barco.posicionId" #posicionId="ngModel"
+           id="txtPosicionId" min="1" required>
+    @if (posicionId.invalid && posicionId.touched) {
+      <p class="error">
+        @if (posicionId.errors?.['required']) {
+          La posición ID no debe ser vacía
+        }
+        @if (posicionId.errors?.['min']) {
+          La posición ID debe ser mayor a 0
+        }
+      </p>
+    }
+  </div>
+  
+  <div>
+    <label for="txtModeloId">Modelo ID:</label>
+    <input type="number" name="modeloId" [(ngModel)]="barco.modeloId" #modeloId="ngModel"
+           id="txtModeloId" min="1" required>
+    @if (modeloId.invalid && modeloId.touched) {
+      <p class="error">
+        @if (modeloId.errors?.['required']) {
+          El modelo ID no debe ser vacío
+        }
+        @if (modeloId.errors?.['min']) {
+          El modelo ID debe ser mayor a 0
+        }
+      </p>
+    }
+  </div>
+  
+  <div>
+    <label for="txtJugadorId">Jugador ID:</label>
+    <input type="number" name="jugadorId" [(ngModel)]="barco.jugadorId" #jugadorId="ngModel"
+           id="txtJugadorId" min="1" required>
+    @if (jugadorId.invalid && jugadorId.touched) {
+      <p class="error">
+        @if (jugadorId.errors?.['required']) {
+          El jugador ID no debe ser vacío
+        }
+        @if (jugadorId.errors?.['min']) {
+          El jugador ID debe ser mayor a 0
+        }
+      </p>
+    }
+  </div>
+  
+  <div>
+    <label for="txtTableroId">Tablero ID:</label>
+    <input type="number" name="tableroId" [(ngModel)]="barco.tableroId" #tableroId="ngModel"
+           id="txtTableroId" min="1" required>
+    @if (tableroId.invalid && tableroId.touched) {
+      <p class="error">
+        @if (tableroId.errors?.['required']) {
+          El tablero ID no debe ser vacío
+        }
+        @if (tableroId.errors?.['min']) {
+          El tablero ID debe ser mayor a 0
+        }
+      </p>
+    }
+  </div>
+  
+  <button type="submit">Guardar</button>
 </form>

@@ -2,8 +2,6 @@ package com.proyecto.demo.controllers;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -31,15 +29,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Controlador de Barcos", description = "Gestiona todas las operaciones CRUD para los barcos del juego, incluyendo listar, crear, actualizar, eliminar y buscar barcos por ID")
 public class BarcoController {
 
-    private static final Logger log = LoggerFactory.getLogger(BarcoController.class);
-
     @Autowired
     private BarcoService barcoService;
 
     @Operation(summary = "Listar todos los barcos", description = "Obtiene una lista completa de todos los barcos registrados en el sistema")
     @GetMapping("/list")
     public ResponseEntity<List<BarcoDTO>> listarBarcos() {
-        log.info("Recibi peticion de listar barcos");
         List<BarcoDTO> barcos = barcoService.listarBarcos();
         return ResponseEntity.status(HttpStatus.OK).body(barcos);
     }
@@ -49,7 +44,6 @@ public class BarcoController {
     public ResponseEntity<List<BarcoDTO>> listarBarcos(
             @Parameter(description = "Número de página a consultar (empezando desde 0)", required = true, example = "0") 
             @PathVariable Integer page) {
-        log.info("Recibi peticion de listar barcos paginados");
         List<BarcoDTO> barcos = barcoService.listarBarcos(PageRequest.of(page, 20));
         return ResponseEntity.status(HttpStatus.OK).body(barcos);
     }
@@ -59,7 +53,6 @@ public class BarcoController {
     public ResponseEntity<BarcoDTO> recuperarBarco(
             @Parameter(description = "Identificador único del barco a buscar", required = true, example = "1") 
             @PathVariable Long idBarco) {
-        log.info("Recibi peticion de buscar un barco");
         BarcoDTO barco = barcoService.recuperarBarco(idBarco);
         return ResponseEntity.status(HttpStatus.OK).body(barco);
     }

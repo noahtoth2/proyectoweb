@@ -7,5 +7,4 @@ import com.proyecto.demo.models.Posicion;
 
 @Repository
 public interface PosicionRepository extends JpaRepository<Posicion, Long> {
-    // Aquí puedes definir métodos personalizados si es necesario
 }

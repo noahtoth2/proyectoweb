@@ -7,5 +7,4 @@ import com.proyecto.demo.models.Tablero;
 
 @Repository
 public interface TableroRepository extends JpaRepository<Tablero, Long> {
-    // Aquí puedes definir métodos personalizados si es necesario
 }

@@ -7,5 +7,4 @@ import com.proyecto.demo.models.Celda;
 
 @Repository
 public interface CeldaRepository extends JpaRepository<Celda, Long> {
-    // Aquí puedes definir métodos personalizados si es necesario
 }

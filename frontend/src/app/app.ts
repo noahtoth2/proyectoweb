@@ -1,18 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { BarcoViewComponent } from './barco/barco-view/barco-view.component';
-import { BarcoListComponent } from './barco/barco-list/barco-list.component';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,BarcoViewComponent,BarcoListComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly dato2= signal("Hola!!!!");
-  dato="Hola!!!!";
-  cambiarDato(){
-    this.dato2.set("Chau!!!!");
-  }
+  protected readonly title = signal('Juego Proyecto Web');
 }

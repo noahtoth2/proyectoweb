@@ -2,9 +2,6 @@ package com.proyecto.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +16,6 @@ public class TableroService {
     private TableroRepository tableroRepository;
 
     public List<TableroDTO> listarTableros() {
-        // TODO Encapsular esto en el PersonMapper
         List<TableroDTO> tableroDTOs = new ArrayList<>();
         for (Tablero  tablero: tableroRepository.findAll()) {
             tableroDTOs.add(TableroMapper.toDTO(tablero));
@@ -39,7 +35,6 @@ public class TableroService {
 
     public void actualizarTablero(TableroDTO tableroDTO) {
         Tablero entity = TableroMapper.toEntity(tableroDTO);
-        // TODO Chequear que el id sea != null
         tableroRepository.save(entity);
     }
 

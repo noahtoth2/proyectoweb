@@ -4,12 +4,12 @@ import { BarcoListComponent } from './barco/barco-list/barco-list.component';
 import { BarcoEditComponent } from './barco/barco-edit/barco-edit.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/barcos', pathMatch: 'full' },
-  { path: 'barcos', component: BarcoListComponent },
-  { path: 'barco/:id', component: BarcoViewComponent },
-  { path: 'barco/:id/edit', component: BarcoEditComponent },
-  { path: 'jugadores', component: BarcoListComponent }, // Temporal hasta crear componente
-  { path: 'modelos', component: BarcoListComponent },   // Temporal hasta crear componente
-  { path: 'posiciones', component: BarcoListComponent }, // Temporal hasta crear componente
-  { path: '**', redirectTo: '/barcos' } // Ruta wildcard para páginas no encontradas
+  { path: 'barco/list', component: BarcoListComponent },
+  { path: 'barco/view/:id', component: BarcoViewComponent },
+  { path: 'barco/edit/:id', component: BarcoEditComponent },
+  { path: '', pathMatch: 'full', redirectTo: 'barco/list' },
+  { path: 'jugadores', component: BarcoListComponent },
+  { path: 'modelos', component: BarcoListComponent },
+  { path: 'posiciones', component: BarcoListComponent },
+  { path: '**', redirectTo: 'barco/list' }
 ];

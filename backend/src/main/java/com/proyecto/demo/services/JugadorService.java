@@ -52,13 +52,11 @@ public class JugadorService {
     public JugadorDTO actualizarJugador(JugadorDTO jugadorDTO) {
         Jugador jugador = jugadorRepository.findById(jugadorDTO.getId()).orElseThrow();
 
-        // Desasociar todos los barcos actuales
         for (Barco barco : jugador.getBarcos()) {
             barco.setJugador(null);
             barcoRepository.save(barco);
         }
 
-        // Asociar los barcos seleccionados
         if (jugadorDTO.getBarcosIds() != null) {
             for (Long barcoId : jugadorDTO.getBarcosIds()) {
                 Barco barco = barcoRepository.findById(barcoId).orElse(null);
@@ -76,12 +74,10 @@ public class JugadorService {
     public void borrarJugador(Long jugadorId) {
      Jugador jugador = jugadorRepository.findById(jugadorId).orElse(null);
     if (jugador != null) {
-        // Desasociar los barcos
         for (Barco barco : jugador.getBarcos()) {
             barco.setJugador(null);
             barcoRepository.save(barco);
         }
-        // Ahora sí elimina el jugador
         jugadorRepository.deleteById(jugadorId);
     }
 }
