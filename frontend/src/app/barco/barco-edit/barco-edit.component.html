@@ -1,0 +1,9 @@
+<form (ngSubmit)="guardar()">
+  <input type="text" name="velocidad" [(ngModel)]="barco().velocidad" id="txtVelocidad">
+  <input type="text" name="posicionId" [(ngModel)]="barco().posicionId" id="txtPosicionId">
+  <input type="text" name="modeloId" [(ngModel)]="barco().modeloId" id="txtModeloId">
+  <input type="text" name="jugadorId" [(ngModel)]="barco().jugadorId" id="txtJugadorId">
+  <input type="text" name="tableroId" [(ngModel)]="barco().tableroId" id="txtTableroId">
+  
+  <button>Guardar</button>
+</form>

@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Barco } from '../../model/barco';
 import { BarcoService } from '../../shared/barco.service';
 
@@ -12,10 +13,19 @@ import { BarcoService } from '../../shared/barco.service';
 export class BarcoListComponent implements OnInit {
   barcos = signal<Barco[]>([]);
   barcoService = inject(BarcoService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.barcoService.findAll().subscribe(
       data => this.barcos.set(data)
     );
+  }
+
+  editarBarco(id: number): void {
+    this.router.navigate(['/barco', id, 'edit']);
+  }
+
+  verDetalle(id: number): void {
+    this.router.navigate(['/barco', id]);
   }
 }

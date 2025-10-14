@@ -1,11 +1,26 @@
-<p>Barco List</p>
-
-<ul>
-  @for (b of barcos(); track $index) {
-
-    <li>{{$index}} {{b.id}}  {{b.velocidad}}  {{b.posicionId}} {{b.jugadorId}} {{b.tableroId}}</li>
-    
-  }
-</ul>
+<div class="barco-list">
+  <h2>Lista de Barcos</h2>
   
+  <div class="barcos-container">
+    @for (b of barcos(); track b.id) {
+      <div class="barco-item">
+        <div class="barco-info">
+          <span class="barco-id">Barco #{{b.id}}</span>
+          <span>Velocidad: {{b.velocidad}}</span>
+          <span>Posición: {{b.posicionId}}</span>
+          <span>Jugador: {{b.jugadorId}}</span>
+          <span>Tablero: {{b.tableroId}}</span>
+        </div>
+        <div class="barco-actions">
+          <button class="btn-edit" (click)="editarBarco(b.id!)">Editar</button>
+          <button class="btn-view" (click)="verDetalle(b.id!)">Ver</button>
+        </div>
+      </div>
+    }
+  </div>
+  
+  @if (barcos().length === 0) {
+    <p class="no-barcos">No hay barcos disponibles.</p>
+  }
+</div>
 
