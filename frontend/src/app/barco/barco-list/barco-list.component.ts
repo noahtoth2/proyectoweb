@@ -21,7 +21,6 @@ export class BarcoListComponent  {
       
       data=> this.barcos.set(data)
     
-    
     );
 }
 }
