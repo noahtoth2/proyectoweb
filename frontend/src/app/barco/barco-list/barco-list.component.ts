@@ -17,7 +17,10 @@ export class BarcoListComponent implements OnInit {
 
   ngOnInit(): void {
     this.barcoService.findAll().subscribe(
-      data => this.barcos.set(data)
+      
+      data=> this.barcos.set(data)
+    
+    
     );
   }
 
