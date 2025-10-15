@@ -1,34 +1,61 @@
-/* Estilos globales */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
+/* Estilos para autenticación */
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg, #f8faff 0%, #e7ecff 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f8faff;
 }
 
-/* Reset de estilos para formularios */
-button, input, select, textarea {
-  font-family: inherit;
-}
-
-/* Estilos para router-outlet */
-router-outlet ~ * {
-  display: block;
-}
-
-/* Utilidades */
-.text-center {
+.auth-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px 50px;
+  width: 380px;
   text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
+.auth-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.auth-header h1 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
 .form-group {
   display: flex;
@@ -55,25 +82,6 @@ input:focus {
   border-color: #4c6fff;
   outline: none;
   box-shadow: 0 0 0 2px rgba(76, 111, 255, 0.15);
-}
-
-.password-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.show-password-btn {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #999;
-}
-
-.show-password-btn:hover {
-  color: #4c6fff;
 }
 
 .btn-primary {
@@ -112,18 +120,18 @@ input:focus {
   color: #888;
 }
 
-.register-text {
+.toggle-text {
   font-size: 14px;
   color: #555;
   margin-top: 20px;
 }
 
-.register-link {
+.toggle-link {
   color: #2563eb;
   font-weight: 600;
   text-decoration: none;
 }
 
-.register-link:hover {
+.toggle-link:hover {
   text-decoration: underline;
 }

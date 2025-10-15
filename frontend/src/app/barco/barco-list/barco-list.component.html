@@ -6,7 +6,7 @@
       <div class="barco-item">
         <div class="barco-info">
           <span class="barco-id">Barco #{{b.id}}</span>
-          <span>Velocidad: {{b.velocidad}}</span>
+          <span>Velocidad: ({{b.velocidadX}}, {{b.velocidadY}})</span>
           <span>Posición: {{b.posicionId}}</span>
           <span>Jugador: {{b.jugadorId}}</span>
           <span>Tablero: {{b.tableroId}}</span>
@@ -14,6 +14,7 @@
         <div class="barco-actions">
           <button class="btn-edit" (click)="editarBarco(b.id!)">Editar</button>
           <button class="btn-view" (click)="verDetalle(b.id!)">Ver</button>
+          <button class="btn-delete" (click)="eliminarBarco(b.id!)">Eliminar</button>
         </div>
       </div>
     }

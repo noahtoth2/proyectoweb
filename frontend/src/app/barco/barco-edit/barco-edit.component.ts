@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { Barco } from '../../model/barco';
+import { Barco } from '../../model/game-models'; // ✅ Usar modelo unificado
 import { BarcoService } from '../../shared/barco.service';
 
 @Component({
@@ -19,7 +19,8 @@ export class BarcoEditComponent implements OnInit {
   
   barco: Barco = {
     id: 0,
-    velocidad: 0,
+    velocidadX: 0, // ✅ Usar velocidad vectorial
+    velocidadY: 0, // ✅ Usar velocidad vectorial
     posicionId: 0,
     modeloId: 0,
     jugadorId: 0,
@@ -32,7 +33,8 @@ export class BarcoEditComponent implements OnInit {
     ).subscribe((resp: Barco) => {
       this.barco = {
         id: resp.id || 0,
-        velocidad: resp.velocidad || 0,
+        velocidadX: resp.velocidadX || 0, // ✅ Usar velocidad vectorial
+        velocidadY: resp.velocidadY || 0, // ✅ Usar velocidad vectorial
         posicionId: resp.posicionId || 0,
         modeloId: resp.modeloId || 0,
         jugadorId: resp.jugadorId || 0,
@@ -42,9 +44,10 @@ export class BarcoEditComponent implements OnInit {
   }
 
   guardar() {
-    const barcoData = {
+    const barcoData: Barco = {
       id: this.barco.id,
-      velocidad: Number(this.barco.velocidad) || 0,
+      velocidadX: Number(this.barco.velocidadX) || 0, // ✅ Usar velocidad vectorial
+      velocidadY: Number(this.barco.velocidadY) || 0, // ✅ Usar velocidad vectorial
       posicionId: Number(this.barco.posicionId) || undefined,
       modeloId: Number(this.barco.modeloId) || undefined,
       jugadorId: Number(this.barco.jugadorId) || undefined,

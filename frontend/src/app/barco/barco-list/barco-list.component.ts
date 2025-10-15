@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Barco } from '../../model/barco';
+import { Barco } from '../../model/game-models'; // ✅ Usar modelo unificado
 import { BarcoService } from '../../shared/barco.service';
 
 @Component({ 
@@ -27,5 +27,23 @@ export class BarcoListComponent implements OnInit {
 
   verDetalle(id: number): void {
     this.router.navigate(['/barco/view', id]);
+  }
+
+  eliminarBarco(id: number): void {
+    if (confirm('¿Estás seguro de que quieres eliminar este barco?')) {
+      this.barcoService.deleteBarco(id).subscribe({
+        next: () => {
+          // Recargar la lista después de eliminar
+          this.barcoService.findAll().subscribe(
+            data => this.barcos.set(data)
+          );
+          alert('Barco eliminado correctamente');
+        },
+        error: (error) => {
+          console.error('Error al eliminar barco:', error);
+          alert('Error al eliminar el barco');
+        }
+      });
+    }
   }
 }

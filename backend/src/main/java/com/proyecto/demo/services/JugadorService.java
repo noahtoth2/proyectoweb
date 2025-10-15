@@ -18,21 +18,23 @@ public class JugadorService {
     private JugadorRepository jugadorRepository;
     @Autowired
     private BarcoRepository barcoRepository;
+    @Autowired
+    private JugadorMapper jugadorMapper;
 
     public List<JugadorDTO> listarJugadores() {
         List<JugadorDTO> jugadorDTOs = new ArrayList<>();
         for (Jugador jugador : jugadorRepository.findAll()) {
-            jugadorDTOs.add(JugadorMapper.toDTO(jugador));
+            jugadorDTOs.add(jugadorMapper.toDTO(jugador));
         }
         return jugadorDTOs;
     }
 
     public JugadorDTO recuperarJugador(Long id) {
-        return JugadorMapper.toDTO(jugadorRepository.findById(id).orElseThrow());
+        return jugadorMapper.toDTO(jugadorRepository.findById(id).orElseThrow());
     }
 
     public JugadorDTO crear(JugadorDTO jugadorDTO) {
-        Jugador entity = JugadorMapper.toEntity(jugadorDTO);
+        Jugador entity = jugadorMapper.toEntity(jugadorDTO);
         entity.setId(null);
         entity = jugadorRepository.save(entity);
         
@@ -45,7 +47,7 @@ public class JugadorService {
                 }
             }
         }
-        return JugadorMapper.toDTO(entity);
+        return jugadorMapper.toDTO(entity);
     }
     
 
@@ -68,7 +70,7 @@ public class JugadorService {
         }
         jugador.setNombre(jugadorDTO.getNombre());
         Jugador saved = jugadorRepository.save(jugador);
-        return JugadorMapper.toDTO(saved);
+        return jugadorMapper.toDTO(saved);
     }
 
     public void borrarJugador(Long jugadorId) {

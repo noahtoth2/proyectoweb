@@ -1,0 +1,6 @@
+<!-- Archivo SVG simple como placeholder para el logo -->
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="20" fill="#3498db" stroke="#2980b9" stroke-width="2"/>
+  <path d="M12 24 L24 12 L36 24 L24 36 Z" fill="white"/>
+  <text x="24" y="28" text-anchor="middle" fill="#3498db" font-size="8" font-weight="bold">R</text>
+</svg>

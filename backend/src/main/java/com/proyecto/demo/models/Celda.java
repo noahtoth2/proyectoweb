@@ -1,5 +1,7 @@
 package com.proyecto.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +20,7 @@ public class Celda {
     private Integer y;
 
     @ManyToOne 
+    @JsonIgnore
     private Tablero tablero;
 
 
@@ -63,5 +66,12 @@ public class Celda {
         this.y = y;
     }
 
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    public void setTablero(Tablero tablero) {
+        this.tablero = tablero;
+    }
 
 }

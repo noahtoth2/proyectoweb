@@ -1,7 +1,7 @@
 import { Component, signal, WritableSignal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Barco } from '../../model/barco';
+import { Barco } from '../../model/game-models'; // ✅ Usar modelo unificado
 import { BarcoService } from '../../shared/barco.service';
 
 @Component({
@@ -17,7 +17,8 @@ export class BarcoViewComponent implements OnInit {
   
   barco: WritableSignal<Barco> = signal<Barco>({
     id: 0,
-    velocidad: 0,
+    velocidadX: 0, // ✅ Usar velocidad vectorial
+    velocidadY: 0, // ✅ Usar velocidad vectorial
     posicionId: 0,
     modeloId: 0,
     jugadorId: 0,

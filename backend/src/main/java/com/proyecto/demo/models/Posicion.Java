@@ -1,5 +1,7 @@
 package com.proyecto.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +19,7 @@ public class Posicion {
     private int y;
 
     @OneToOne
+    @JsonIgnore
     private Barco barco; 
 
     public Posicion(){

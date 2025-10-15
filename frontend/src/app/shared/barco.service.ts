@@ -15,8 +15,24 @@ export class BarcoService {
     return this.http.get<Barco[]>(`${this.baseUrl}/barco/list`);
   }
 
+  getAllBarcos(): Observable<Barco[]> {
+    return this.findAll();
+  }
+
   findById(id: number): Observable<Barco> {
     return this.http.get<Barco>(`${this.baseUrl}/barco/${id}`);
+  }
+
+  createBarco(barco: Barco): Observable<Barco> {
+    return this.http.post<Barco>(
+      `${this.baseUrl}/barco`,
+      barco,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        })
+      }
+    );
   }
 
   updateBarco(barco: Barco): Observable<Barco> {
@@ -29,5 +45,9 @@ export class BarcoService {
         })
       }
     );
+  }
+
+  deleteBarco(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/barco/${id}`);
   }
 }

@@ -3,30 +3,59 @@ package com.proyecto.demo.dto;
 public class BarcoDTO{
 
     private Long id;
-    private Double velocidad;
+    private Double velocidadX;
+    private Double velocidadY;
     private Long posicionId;
     private Long modeloId;
     private Long jugadorId;
     private Long tableroId;
 
     public BarcoDTO(){
-
+        // Velocidad inicial detenida
+        this.velocidadX = 0.0;
+        this.velocidadY = 0.0;
     }
+    
+    public BarcoDTO(Double velocidadX, Double velocidadY){
+        this.velocidadX = velocidadX;
+        this.velocidadY = velocidadY;
+    }
+    
+    // Constructor de compatibilidad
     public BarcoDTO(Double velocidad){
-        this.velocidad=velocidad;
+        this.velocidadX = 0.0;
+        this.velocidadY = velocidad;
     }
 
     public Long getId(){
         return id;
     }
     public void setId(Long id){
-        this.id=id;
+        this.id = id;
     }
+    
+    public Double getVelocidadX(){
+        return velocidadX;
+    }
+    public void setVelocidadX(Double velocidadX){
+        this.velocidadX = velocidadX;
+    }
+    
+    public Double getVelocidadY(){
+        return velocidadY;
+    }
+    public void setVelocidadY(Double velocidadY){
+        this.velocidadY = velocidadY;
+    }
+    
+    // Método de compatibilidad para velocidad lineal
     public Double getVelocidad(){
-        return velocidad;
+        return Math.max(Math.abs(velocidadX != null ? velocidadX : 0), 
+                       Math.abs(velocidadY != null ? velocidadY : 0));
     }
     public void setVelocidad(Double velocidad){
-        this.velocidad=velocidad;
+        this.velocidadY = velocidad;
+        this.velocidadX = 0.0;
     }
 
     public Long getPosicionId() {

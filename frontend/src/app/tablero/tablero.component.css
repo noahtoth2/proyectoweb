@@ -1,0 +1,1462 @@
+/* Estilos del tablero de regata */
+.tablero-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #f0f8ff 0%, #e6f3ff 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header */
+.game-header {
+  background: #2c3e50;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.user-info {
+  color: #bdc3c7;
+  font-size: 0.9rem;
+  margin-left: 1rem;
+}
+
+/* Panel de control HEADER */
+.control-panel-header {
+  background: white;
+  border-bottom: 1px solid #ddd;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.game-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-start-game.small {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.turn-phase {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+/* Menús desplegables */
+.dropdown-menus {
+  display: flex;
+  gap: 1rem;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.dropdown-btn:hover {
+  background: #2980b9;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  min-width: 200px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.boats-dropdown {
+  min-width: 250px;
+}
+
+.player-item-dropdown, .boat-item-dropdown {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.player-item-dropdown:hover, .boat-item-dropdown:hover {
+  background: #f8f9fa;
+}
+
+.player-item-dropdown.current-turn {
+  background: #fff3cd;
+  border-left: 3px solid #f39c12;
+}
+
+.boat-item-dropdown.selected {
+  background: #e8f4fd;
+  border-left: 3px solid #3498db;
+}
+
+.boat-item-dropdown.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boat-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.boat-icon-small {
+  font-size: 1rem;
+}
+
+.boat-name-small {
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+
+.boat-details-small {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+}
+
+.pending-small {
+  color: #e67e22;
+  font-weight: 500;
+}
+
+.btn-create-small {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  width: 100%;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-create-small:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Mensajes del juego en header */
+.game-message-header {
+  background: #e8f4fd;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.message-text {
+  color: #2c3e50;
+}
+
+.winner-text {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-left: 1rem;
+}
+
+/* Layout principal */
+.main-layout {
+  display: flex;
+  height: calc(100vh - 120px); /* Ajustar según altura del header */
+  gap: 0;
+}
+
+.game-board-container {
+  flex: 1;
+  padding: 1rem;
+  overflow: auto;
+  min-width: 0; /* Permite que se redimensione cuando aparece el panel */
+}
+
+/* Panel lateral */
+.side-panel {
+  width: 350px;
+  background: white;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  flex-shrink: 0; /* Evita que se comprima */
+}
+
+.side-panel-content {
+  padding: 1.5rem;
+}
+
+.side-panel h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+/* Info del barco en panel lateral */
+.boat-info-panel {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.boat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.boat-header strong {
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.boat-id {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.boat-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stat-label {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+}
+
+.stat-value {
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+/* Panel de información de movimiento simplificado */
+.movement-info-panel h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.current-velocity {
+  background: #e8f5e8;
+  border-left: 4px solid #27ae60;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.current-velocity p {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.movement-instructions {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.movement-instructions p {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 0.85rem;
+}
+
+.movement-instructions p:last-child {
+  margin-bottom: 0;
+}
+
+.possible-movements h5 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.moves-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.move-option {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 3px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: #495057;
+}
+
+.placement-hint {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.placement-hint p {
+  margin: 0;
+  color: #856404;
+  font-size: 0.9rem;
+}
+
+/* Lista de jugadores */
+.players-list {
+  max-height: 100px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid #3498db;
+}
+
+.player-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.player-boats {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  background: #ecf0f1;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+}
+
+/* Lista de barcos */
+.boats-list {
+  max-height: 100px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.boat-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  border-left: 3px solid #27ae60;
+}
+
+.boat-item:hover {
+  background: #e9ecef;
+  transform: translateX(3px);
+}
+
+.boat-item.selected {
+  border-color: #e74c3c;
+  background: #ffe6e6;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.boat-icon {
+  font-size: 1.2rem;
+  margin-right: 0.75rem;
+}
+
+.boat-info {
+  flex: 1;
+}
+
+.boat-name {
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.boat-details, .boat-position {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.boat-position.pending {
+  color: #e67e22;
+  font-weight: 500;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Sistema de turnos */
+.game-setup {
+  text-align: center;
+}
+
+.btn-start-game {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.btn-start-game:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.turn-info {
+  text-align: center;
+}
+
+.current-player {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.turn-phase {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+.player-item.current-turn {
+  background: #fff3cd !important;
+  border-left-color: #f39c12 !important;
+  box-shadow: 0 2px 4px rgba(243, 156, 18, 0.3);
+}
+
+.boat-item.can-select {
+  cursor: pointer;
+}
+
+.boat-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boat-item.disabled .boat-icon {
+  filter: grayscale(100%);
+}
+
+/* Controles compactos */
+.selected-boat-info.compact {
+  background: #e8f4fd;
+  border: 1px solid #3498db;
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.boat-summary p {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+}
+
+.velocity-controls.compact {
+  margin-top: 0.5rem;
+}
+
+.velocity-controls.compact h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.velocity-grid.compact {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  max-width: 150px;
+}
+
+.velocity-btn.compact {
+  padding: 0.4rem;
+  font-size: 0.8rem;
+  min-width: 30px;
+  height: 30px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.velocity-btn.compact:hover:not(:disabled) {
+  background: #2980b9;
+  transform: scale(1.05);
+}
+
+.velocity-btn.compact:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.velocity-btn.compact.center {
+  background: #95a5a6;
+}
+
+.velocity-hint.compact {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  text-align: center;
+}
+
+/* Info del barco seleccionado */
+.selected-boat-info {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.selected-boat-info p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.movement-hint {
+  color: #d63031 !important;
+  font-weight: 500;
+  font-style: italic;
+  margin-top: 0.75rem !important;
+}
+
+.velocity-hint {
+  color: #2980b9 !important;
+  font-weight: 500;
+  font-style: italic;
+  margin-top: 0.5rem !important;
+}
+
+/* Estilos para velocidad vectorial */
+.velocity-group {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.velocity-group h4 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.velocity-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.velocity-explanation {
+  background: #e8f4fd;
+  border: 1px solid #bee5eb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #0c5460;
+}
+
+/* Botones */
+.btn-create {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-create:hover {
+  background: #229954;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+}
+
+.btn-primary {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #2980b9;
+}
+
+.btn-secondary {
+  background: #95a5a6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #7f8c8d;
+}
+
+/* Tablero de juego */
+.game-board {
+  flex: 1;
+  padding: 1rem 2rem;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.board-container {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border: 2px solid #34495e;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.board-title {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ecf0f1;
+  flex-shrink: 0;
+}
+
+.board-title h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.board-title h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+}
+
+.game-instructions {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  color: #856404;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+}
+
+.legend-color.agua { background: #3498db; }
+.legend-color.pared { background: #34495e; }
+.legend-color.partida { background: #f39c12; }
+.legend-color.meta { background: #f1c40f; }
+.legend-color.valid-move { background: #2ecc71; }
+
+.board-grid {
+  display: grid;
+  grid-template-rows: repeat(21, 1fr);
+  gap: 2px;
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  border: 3px solid #2c3e50;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  padding: 4px;
+  height: 100%;
+  width: 100%;
+  max-width: 600px; /* Tamaño máximo del tablero */
+  max-height: 600px;
+  aspect-ratio: 1; /* Mantiene el tablero cuadrado */
+  margin: 0 auto;
+}
+
+.board-row {
+  display: grid;
+  grid-template-columns: repeat(21, 28px);
+  gap: 2px;
+}
+
+/* Celdas del tablero mejoradas */
+.celda {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  font-size: 11px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.celda:hover {
+  transform: scale(1.1) translateZ(0);
+  z-index: 2;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  filter: brightness(1.1);
+}
+
+/* Agua - Efecto oceánico */
+.celda.agua {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  position: relative;
+  overflow: hidden;
+}
+
+.celda.agua::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: water-flow 3s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes water-flow {
+  0% { transform: rotate(0deg) translateX(-100%); }
+  100% { transform: rotate(0deg) translateX(100%); }
+}
+
+.celda.agua:hover {
+  background: linear-gradient(135deg, #5dade2, #3498db);
+}
+
+/* Paredes - Efecto rocoso */
+.celda.pared {
+  background: linear-gradient(135deg, #34495e, #2c3e50);
+  cursor: not-allowed;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.celda.pared::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.05) 2px,
+    rgba(255,255,255,0.05) 4px
+  );
+}
+
+.celda.pared:hover {
+  transform: none;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.7);
+}
+
+/* Partida - Efecto de línea de salida */
+.celda.partida {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  box-shadow: 
+    inset 0 0 0 2px #d35400,
+    0 0 10px rgba(243, 156, 18, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.celda.partida::before {
+  content: '🏁';
+  position: absolute;
+  font-size: 14px;
+  animation: start-flag-wave 2s ease-in-out infinite alternate;
+}
+
+@keyframes start-flag-wave {
+  0% { transform: scale(1) rotate(-5deg); }
+  100% { transform: scale(1.1) rotate(5deg); }
+}
+
+.celda.partida:hover {
+  background: linear-gradient(135deg, #f4d03f, #f39c12);
+  box-shadow: 
+    inset 0 0 0 2px #d35400,
+    0 0 15px rgba(243, 156, 18, 0.8);
+}
+
+/* Meta - Efecto dorado brillante */
+.celda.meta {
+  background: linear-gradient(135deg, #f1c40f, #f39c12);
+  box-shadow: 
+    inset 0 0 0 2px #e67e22,
+    0 0 10px rgba(241, 196, 15, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.celda.meta::before {
+  content: '🏁';
+  position: absolute;
+  font-size: 14px;
+  animation: trophy-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes trophy-glow {
+  0% { text-shadow: 0 0 5px rgba(255,255,255,0.8); }
+  100% { text-shadow: 0 0 15px rgba(255,255,255,1), 0 0 20px rgba(241, 196, 15, 0.8); }
+}
+
+.celda.meta:hover {
+  background: linear-gradient(135deg, #f4d03f, #f1c40f);
+  box-shadow: 
+    inset 0 0 0 2px #e67e22,
+    0 0 20px rgba(241, 196, 15, 0.8);
+}
+
+/* Celdas especiales */
+.celda.ocupada {
+  position: relative;
+  z-index: 1;
+}
+
+.celda.selected {
+  box-shadow: 
+    inset 0 0 0 3px #e74c3c,
+    0 0 15px rgba(231, 76, 60, 0.7);
+  z-index: 3;
+  animation: selected-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes selected-pulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+
+/* Movimientos válidos - Efecto mágico */
+.celda.valid-move {
+  background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+  box-shadow: 
+    inset 0 0 0 2px #1e8449,
+    0 0 12px rgba(46, 204, 113, 0.8);
+  animation: magic-glow 1.5s ease-in-out infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+.celda.valid-move::before {
+  content: '✨';
+  position: absolute;
+  font-size: 12px;
+  animation: sparkle 2s linear infinite;
+}
+
+@keyframes magic-glow {
+  0% { 
+    box-shadow: 
+      inset 0 0 0 2px #1e8449,
+      0 0 12px rgba(46, 204, 113, 0.8);
+  }
+  100% { 
+    box-shadow: 
+      inset 0 0 0 2px #1e8449,
+      0 0 20px rgba(46, 204, 113, 1),
+      0 0 30px rgba(46, 204, 113, 0.5);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.7; transform: scale(1.2) rotate(180deg); }
+}
+
+.celda.valid-move:hover {
+  background: linear-gradient(135deg, #58d68d, #2ecc71) !important;
+  transform: scale(1.15);
+}
+
+/* Sprite del barco */
+.barco-sprite {
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 4;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.barco-sprite:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.barco-sprite.selected-barco {
+  transform: translate(-50%, -50%) scale(1.3);
+  filter: drop-shadow(0 0 3px #e74c3c);
+}
+
+/* Indicador de movimiento */
+.move-indicator {
+  font-size: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: sparkle 1.5s infinite;
+  z-index: 3;
+}
+
+.move-indicator::before {
+  content: '→';
+  font-size: 8px;
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #27ae60;
+  font-weight: bold;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.8); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+/* Debug info */
+.celda-debug {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 8px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+  z-index: 1;
+}
+
+/* Modales */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.modal h3 {
+  margin: 0 0 1.5rem 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-group small {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .control-panel {
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .control-section {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-board {
+    padding: 0.5rem;
+  }
+  
+  .board-container {
+    padding: 1rem;
+  }
+  
+  .board-grid {
+    grid-template-rows: repeat(21, 20px);
+  }
+  
+  .board-row {
+    grid-template-columns: repeat(21, 20px);
+  }
+  
+  .celda {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .board-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Estilos para lógica del juego */
+.future-position {
+  color: #3498db;
+  font-style: italic;
+}
+
+.velocity-controls {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.velocity-controls h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.velocity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  max-width: 120px;
+}
+
+.velocity-btn {
+  width: 35px;
+  height: 35px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.velocity-btn:hover {
+  background: #e3f2fd;
+  border-color: #2196f3;
+  transform: scale(1.05);
+}
+
+.velocity-btn.center {
+  background: #f0f0f0;
+  font-weight: bold;
+}
+
+.velocity-btn.center:hover {
+  background: #fff3e0;
+  border-color: #ff9800;
+}
+
+.game-message {
+  padding: 1rem;
+  border-radius: 8px;
+  background: #e3f2fd;
+  border: 1px solid #2196f3;
+  color: #1565c0;
+}
+
+.game-message.winner {
+  background: #e8f5e8;
+  border-color: #4caf50;
+  color: #2e7d32;
+}
+
+.winner-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* Estilos para panel de administración de barcos */
+.boat-admin-panel {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.boat-admin-panel h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  color: #495057;
+  font-weight: 600;
+}
+
+.admin-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-admin {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-admin:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.btn-edit {
+  background: #f39c12;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #e67e22;
+}
+
+.btn-delete {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+}
+
+.btn-list {
+  background: #3498db;
+  color: white;
+}
+
+.btn-list:hover {
+  background: #2980b9;
+}
+
+/* Controles de velocidad */
+.velocity-controls {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.velocity-controls h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #856404;
+  font-weight: 600;
+}
+
+.velocity-instruction {
+  margin: 0 0 1rem 0;
+  font-size: 0.85rem;
+  color: #856404;
+  font-style: italic;
+}
+
+.velocity-instruction.completed {
+  color: #155724;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.velocity-controls-grid.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.velocity-hint.completed {
+  color: #155724;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 0.3rem 0.5rem;
+  border-radius: 3px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.velocity-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #f1c40f;
+}
+
+.velocity-label {
+  font-weight: 500;
+  color: #856404;
+  font-size: 0.9rem;
+}
+
+.velocity-value {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: #2c3e50;
+  background: #f8f9fa;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+.velocity-controls-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.velocity-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.velocity-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.velocity-btn {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 50px;
+}
+
+.velocity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.velocity-btn.decrease {
+  background: #e74c3c;
+  color: white;
+}
+
+.velocity-btn.decrease:hover:not(:disabled) {
+  background: #c0392b;
+}
+
+.velocity-btn.increase {
+  background: #27ae60;
+  color: white;
+}
+
+.velocity-btn.increase:hover:not(:disabled) {
+  background: #2ecc71;
+}
+
+.velocity-current {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #2c3e50;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 2px solid #3498db;
+  min-width: 40px;
+  text-align: center;
+}
+
+.velocity-info {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1c40f;
+}
+
+.velocity-hint {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.8rem;
+  color: #856404;
+  font-style: italic;
+}
+
+.turn-reminder {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #27ae60;
+  font-weight: 500;
+}

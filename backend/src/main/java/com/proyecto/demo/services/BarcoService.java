@@ -35,11 +35,14 @@ public class BarcoService {
     
     @Autowired
     private TableroRepository tableroRepository;
+    
+    @Autowired
+    private BarcoMapper barcoMapper;
 
     public List<BarcoDTO> listarBarcos() {
         List<BarcoDTO> barcoDTOs = new ArrayList<>();
         for (Barco  barco: barcoRepository.findAll()) {
-            barcoDTOs.add(BarcoMapper.toDTO(barco));
+            barcoDTOs.add(barcoMapper.toDTO(barco));
         }
         return barcoDTOs;
     }
@@ -47,20 +50,33 @@ public class BarcoService {
     public List<BarcoDTO> listarBarcos(PageRequest pageRequest) {
         List<BarcoDTO> barcoDTOs = new ArrayList<>();
         for (Barco barco : barcoRepository.findAll(pageRequest).getContent()) {
-            barcoDTOs.add(BarcoMapper.toDTO(barco));
+            barcoDTOs.add(barcoMapper.toDTO(barco));
         }
         return barcoDTOs;
     }
 
     public BarcoDTO recuperarBarco(Long id) {
-        return BarcoMapper.toDTO(barcoRepository.findById(id).orElseThrow());
+        return barcoMapper.toDTO(barcoRepository.findById(id).orElseThrow());
     }
 
     public BarcoDTO crear(BarcoDTO barcoDTO) {
-        Barco entity = BarcoMapper.toEntity(barcoDTO);
+        System.out.println("=== DEBUG CREAR BARCO ===");
+        System.out.println("JugadorId: " + barcoDTO.getJugadorId());
+        System.out.println("ModeloId: " + barcoDTO.getModeloId());
+        System.out.println("TableroId: " + barcoDTO.getTableroId());
+        System.out.println("PosicionId: " + barcoDTO.getPosicionId());
+        System.out.println("========================");
+        
+        Barco entity = barcoMapper.toEntity(barcoDTO);
         entity.setId(null);
         Barco saved = barcoRepository.save(entity);
-        return BarcoMapper.toDTO(saved);
+        
+        System.out.println("=== BARCO CREADO ===");
+        System.out.println("Barco ID: " + saved.getId());
+        System.out.println("Jugador asignado: " + (saved.getJugador() != null ? saved.getJugador().getNombre() : "NULL"));
+        System.out.println("====================");
+        
+        return barcoMapper.toDTO(saved);
     }
 
     public BarcoDTO actualizarBarco(BarcoDTO barcoDTO) {
@@ -98,7 +114,7 @@ public class BarcoService {
         }
         
         Barco saved = barcoRepository.save(entity);
-        return BarcoMapper.toDTO(saved);
+        return barcoMapper.toDTO(saved);
     }
 
     public void borrarBarco(Long barcoId) {
@@ -109,7 +125,7 @@ public class BarcoService {
         List<BarcoDTO> barcoDTOs = new ArrayList<>();
         for (Barco barco : barcoRepository.findAll()) {
             if (barco.getJugador() == null) {
-                barcoDTOs.add(BarcoMapper.toDTO(barco));
+                barcoDTOs.add(barcoMapper.toDTO(barco));
             }
         }
         return barcoDTOs;
