@@ -1,6 +1,6 @@
 package com.proyecto.demo.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +31,6 @@ public class Barco {
     private Jugador jugador;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "tablero_id")
     private Tablero tablero;
 
