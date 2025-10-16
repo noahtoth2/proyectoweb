@@ -34,6 +34,9 @@ public class Barco {
     @JoinColumn(name = "tablero_id")
     private Tablero tablero;
 
+    public Barco(){
+        
+    }
 
     public Barco(Double velocidadX, Double velocidadY) {
         this.velocidadX = velocidadX;
