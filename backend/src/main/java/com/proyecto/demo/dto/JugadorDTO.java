@@ -7,9 +7,11 @@ public class JugadorDTO{
     private String nombre;
     private List<BarcoDTO> barcos;
     private List<Long> barcosIds; 
+
     public JugadorDTO(){
 
     }
+    
     public JugadorDTO(String nombre){
         this.nombre=nombre;
     }
