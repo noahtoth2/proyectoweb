@@ -17,7 +17,7 @@ public class Barco {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    // Velocidad vectorial con componentes X e Y
+
     private double velocidadX;
     private double velocidadY;
 
@@ -34,22 +34,12 @@ public class Barco {
     @JoinColumn(name = "tablero_id")
     private Tablero tablero;
 
-    public Barco() {
-        // Velocidad inicial detenida como indica el documento
-        this.velocidadX = 0.0;
-        this.velocidadY = 0.0;
-    }
 
     public Barco(double velocidadX, double velocidadY) {
         this.velocidadX = velocidadX;
         this.velocidadY = velocidadY;
     }
 
-    // Constructor de compatibilidad con velocidad lineal
-    public Barco(double velocidad) {
-        this.velocidadX = 0.0;
-        this.velocidadY = velocidad;
-    }
 
     public Long getId() {
         return id;
@@ -75,17 +65,6 @@ public class Barco {
         this.velocidadY = velocidadY;
     }
 
-    // Método de compatibilidad para obtener velocidad lineal
-    public double getVelocidad() {
-        return Math.max(Math.abs(velocidadX), Math.abs(velocidadY));
-    }
-
-    // Método de compatibilidad para establecer velocidad lineal
-    public void setVelocidad(double velocidad) {
-        this.velocidadY = velocidad;
-        this.velocidadX = 0.0;
-    }
-
     public Posicion getPosicion() {
         return posicion;
     }
@@ -94,20 +73,20 @@ public class Barco {
         this.posicion = posicion;
     }
 
-    public Jugador getJugador() {
-        return jugador;
-    }
-
-    public void setJugador(Jugador jugador) {
-        this.jugador = jugador;
-    }
-
     public Modelo getModelo() {
         return modelo;
     }
 
     public void setModelo(Modelo modelo) {
         this.modelo = modelo;
+    }
+
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
     }
 
     public Tablero getTablero() {
