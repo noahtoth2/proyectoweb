@@ -58,8 +58,12 @@ public class BarcoController {
     @Operation(summary = "Crear nuevo barco", description = "Registra un nuevo barco en el sistema con los datos proporcionados")
     @PostMapping
     public ResponseEntity<BarcoDTO> create(
-            @Parameter(description = "Objeto BarcoDTO con los datos del nuevo barco (jugadorId, modeloId, velocidad, posición)", required = true) 
+            @Parameter(description = "Objeto BarcoDTO con los datos del nuevo barco (jugadorId, modeloId, velocidadX, velocidadY, posición)", required = true) 
             @RequestBody BarcoDTO barcoDTO) {
+
+        if (barcoDTO.getVelocidadX() == null) barcoDTO.setVelocidadX(0.0);
+        if (barcoDTO.getVelocidadY() == null) barcoDTO.setVelocidadY(0.0);
+
         BarcoDTO created = barcoService.crear(barcoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -69,6 +73,10 @@ public class BarcoController {
     public ResponseEntity<BarcoDTO> update(
             @Parameter(description = "Objeto BarcoDTO con los datos actualizados del barco (debe incluir el ID)", required = true) 
             @RequestBody BarcoDTO barcoDTO) {
+
+        if (barcoDTO.getVelocidadX() == null) barcoDTO.setVelocidadX(0.0);
+        if (barcoDTO.getVelocidadY() == null) barcoDTO.setVelocidadY(0.0);
+
         BarcoDTO updated = barcoService.actualizarBarco(barcoDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }

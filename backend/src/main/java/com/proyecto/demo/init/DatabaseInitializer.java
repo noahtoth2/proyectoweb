@@ -84,7 +84,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         Tablero tablero = new Tablero();
         tableroRepository.save(tablero);
 
-        // 4. Crear mapa según la imagen (21x21 como aparece en el documento)
+        // 4. Crear mapa según la imagen 
         createMapFromImage(tablero);
 
         // 5. Crear posiciones iniciales para barcos
