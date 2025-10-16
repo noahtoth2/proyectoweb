@@ -1,4 +1,6 @@
-package com.proyecto.config;
+package com.proyecto.demo.config;
+
+import java.util.List;
 
 import java.util.List;
 

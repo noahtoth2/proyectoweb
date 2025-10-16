@@ -25,7 +25,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+<<<<<<< HEAD
 @RequestMapping("/api/jugador")
+=======
+@RequestMapping("/jugador")
+>>>>>>> temp-branch
 @Tag(name = "Controlador de Jugadores", description = "Gestiona todas las operaciones CRUD para los jugadores del juego, incluyendo registro, consulta, actualización y eliminación de jugadores")
 public class JugadorController {
 

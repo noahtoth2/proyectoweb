@@ -23,7 +23,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+<<<<<<< HEAD
 @RequestMapping("/api/barco")
+=======
+@RequestMapping("/barco")
+>>>>>>> temp-branch
 @Tag(name = "Controlador de Barcos", description = "Gestiona todas las operaciones CRUD para los barcos del juego, incluyendo listar, crear, actualizar, eliminar y buscar barcos por ID")
 public class BarcoController {
 
