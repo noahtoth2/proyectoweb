@@ -93,7 +93,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         // 6. Crear barcos con velocidad vectorial
         createInitialBoats(modelos, jugadores, tablero, posicionesIniciales);
 
-        System.out.println("✅ Base de datos inicializada con:");
+        System.out.println("Base de datos inicializada con:");
         System.out.println("   - " + modelos.size() + " modelos de barcos");
         System.out.println("   - " + jugadores.size() + " jugadores");
         System.out.println("   - 1 tablero con mapa según especificación");

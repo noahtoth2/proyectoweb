@@ -18,8 +18,8 @@ public class Barco {
     private Long id;
 
 
-    private double velocidadX;
-    private double velocidadY;
+    private Double velocidadX;
+    private Double velocidadY;
 
     @OneToOne
     private Posicion posicion;
@@ -35,7 +35,7 @@ public class Barco {
     private Tablero tablero;
 
 
-    public Barco(double velocidadX, double velocidadY) {
+    public Barco(Double velocidadX, Double velocidadY) {
         this.velocidadX = velocidadX;
         this.velocidadY = velocidadY;
     }
@@ -49,19 +49,19 @@ public class Barco {
         this.id = id;
     }
 
-    public double getVelocidadX() {
+    public Double getVelocidadX() {
         return velocidadX;
     }
 
-    public void setVelocidadX(double velocidadX) {
+    public void setVelocidadX(Double velocidadX) {
         this.velocidadX = velocidadX;
     }
 
-    public double getVelocidadY() {
+    public Double getVelocidadY() {
         return velocidadY;
     }
 
-    public void setVelocidadY(double velocidadY) {
+    public void setVelocidadY(Double velocidadY) {
         this.velocidadY = velocidadY;
     }
 
