@@ -81,38 +81,40 @@ public class BarcoService {
 
     public BarcoDTO actualizarBarco(BarcoDTO barcoDTO) {
         Barco entity = barcoRepository.findById(barcoDTO.getId()).orElseThrow();
-        
+
         System.out.println("=== DEBUG ACTUALIZAR BARCO ===");
         System.out.println("ID: " + barcoDTO.getId());
-        System.out.println("Velocidad: " + barcoDTO.getVelocidad());
+        System.out.println("VelocidadX: " + barcoDTO.getVelocidadX());
+        System.out.println("VelocidadY: " + barcoDTO.getVelocidadY());
         System.out.println("PosicionId: " + barcoDTO.getPosicionId());
         System.out.println("ModeloId: " + barcoDTO.getModeloId());
         System.out.println("JugadorId: " + barcoDTO.getJugadorId());
         System.out.println("TableroId: " + barcoDTO.getTableroId());
         System.out.println("===============================");
-        
-        entity.setVelocidad(barcoDTO.getVelocidad());
-        
+
+        entity.setVelocidadX(barcoDTO.getVelocidadX());
+        entity.setVelocidadY(barcoDTO.getVelocidadY());
+
         if (barcoDTO.getPosicionId() != null) {
             Posicion posicion = posicionRepository.findById(barcoDTO.getPosicionId()).orElse(null);
             entity.setPosicion(posicion);
         }
-        
+
         if (barcoDTO.getModeloId() != null) {
             Modelo modelo = modeloRepository.findById(barcoDTO.getModeloId()).orElse(null);
             entity.setModelo(modelo);
         }
-        
+
         if (barcoDTO.getJugadorId() != null) {
             Jugador jugador = jugadorRepository.findById(barcoDTO.getJugadorId()).orElse(null);
             entity.setJugador(jugador);
         }
-        
+
         if (barcoDTO.getTableroId() != null) {
             Tablero tablero = tableroRepository.findById(barcoDTO.getTableroId()).orElse(null);
             entity.setTablero(tablero);
         }
-        
+
         Barco saved = barcoRepository.save(entity);
         return barcoMapper.toDTO(saved);
     }
