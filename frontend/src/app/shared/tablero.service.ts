@@ -14,32 +14,32 @@ export class TableroService {
 
   // Tablero endpoints
   getAllTableros(): Observable<Tablero[]> {
-    return this.http.get<Tablero[]>(`${this.baseUrl}/api/tablero/list`);
+    return this.http.get<Tablero[]>(`${this.baseUrl}/tablero/list`);
   }
 
   getTableroById(id: number): Observable<Tablero> {
-    return this.http.get<Tablero>(`${this.baseUrl}/api/tablero/${id}`);
+    return this.http.get<Tablero>(`${this.baseUrl}/tablero/${id}`);
   }
 
   createTablero(tablero: Tablero): Observable<Tablero> {
-    return this.http.post<Tablero>(`${this.baseUrl}/api/tablero`, tablero);
+    return this.http.post<Tablero>(`${this.baseUrl}/tablero`, tablero);
   }
 
   updateTablero(id: number, tablero: Tablero): Observable<Tablero> {
-    return this.http.put<Tablero>(`${this.baseUrl}/api/tablero/${id}`, tablero);
+    return this.http.put<Tablero>(`${this.baseUrl}/tablero/${id}`, tablero);
   }
 
   deleteTablero(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/api/tablero/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/tablero/${id}`);
   }
 
   // Métodos específicos para el juego
   initializeTablero(): Observable<Tablero> {
-    return this.http.post<Tablero>(`${this.baseUrl}/api/tablero/initialize`, {});
+    return this.http.post<Tablero>(`${this.baseUrl}/tablero/initialize`, {});
   }
 
   getTableroWithBarcos(tableroId: number): Observable<Tablero> {
-    return this.http.get<Tablero>(`${this.baseUrl}/api/tablero/${tableroId}/with-barcos`);
+    return this.http.get<Tablero>(`${this.baseUrl}/tablero/${tableroId}/with-barcos`);
   }
 
   // MÉTODOS DE LÓGICA DEL JUEGO
@@ -47,22 +47,22 @@ export class TableroService {
   // Cambiar velocidad de un barco
   cambiarVelocidadBarco(tableroId: number, barcoId: number, deltaVx: number, deltaVy: number): Observable<any> {
     const request = { deltaVx, deltaVy };
-    return this.http.post<any>(`${this.baseUrl}/api/tablero/${tableroId}/barco/${barcoId}/cambiar-velocidad`, request);
+    return this.http.post<any>(`${this.baseUrl}/tablero/${tableroId}/barco/${barcoId}/cambiar-velocidad`, request);
   }
 
   // Mover un barco aplicando las reglas del juego
   moverBarco(tableroId: number, barcoId: number): Observable<MovimientoResponse> {
-    return this.http.post<MovimientoResponse>(`${this.baseUrl}/api/tablero/${tableroId}/barco/${barcoId}/mover`, {});
+    return this.http.post<MovimientoResponse>(`${this.baseUrl}/tablero/${tableroId}/barco/${barcoId}/mover`, {});
   }
 
   // Obtener la posición futura de un barco
   obtenerPosicionFutura(tableroId: number, barcoId: number): Observable<PosicionResponse> {
-    return this.http.get<PosicionResponse>(`${this.baseUrl}/api/tablero/${tableroId}/barco/${barcoId}/posicion-futura`);
+    return this.http.get<PosicionResponse>(`${this.baseUrl}/tablero/${tableroId}/barco/${barcoId}/posicion-futura`);
   }
 
   // Obtener las celdas del tablero
   getCeldas(tableroId: number): Observable<CeldaDTO[]> {
-    return this.http.get<CeldaDTO[]>(`${this.baseUrl}/api/tablero/${tableroId}/celdas`);
+    return this.http.get<CeldaDTO[]>(`${this.baseUrl}/tablero/${tableroId}/celdas`);
   }
 }
 

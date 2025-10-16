@@ -65,8 +65,8 @@ public class Tablero {
         }
         
         Posicion posicionActual = barco.getPosicion();
-        int nuevaX = posicionActual.getX() + (int)barco.getVelocidadX();
-        int nuevaY = posicionActual.getY() + (int)barco.getVelocidadY();
+        int nuevaX = posicionActual.getX() + barco.getVelocidadX().intValue();
+        int nuevaY = posicionActual.getY() + barco.getVelocidadY().intValue();
         
         return new Posicion(nuevaX, nuevaY);
     }

@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.demo.controllers.TableroRestController.MovimientoResponse;
-import com.proyecto.demo.controllers.TableroRestController.PosicionResponse;
 import com.proyecto.demo.dto.CeldaSimpleDTO;
 import com.proyecto.demo.dto.TableroDTO;
 import com.proyecto.demo.mappers.TableroMapper;
@@ -79,7 +77,7 @@ public class TableroService {
     /**
      * Mueve un barco aplicando las reglas del juego
      */
-    public MovimientoResponse moverBarco(Long tableroId, Long barcoId) {
+    public Tablero.ResultadoMovimiento moverBarco(Long tableroId, Long barcoId) {
         Tablero tablero = tableroRepository.findById(tableroId).orElseThrow();
         Barco barco = barcoRepository.findById(barcoId).orElseThrow();
         
@@ -96,18 +94,13 @@ public class TableroService {
             barcoRepository.save(barco);
         }
         
-        return new MovimientoResponse(
-            resultado.isExitoso(),
-            resultado.getMensaje(),
-            resultado.getTipo().toString(),
-            new PosicionResponse(barco.getPosicion().getX(), barco.getPosicion().getY())
-        );
+        return resultado;
     }
 
     /**
      * Calcula la posición futura de un barco sin moverlo
      */
-    public PosicionResponse calcularPosicionFutura(Long tableroId, Long barcoId) {
+    public Posicion calcularPosicionFutura(Long tableroId, Long barcoId) {
         Tablero tablero = tableroRepository.findById(tableroId).orElseThrow();
         Barco barco = barcoRepository.findById(barcoId).orElseThrow();
         
@@ -116,8 +109,7 @@ public class TableroService {
             throw new IllegalArgumentException("El barco no pertenece al tablero especificado");
         }
         
-        Posicion posicionFutura = tablero.calcularNuevaPosicion(barco);
-        return new PosicionResponse(posicionFutura.getX(), posicionFutura.getY());
+        return tablero.calcularNuevaPosicion(barco);
     }
 
     /**

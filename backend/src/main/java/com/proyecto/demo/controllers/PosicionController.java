@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/posicion")
+@RequestMapping("/api/posicion")
 @Tag(name = "Controlador de Posiciones", description = "Gestiona todas las operaciones CRUD para las posiciones de los barcos en el tablero, incluyendo coordenadas X e Y")
 public class PosicionController {
 

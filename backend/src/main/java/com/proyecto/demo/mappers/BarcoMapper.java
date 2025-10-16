@@ -1,6 +1,5 @@
 package com.proyecto.demo.mappers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.proyecto.demo.dto.BarcoDTO;

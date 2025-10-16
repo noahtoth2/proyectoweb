@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/barco")
+@RequestMapping("/api/barco")
 @Tag(name = "Controlador de Barcos", description = "Gestiona todas las operaciones CRUD para los barcos del juego, incluyendo listar, crear, actualizar, eliminar y buscar barcos por ID")
 public class BarcoController {
 
@@ -61,9 +61,6 @@ public class BarcoController {
             @Parameter(description = "Objeto BarcoDTO con los datos del nuevo barco (jugadorId, modeloId, velocidadX, velocidadY, posición)", required = true) 
             @RequestBody BarcoDTO barcoDTO) {
 
-        if (barcoDTO.getVelocidadX() == null) barcoDTO.setVelocidadX(0.0);
-        if (barcoDTO.getVelocidadY() == null) barcoDTO.setVelocidadY(0.0);
-
         BarcoDTO created = barcoService.crear(barcoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -73,9 +70,6 @@ public class BarcoController {
     public ResponseEntity<BarcoDTO> update(
             @Parameter(description = "Objeto BarcoDTO con los datos actualizados del barco (debe incluir el ID)", required = true) 
             @RequestBody BarcoDTO barcoDTO) {
-
-        if (barcoDTO.getVelocidadX() == null) barcoDTO.setVelocidadX(0.0);
-        if (barcoDTO.getVelocidadY() == null) barcoDTO.setVelocidadY(0.0);
 
         BarcoDTO updated = barcoService.actualizarBarco(barcoDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updated);

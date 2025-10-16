@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.demo.dto.TableroDTO;
+import com.proyecto.demo.models.Tablero;
 import com.proyecto.demo.services.TableroService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/tablero")
 @Tag(name = "API REST de Tableros", description = "Gestiona todas las operaciones CRUD para los tableros de juego via API REST")
-public class TableroRestController {
+public class TableroController {
 
     @Autowired
     private TableroService tableroService;
@@ -128,8 +129,12 @@ public class TableroRestController {
             @Parameter(description = "ID del tablero") @PathVariable Long tableroId,
             @Parameter(description = "ID del barco") @PathVariable Long barcoId) {
         try {
-            MovimientoResponse resultado = tableroService.moverBarco(tableroId, barcoId);
-            return ResponseEntity.ok(resultado);
+            Tablero.ResultadoMovimiento resultado = tableroService.moverBarco(tableroId, barcoId);
+            return ResponseEntity.ok(Map.of(
+                "exitoso", resultado.isExitoso(),
+                "mensaje", resultado.getMensaje(),
+                "tipo", resultado.getTipo().toString()
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "Error al mover el barco"));
@@ -142,8 +147,11 @@ public class TableroRestController {
             @Parameter(description = "ID del tablero") @PathVariable Long tableroId,
             @Parameter(description = "ID del barco") @PathVariable Long barcoId) {
         try {
-            PosicionResponse posicion = tableroService.calcularPosicionFutura(tableroId, barcoId);
-            return ResponseEntity.ok(posicion);
+            com.proyecto.demo.models.Posicion posicion = tableroService.calcularPosicionFutura(tableroId, barcoId);
+            return ResponseEntity.ok(Map.of(
+                "x", posicion.getX(),
+                "y", posicion.getY()
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al calcular posición futura"));
@@ -162,7 +170,7 @@ public class TableroRestController {
         }
     }
 
-    // DTOs para las requests del juego
+    // Clases DTO simples para las requests del API
     public static class CambioVelocidadRequest {
         private double deltaVx;
         private double deltaVy;
@@ -171,45 +179,5 @@ public class TableroRestController {
         public void setDeltaVx(double deltaVx) { this.deltaVx = deltaVx; }
         public double getDeltaVy() { return deltaVy; }
         public void setDeltaVy(double deltaVy) { this.deltaVy = deltaVy; }
-    }
-
-    public static class MovimientoResponse {
-        private boolean exitoso;
-        private String mensaje;
-        private String tipo;
-        private PosicionResponse nuevaPosicion;
-
-        public MovimientoResponse(boolean exitoso, String mensaje, String tipo, PosicionResponse nuevaPosicion) {
-            this.exitoso = exitoso;
-            this.mensaje = mensaje;
-            this.tipo = tipo;
-            this.nuevaPosicion = nuevaPosicion;
-        }
-
-        // Getters y setters
-        public boolean isExitoso() { return exitoso; }
-        public void setExitoso(boolean exitoso) { this.exitoso = exitoso; }
-        public String getMensaje() { return mensaje; }
-        public void setMensaje(String mensaje) { this.mensaje = mensaje; }
-        public String getTipo() { return tipo; }
-        public void setTipo(String tipo) { this.tipo = tipo; }
-        public PosicionResponse getNuevaPosicion() { return nuevaPosicion; }
-        public void setNuevaPosicion(PosicionResponse nuevaPosicion) { this.nuevaPosicion = nuevaPosicion; }
-    }
-
-    public static class PosicionResponse {
-        private int x;
-        private int y;
-
-        public PosicionResponse(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        // Getters y setters
-        public int getX() { return x; }
-        public void setX(int x) { this.x = x; }
-        public int getY() { return y; }
-        public void setY(int y) { this.y = y; }
     }
 }

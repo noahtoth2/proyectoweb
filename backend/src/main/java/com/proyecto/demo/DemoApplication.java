@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication {
 
 	public static void main(String[] args) {
+		// CORS actualizado para permitir cualquier puerto localhost - v2
 		SpringApplication.run(DemoApplication.class, args);
 	}
 

@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/modelo")
+@RequestMapping("/api/modelo")
 @Tag(name = "Controlador de Modelos", description = "Gestiona todas las operaciones CRUD para los modelos de barcos, incluyendo tipos, colores y características de cada modelo")
 public class ModeloController {
 

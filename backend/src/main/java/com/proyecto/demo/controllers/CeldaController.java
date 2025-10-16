@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@RequestMapping("/celda")
+@RequestMapping("/api/celda")
 @Tag(name = "Controlador de Celdas Web", description = "Gestiona las vistas web para las operaciones CRUD de celdas del tablero, proporcionando formularios y páginas HTML para la gestión visual")
 public class CeldaController {
 

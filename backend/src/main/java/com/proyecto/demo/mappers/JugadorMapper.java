@@ -3,7 +3,6 @@ package com.proyecto.demo.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.proyecto.demo.dto.BarcoDTO;
@@ -14,9 +13,6 @@ import com.proyecto.demo.models.Jugador;
 @Component
 public class JugadorMapper {
     
-    @Autowired
-    private BarcoMapper barcoMapper;
-    
     public JugadorDTO toDTO(Jugador jugador) {
         JugadorDTO jugadorDTO = new JugadorDTO();
         jugadorDTO.setId(jugador.getId());
@@ -24,7 +20,7 @@ public class JugadorMapper {
         List<BarcoDTO> barcosDTO = new ArrayList<>();
         if (jugador.getBarcos() != null) {
             for (Barco barco : jugador.getBarcos()) {
-                barcosDTO.add(barcoMapper.toDTO(barco));
+                barcosDTO.add(BarcoMapper.toDTO(barco));
             }
         }
         jugadorDTO.setBarcos(barcosDTO);

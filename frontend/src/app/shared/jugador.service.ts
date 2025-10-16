@@ -24,8 +24,8 @@ export class JugadorService {
     return this.http.post<Jugador>(`${this.baseUrl}/jugador`, jugador);
   }
 
-  updateJugador(id: number, jugador: Jugador): Observable<Jugador> {
-    return this.http.put<Jugador>(`${this.baseUrl}/jugador/${id}`, jugador);
+  updateJugador(jugador: Jugador): Observable<Jugador> {
+    return this.http.put<Jugador>(`${this.baseUrl}/jugador`, jugador);
   }
 
   deleteJugador(id: number): Observable<void> {

@@ -2,19 +2,19 @@
 @host=http://localhost:8080
 
 ###
-GET {{host}}/barco/list
+GET {{host}}/api/barco/list
 
 ###
-GET {{host}}/barco/1
+GET {{host}}/api/barco/1
 
 ###
-GET {{host}}/barco/555
+GET {{host}}/api/barco/555
 
 ###
-GET {{host}}/barco/list/2
+GET {{host}}/api/barco/list/2
 
 ###
-POST {{host}}/barco
+POST {{host}}/api/barco
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 
 ###
-PUT {{host}}/barco
+PUT {{host}}/api/barco
 Content-Type: application/json
 
 {
@@ -39,8 +39,8 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{host}}/barco/1
+DELETE {{host}}/api/barco/1
 
 
 ###
-GET {{host}}/barco/search?searchText=Bob
+GET {{host}}/api/barco/search?searchText=Bob
