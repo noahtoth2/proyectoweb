@@ -6,9 +6,10 @@ import { BarcoService } from '../../shared/barco.service';
 
 @Component({
   selector: 'app-barco-view',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './barco-view.component.html',
-  styleUrl: './barco-view.component.css'
+  styleUrls: ['./barco-view.component.css']
 })
 export class BarcoViewComponent implements OnInit {
   private barcoService = inject(BarcoService);

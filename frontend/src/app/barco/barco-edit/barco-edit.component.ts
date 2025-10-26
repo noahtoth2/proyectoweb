@@ -8,9 +8,10 @@ import { BarcoService } from '../../shared/barco.service';
 
 @Component({
   selector: 'app-barco-edit',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './barco-edit.component.html',
-  styleUrl: './barco-edit.component.css'
+  styleUrls: ['./barco-edit.component.css']
 })
 export class BarcoEditComponent implements OnInit {
   barcoService = inject(BarcoService);

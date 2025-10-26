@@ -14,7 +14,7 @@ import { Barco, Celda, CeldaDTO, Jugador, Tablero, Posicion } from '../model/gam
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './tablero.component.html',
-  styleUrl: './tablero.component.css'
+  styleUrls: ['./tablero.component.css']
 })
 export class TableroComponent implements OnInit {
   currentUser: any = null;
