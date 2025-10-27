@@ -192,7 +192,7 @@ public class TableroControllerTest {
     //DELETE
     @Test
     void testEliminarBarcoPorId() {
-    // eliminar el barco con id=3
+    // eliminar el barco3
     webTestClient.delete()
         .uri("http://localhost:8081/api/barco/3")
         .exchange()
