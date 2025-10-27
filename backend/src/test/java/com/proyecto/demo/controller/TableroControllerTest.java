@@ -88,12 +88,26 @@ public class TableroControllerTest {
         posicionRepository.save(pos2);
 
         
-        Barco barcoEstatico = new Barco(0.0, 0.0);
-        barcoEstatico.setModelo(modeloPrueba);
-        barcoEstatico.setJugador(jugador1);
-        barcoEstatico.setTablero(tablero);
-        barcoEstatico.setPosicion(pos1);
-        barcoRepository.save(barcoEstatico);
+        Barco barco1 = new Barco(0.0, 0.0);
+        barco1.setModelo(modeloPrueba);
+        barco1.setJugador(jugador1);
+        barco1.setTablero(tablero);
+        barco1.setPosicion(pos1);
+        barcoRepository.save(barco1);
+
+        Barco barco2 = new Barco(1.0, 0.5);
+        barco2.setModelo(modeloPrueba);
+        barco2.setJugador(jugador2);
+        barco2.setTablero(tablero);
+        barco2.setPosicion(pos2);
+        barcoRepository.save(barco2);
+
+        Barco barco3 = new Barco(0.0, 0.0);
+        barco3.setModelo(modeloPrueba);
+        barco3.setJugador(jugador1);
+        barco3.setTablero(tablero);
+        barco3.setPosicion(pos1);
+        barcoRepository.save(barco3);
 
     }
 
@@ -111,6 +125,9 @@ public class TableroControllerTest {
     return 'A';
     }
 
+    // INICIO DE LAS PRUEBAS POR CADA METODO//
+
+    //POST
     @Test
     void testCambiarVelocidadBarco() {
     webTestClient.post()
@@ -123,5 +140,70 @@ public class TableroControllerTest {
         .jsonPath("$.velocidadX").isEqualTo(1.0)
         .jsonPath("$.velocidadY").isEqualTo(0.5);
         }
+
+    
+    //GET
+    @Test
+    void testObtenerPosicionFutura() {
+
+        //Barco 2 tiene velocidad (1.0,0.5) y posicion (3,3)
+        // Posicion futura esperada es (4.0,3.5)
+
+    webTestClient.get()
+        .uri("http://localhost:8081/api/tablero/1/barco/2/posicion-futura")
+        .exchange()
+        .expectStatus().isOk()
+        .expectHeader().contentType(MediaType.APPLICATION_JSON)
+        .expectBody()
+        .jsonPath("$.x").isEqualTo(4.0)
+        .jsonPath("$.y").isEqualTo(3.5);
+    }
+
+
+    //PUT
+    @Test
+    void testActualizarJugadorYPosicionDeBarco() {
+    // vamos a cambiar al jugador y posicion del barco1
+    // velocidadX/Y se dejan igual solo para completar el DTO.
+
+    webTestClient.put()
+        .uri("http://localhost:8081/api/barco")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue("""
+            {
+                "id": 1,
+                "velocidadX": 0.0,
+                "velocidadY": 0.0,
+                "posicionId": 2,
+                "modeloId": 1,
+                "jugadorId": 2,
+                "tableroId": 1
+            }
+        """)
+        .exchange()
+        .expectStatus().isOk()
+        .expectHeader().contentType(MediaType.APPLICATION_JSON)
+        .expectBody()
+        .jsonPath("$.jugadorId").isEqualTo(2)
+        .jsonPath("$.posicionId").isEqualTo(2);
+    }
+
+
+    //DELETE
+    @Test
+    void testEliminarBarcoPorId() {
+    // eliminar el barco con id=3
+    webTestClient.delete()
+        .uri("http://localhost:8081/api/barco/3")
+        .exchange()
+        .expectStatus().isOk(); 
+
+    // intentar obtenerlo y verificar que ya no existe
+    webTestClient.get()
+        .uri("http://localhost:8081/api/barco/3")
+        .exchange()
+        .expectStatus().isNotFound();
+    }
+
     
 }
