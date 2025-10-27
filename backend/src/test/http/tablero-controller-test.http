@@ -1,0 +1,56 @@
+@host=http://localhost:8080
+
+###
+GET {{host}}/api/tablero/list
+
+###
+GET {{host}}/api/tablero/1
+
+###
+GET {{host}}/api/tablero/555
+
+###
+POST {{host}}/api/tablero
+Content-Type: application/json
+
+{
+  "nombre": "Tablero de prueba",
+  "descripcion": "Tablero generado desde archivo .rest",
+  "ancho": 10,
+  "alto": 10
+}
+
+###
+PUT {{host}}/api/tablero/1
+Content-Type: application/json
+
+{
+  "nombre": "Tablero actualizado",
+  "descripcion": "Actualizado desde archivo .rest",
+  "ancho": 12,
+  "alto": 12
+}
+
+###
+DELETE {{host}}/api/tablero/1
+
+###
+POST {{host}}/api/tablero/initialize
+
+###
+POST {{host}}/api/tablero/1/barco/5/cambiar-velocidad
+Content-Type: application/json
+
+{
+  "deltaVx": 2.5,
+  "deltaVy": -1.3
+}
+
+###
+POST {{host}}/api/tablero/1/barco/5/mover
+
+###
+GET {{host}}/api/tablero/1/barco/5/posicion-futura
+
+###
+GET {{host}}/api/tablero/1/celdas
