@@ -102,7 +102,7 @@ public class TableroController {
         }
     }
 
-    // ENDPOINTS DE LÓGICA DEL JUEGO
+    
 
     @Operation(summary = "Cambiar velocidad de barco", description = "Aplica un cambio de velocidad a un barco específico")
     @PostMapping("/{tableroId}/barco/{barcoId}/cambiar-velocidad")

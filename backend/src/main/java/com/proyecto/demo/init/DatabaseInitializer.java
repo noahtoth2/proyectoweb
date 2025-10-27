@@ -115,7 +115,6 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private char determineCellType(int x, int y) {
         // Crear mapa en forma de H (21x21)
-        // Reglas: A=Agua, X=Pared, P=Partida, M=Meta
         
         // Forma de H:
         // - Brazos verticales izquierdo y derecho (agua)
