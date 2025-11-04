@@ -4,80 +4,112 @@
     <div class="header-left">
       <h1>🏁 Regata Online</h1>
       <span class="user-info">Bienvenido, {{currentUser?.nombre}}</span>
+      @if (modoMultijugador() && partidaActual()) {
+        <span class="partida-info">| 🎮 Partida: {{partidaActual()!.codigo}}</span>
+      }
     </div>
     <div class="header-right">
+      @if (modoMultijugador()) {
+        <button class="btn-secondary" (click)="volverAlLobby()">⬅️ Volver al Lobby</button>
+      }
       <button class="btn-secondary" (click)="logout()">Cerrar Sesión</button>
     </div>
   </header>
 
-  <!-- Panel de control COMPACTO -->
+<!-- Panel de control COMPACTO -->
   <div class="control-panel-header">
     <!-- Sistema de turnos y controles básicos -->
     <div class="header-controls">
-      <div class="game-status" *ngIf="!juegoIniciado()">
-        <span>🎮 Jugadores: {{jugadores().length}} | Barcos: {{getBarcosColocados()}}</span>
-        <button class="btn-start-game small" (click)="iniciarJuego()" 
-                [disabled]="jugadores().length < 2">
-          🚀 Iniciar Juego
-        </button>
-      </div>
+      @if (!juegoIniciado()) {
+        <div class="game-status">
+          <span>🎮 Jugadores: {{jugadores().length}} | Barcos: {{getBarcosColocados()}}</span>
+          @if (!modoMultijugador()) {
+            <button class="btn-start-game small" (click)="iniciarJuego()" 
+                    [disabled]="jugadores().length < 2">
+              🚀 Iniciar Juego
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="game-status">
+          @if (modoMultijugador()) {
+            <strong>{{getMensajeTurno()}}</strong>
+            @if (esMiTurno()) {
+              <span class="turn-indicator-active">🟢 TU TURNO</span>
+            } @else {
+              <span class="turn-indicator-waiting">🔴 ESPERANDO</span>
+            }
+          } @else {
+            <strong>🔄 Turno: {{jugadorActual()?.nombre}}</strong>
+            <span class="turn-phase">{{faseDelTurno() === 'seleccionar-barco' ? 'Seleccionar Barco' : 'Mover Barco'}}</span>
+          }
+        </div>
+      }
 
-      <div class="game-status" *ngIf="juegoIniciado()">
-        <strong>🔄 Turno: {{jugadorActual()?.nombre}}</strong>
-        <span class="turn-phase">{{faseDelTurno() === 'seleccionar-barco' ? 'Seleccionar Barco' : 'Mover Barco'}}</span>
-      </div>
-
-      <!-- Menús desplegables -->
+          <!-- Menús desplegables -->
       <div class="dropdown-menus">
         <div class="dropdown">
           <button class="dropdown-btn" (click)="showPlayersDropdown = !showPlayersDropdown">
             👥 Jugadores ({{jugadores().length}}) ▼
           </button>
-          <div class="dropdown-content" *ngIf="showPlayersDropdown">
-            <div *ngFor="let jugador of jugadores()" 
-                 class="player-item-dropdown"
-                 [class.current-turn]="juegoIniciado() && jugadorActual()?.id === jugador.id">
-              <span>{{jugador.nombre}} ({{getBarcoCountForJugador(jugador)}} barcos)</span>
+          @if (showPlayersDropdown) {
+            <div class="dropdown-content">
+              @for (jugador of jugadores(); track jugador.id) {
+                <div class="player-item-dropdown"
+                     [class.current-turn]="juegoIniciado() && jugadorActual()?.id === jugador.id">
+                  <span>{{jugador.nombre}} ({{getBarcoCountForJugador(jugador)}} barcos)</span>
+                </div>
+              }
+              <button class="btn-create-small" (click)="showCreatePlayer.set(true); showPlayersDropdown = false" 
+                      [disabled]="juegoIniciado()">+ Crear Jugador</button>
             </div>
-            <button class="btn-create-small" (click)="showCreatePlayer.set(true); showPlayersDropdown = false" 
-                    [disabled]="juegoIniciado()">+ Crear Jugador</button>
-          </div>
+          }
         </div>
 
         <div class="dropdown">
           <button class="dropdown-btn" (click)="showBoatsDropdown = !showBoatsDropdown">
             🚢 Barcos ({{barcos().length}}) ▼
           </button>
-          <div class="dropdown-content boats-dropdown" *ngIf="showBoatsDropdown">
-            <div *ngFor="let barco of barcos()" 
-                 class="boat-item-dropdown"
-                 [class.selected]="selectedBarco()?.id === barco.id"
-                 [class.can-select]="puedeSeleccionarBarco(barco)"
-                 [class.disabled]="juegoIniciado() && !puedeSeleccionarBarco(barco)"
-                 (click)="selectBarco(barco); showBoatsDropdown = false">
-              <div class="boat-mini">
-                <span class="boat-icon-small">🚢</span>
-                <div class="boat-info-mini">
-                  <div class="boat-name-small">{{getJugadorName(barco.jugadorId || 0)}} - Barco #{{barco.id}}</div>
-                  <div class="boat-details-small">v({{barco.velocidadX}},{{barco.velocidadY}})
-                    <span *ngIf="barco.posicion"> | ({{barco.posicion.x}}, {{barco.posicion.y}})</span>
-                    <span *ngIf="!barco.posicion" class="pending-small">Sin colocar</span>
+          @if (showBoatsDropdown) {
+            <div class="dropdown-content boats-dropdown">
+              @for (barco of barcos(); track barco.id) {
+                <div class="boat-item-dropdown"
+                     [class.selected]="selectedBarco()?.id === barco.id"
+                     [class.can-select]="puedeSeleccionarBarco(barco)"
+                     [class.disabled]="juegoIniciado() && !puedeSeleccionarBarco(barco)"
+                     (click)="selectBarco(barco); showBoatsDropdown = false">
+                  <div class="boat-mini">
+                    <span class="boat-icon-small">🚢</span>
+                    <div class="boat-info-mini">
+                      <div class="boat-name-small">{{getJugadorName(barco.jugadorId || 0)}} - Barco #{{barco.id}}</div>
+                      <div class="boat-details-small">v({{barco.velocidadX}},{{barco.velocidadY}})
+                        @if (barco.posicion) {
+                          <span> | ({{barco.posicion.x}}, {{barco.posicion.y}})</span>
+                        } @else {
+                          <span class="pending-small">Sin colocar</span>
+                        }
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              }
+              <button class="btn-create-small" (click)="showCreateBarco.set(true); showBoatsDropdown = false" 
+                      [disabled]="juegoIniciado()">+ Crear Barco</button>
             </div>
-            <button class="btn-create-small" (click)="showCreateBarco.set(true); showBoatsDropdown = false" 
-                    [disabled]="juegoIniciado()">+ Crear Barco</button>
-          </div>
+          }
         </div>
       </div>
     </div>
 
     <!-- Mensajes del juego -->
-    <div class="game-message-header" *ngIf="gameMessage()">
-      <span class="message-text">{{gameMessage()}}</span>
-      <span *ngIf="ganador()" class="winner-text">🏆 ¡Ganador: {{ganador()}}!</span>
-    </div>
+    @if (gameMessage()) {
+      <div class="game-message-header">
+        <span class="message-text">{{gameMessage()}}</span>
+        @if (ganador()) {
+          <span class="winner-text">🏆 ¡Ganador: {{ganador()}}!</span>
+        }
+      </div>
+    }
   </div>
 
   <!-- Layout principal: Tablero + Panel lateral -->
@@ -97,149 +129,177 @@
         </div>
         
         <div class="board-grid">
-          <div *ngFor="let fila of tablero(); let y = index" class="board-row">
-            <div *ngFor="let celda of fila; let x = index" 
-                 [class]="getCeldaClass(celda)"
-                 (click)="onCeldaClick(celda)"
-                 [title]="'(' + celda.x + ', ' + celda.y + ') - ' + celda.tipocelda">
-            
-            <!-- Mostrar barco si existe -->
-            <div *ngIf="getBarcoAtPosition(celda.x, celda.y) as barco" 
-                 class="barco-sprite"
-                 [class.selected-barco]="selectedBarco()?.id === barco.id">
-              🚢
+          @for (fila of tablero(); track $index; let y = $index) {
+            <div class="board-row">
+              @for (celda of fila; track $index; let x = $index) {
+                <div [class]="getCeldaClass(celda)"
+                     (click)="onCeldaClick(celda)"
+                     [title]="'(' + celda.x + ', ' + celda.y + ') - ' + celda.tipocelda">
+                
+                  @if (getBarcoAtPosition(celda.x, celda.y); as barco) {
+                    <div class="barco-sprite"
+                         [class.selected-barco]="selectedBarco()?.id === barco.id">
+                      🚢
+                    </div>
+                  }
+                  
+                  @if (isValidMovePosition(celda.x, celda.y)) {
+                    <div class="move-indicator">
+                      ✨
+                    </div>
+                  }
+                  
+                  @if (celda.tipocelda !== 'A') {
+                    <span class="celda-debug">{{celda.tipocelda}}</span>
+                  }
+                </div>
+              }
             </div>
-            
-            <!-- Mostrar indicador de movimiento válido -->
-            <div *ngIf="isValidMovePosition(celda.x, celda.y)" 
-                 class="move-indicator">
-              ✨
-            </div>
-            
-            <!-- Mostrar tipo de celda para debug -->
-            <span class="celda-debug" *ngIf="celda.tipocelda !== 'A'">{{celda.tipocelda}}</span>
-          </div>
+          }
         </div>
       </div>
     </div>
 
     <!-- Panel lateral para controles del barco -->
-    <div class="side-panel" *ngIf="selectedBarco()">
-      <div class="side-panel-content">
-        <h3>⚡ Control de Barco</h3>
-        
-        <div class="boat-info-panel">
-          <div class="boat-header">
-            <strong>{{getJugadorName(selectedBarco()?.jugadorId || 0)}}</strong>
-            <span class="boat-id">Barco #{{selectedBarco()?.id}}</span>
-          </div>
+    @if (selectedBarco()) {
+      <div class="side-panel">
+        <div class="side-panel-content">
+          <h3>⚡ Control de Barco</h3>
           
-          <div class="boat-stats">
-            <div class="stat-item">
-              <span class="stat-label">Velocidad:</span>
-              <span class="stat-value">v({{selectedBarco()?.velocidadX}}, {{selectedBarco()?.velocidadY}})</span>
+          <div class="boat-info-panel">
+            <div class="boat-header">
+              <strong>{{getJugadorName(selectedBarco()?.jugadorId || 0)}}</strong>
+              <span class="boat-id">Barco #{{selectedBarco()?.id}}</span>
             </div>
-            <div class="stat-item" *ngIf="selectedBarco()?.posicion">
-              <span class="stat-label">Posición:</span>
-              <span class="stat-value">({{selectedBarco()?.posicion?.x}}, {{selectedBarco()?.posicion?.y}})</span>
+            
+            <div class="boat-stats">
+              <div class="stat-item">
+                <span class="stat-label">Velocidad:</span>
+                <span class="stat-value">v({{selectedBarco()?.velocidadX}}, {{selectedBarco()?.velocidadY}})</span>
+              </div>
+              @if (selectedBarco()?.posicion) {
+                <div class="stat-item">
+                  <span class="stat-label">Posición:</span>
+                  <span class="stat-value">({{selectedBarco()?.posicion?.x}}, {{selectedBarco()?.posicion?.y}})</span>
+                </div>
+              }
             </div>
           </div>
-        </div>
 
         <!-- Información de movimiento simplificada -->
-        <div class="movement-info-panel" *ngIf="selectedBarco()?.posicion">
-          <h4>Movimiento del Barco</h4>
-          <div class="current-velocity">
-            <p><strong>Velocidad actual:</strong> v({{selectedBarco()?.velocidadX}}, {{selectedBarco()?.velocidadY}})</p>
-          </div>
-          
-          <div class="movement-instructions">
-            <p>🎯 <strong>Haz clic en las celdas coloreadas</strong> para mover el barco.</p>
-            <p>✨ Las celdas verdes muestran todas las opciones de movimiento disponibles.</p>
-            <p *ngIf="juegoIniciado()">⏳ Tu turno terminará después del movimiento</p>
-          </div>
-          
-          <div class="possible-movements" *ngIf="validMoves().length > 0">
-            <h5>Movimientos posibles:</h5>
-            <div class="moves-list">
-              <div *ngFor="let move of validMoves()" class="move-option">
-                → ({{move.x}}, {{move.y}})
-              </div>
+        @if (selectedBarco()?.posicion) {
+          <div class="movement-info-panel">
+            <h4>Movimiento del Barco</h4>
+            <div class="current-velocity">
+              <p><strong>Velocidad actual:</strong> v({{selectedBarco()?.velocidadX}}, {{selectedBarco()?.velocidadY}})</p>
             </div>
-          </div>
-        </div>
-
-        <!-- Controles de velocidad durante el turno -->
-        <div class="velocity-controls" *ngIf="selectedBarco()?.posicion && puedeRealizarAccion()">
-          <h4>⚡ Control de Velocidad</h4>
-          <p class="velocity-instruction" *ngIf="!velocidadCambiadaEnTurno()">
-            Modifica la velocidad (X o Y, solo una por turno):
-          </p>
-          <p class="velocity-instruction completed" *ngIf="velocidadCambiadaEnTurno()">
-            ✅ Velocidad ya modificada este turno. Ahora mueve el barco.
-          </p>
-          
-          <div class="velocity-display">
-            <span class="velocity-label">Velocidad actual:</span>
-            <span class="velocity-value">v({{selectedBarco()?.velocidadX}}, {{selectedBarco()?.velocidadY}})</span>
-          </div>
-
-          <div class="velocity-controls-grid" [class.disabled]="velocidadCambiadaEnTurno()">
-            <!-- Control de velocidad X -->
-            <div class="velocity-control-group">
-              <label class="velocity-label">Velocidad X (vx):</label>
-              <div class="velocity-buttons">
-                <button class="velocity-btn decrease" 
-                        (click)="modificarVelocidad(-1, 0)"
-                        [disabled]="!puedeDisminuirVelocidadX()"
-                        [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeDisminuirVelocidadX() ? 'Límite mínimo alcanzado (-5)' : 'Disminuir velocidad X'">
-                  ← -1
-                </button>
-                <span class="velocity-current">{{selectedBarco()?.velocidadX}}</span>
-                <button class="velocity-btn increase" 
-                        (click)="modificarVelocidad(1, 0)"
-                        [disabled]="!puedeAumentarVelocidadX()"
-                        [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeAumentarVelocidadX() ? 'Límite máximo alcanzado (+5)' : 'Aumentar velocidad X'">
-                  +1 →
-                </button>
+            
+            <div class="movement-instructions">
+              <p>🎯 <strong>Haz clic en las celdas coloreadas</strong> para mover el barco.</p>
+              <p>✨ Las celdas verdes muestran todas las opciones de movimiento disponibles.</p>
+              @if (juegoIniciado()) {
+                <p>⏳ Tu turno terminará después del movimiento</p>
+              }
+            </div>
+            
+            @if (validMoves().length > 0) {
+              <div class="possible-movements">
+                <h5>Movimientos posibles:</h5>
+                <div class="moves-list">
+                  @for (move of validMoves(); track $index) {
+                    <div class="move-option">
+                      → ({{move.x}}, {{move.y}})
+                    </div>
+                  }
+                </div>
               </div>
+            }
+          </div>
+        }
+
+        @if (selectedBarco()?.posicion && puedeRealizarAccion()) {
+          <div class="velocity-controls">
+            <h4>⚡ Control de Velocidad</h4>
+            @if (!velocidadCambiadaEnTurno()) {
+              <p class="velocity-instruction">
+                Modifica la velocidad (X o Y, solo una por turno):
+              </p>
+            } @else {
+              <p class="velocity-instruction completed">
+                ✅ Velocidad ya modificada este turno. Ahora mueve el barco.
+              </p>
+            }
+            
+            <div class="velocity-display">
+              <span class="velocity-label">Velocidad actual:</span>
+              <span class="velocity-value">v({{selectedBarco()?.velocidadX}}, {{selectedBarco()?.velocidadY}})</span>
             </div>
 
-            <!-- Control de velocidad Y -->
-            <div class="velocity-control-group">
-              <label class="velocity-label">Velocidad Y (vy):</label>
-              <div class="velocity-buttons">
-                <button class="velocity-btn decrease" 
-                        (click)="modificarVelocidad(0, -1)"
-                        [disabled]="!puedeDisminuirVelocidadY()"
-                        [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeDisminuirVelocidadY() ? 'Límite mínimo alcanzado (-5)' : 'Disminuir velocidad Y'">
-                  ↓ -1
-                </button>
-                <span class="velocity-current">{{selectedBarco()?.velocidadY}}</span>
-                <button class="velocity-btn increase" 
-                        (click)="modificarVelocidad(0, 1)"
-                        [disabled]="!puedeAumentarVelocidadY()"
-                        [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeAumentarVelocidadY() ? 'Límite máximo alcanzado (+5)' : 'Aumentar velocidad Y'">
-                  +1 ↑
-                </button>
+            <div class="velocity-controls-grid" [class.disabled]="velocidadCambiadaEnTurno()">
+              <!-- Control de velocidad X -->
+              <div class="velocity-control-group">
+                <label class="velocity-label">Velocidad X (vx):</label>
+                <div class="velocity-buttons">
+                  <button class="velocity-btn decrease" 
+                          (click)="modificarVelocidad(-1, 0)"
+                          [disabled]="!puedeDisminuirVelocidadX()"
+                          [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeDisminuirVelocidadX() ? 'Límite mínimo alcanzado (-5)' : 'Disminuir velocidad X'">
+                    ← -1
+                  </button>
+                  <span class="velocity-current">{{selectedBarco()?.velocidadX}}</span>
+                  <button class="velocity-btn increase" 
+                          (click)="modificarVelocidad(1, 0)"
+                          [disabled]="!puedeAumentarVelocidadX()"
+                          [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeAumentarVelocidadX() ? 'Límite máximo alcanzado (+5)' : 'Aumentar velocidad X'">
+                    +1 →
+                  </button>
+                </div>
+              </div>
+
+              <!-- Control de velocidad Y -->
+              <div class="velocity-control-group">
+                <label class="velocity-label">Velocidad Y (vy):</label>
+                <div class="velocity-buttons">
+                  <button class="velocity-btn decrease" 
+                          (click)="modificarVelocidad(0, -1)"
+                          [disabled]="!puedeDisminuirVelocidadY()"
+                          [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeDisminuirVelocidadY() ? 'Límite mínimo alcanzado (-5)' : 'Disminuir velocidad Y'">
+                    ↓ -1
+                  </button>
+                  <span class="velocity-current">{{selectedBarco()?.velocidadY}}</span>
+                  <button class="velocity-btn increase" 
+                          (click)="modificarVelocidad(0, 1)"
+                          [disabled]="!puedeAumentarVelocidadY()"
+                          [title]="velocidadCambiadaEnTurno() ? 'Ya cambiaste velocidad este turno' : !puedeAumentarVelocidadY() ? 'Límite máximo alcanzado (+5)' : 'Aumentar velocidad Y'">
+                    +1 ↑
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="velocity-info">
-            <p class="velocity-hint" *ngIf="!velocidadCambiadaEnTurno()">
-              💡 Solo puedes cambiar X O Y por turno, no ambos
-            </p>
-            <p class="velocity-hint completed" *ngIf="velocidadCambiadaEnTurno() && cambioVelocidadTurno()">
-              🔒 Cambio aplicado: {{cambioVelocidadTurno()?.deltaVx !== 0 ? 'X' + (cambioVelocidadTurno()?.deltaVx! > 0 ? '+' : '') + cambioVelocidadTurno()?.deltaVx : 'Y' + (cambioVelocidadTurno()?.deltaVy! > 0 ? '+' : '') + cambioVelocidadTurno()?.deltaVy}}
-            </p>
-            <p class="turn-reminder" *ngIf="juegoIniciado()">🎯 Es tu turno: {{jugadorActual()?.nombre}}</p>
+            <div class="velocity-info">
+              @if (!velocidadCambiadaEnTurno()) {
+                <p class="velocity-hint">
+                  💡 Solo puedes cambiar X O Y por turno, no ambos
+                </p>
+              }
+              @if (velocidadCambiadaEnTurno() && cambioVelocidadTurno()) {
+                <p class="velocity-hint completed">
+                  🔒 Cambio aplicado: {{cambioVelocidadTurno()?.deltaVx !== 0 ? 'X' + (cambioVelocidadTurno()?.deltaVx! > 0 ? '+' : '') + cambioVelocidadTurno()?.deltaVx : 'Y' + (cambioVelocidadTurno()?.deltaVy! > 0 ? '+' : '') + cambioVelocidadTurno()?.deltaVy}}
+                </p>
+              }
+              @if (juegoIniciado()) {
+                <p class="turn-reminder">🎯 Es tu turno: {{jugadorActual()?.nombre}}</p>
+              }
+            </div>
           </div>
-        </div>
+        }
 
-        <div class="placement-hint" *ngIf="!selectedBarco()?.posicion">
-          <p>🏁 Haz clic en una casilla de Partida (P - naranja) para colocar el barco</p>
-        </div>
+        @if (!selectedBarco()?.posicion) {
+          <div class="placement-hint">
+            <p>🏁 Haz clic en una casilla de Partida (P - naranja) para colocar el barco</p>
+          </div>
+        }
 
         <!-- Botones de administración del barco -->
         <div class="boat-admin-panel">
@@ -258,86 +318,93 @@
         </div>
       </div>
     </div>
-  </div>
+  }
+</div>
 
-  <!-- Modal para crear jugador -->
-  <div *ngIf="showCreatePlayer()" class="modal-overlay" (click)="showCreatePlayer.set(false)">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <h3>Crear Nuevo Jugador</h3>
-      <form (ngSubmit)="createPlayer()">
-        <div class="form-group">
-          <label for="playerName">Nombre del Jugador</label>
-          <input id="playerName" 
-                 type="text" 
-                 [(ngModel)]="newPlayerName"
-                 name="playerName"
-                 placeholder="Ingresa el nombre"
-                 required>
-        </div>
-        <div class="modal-buttons">
-          <button type="button" class="btn-secondary" (click)="showCreatePlayer.set(false)">Cancelar</button>
-          <button type="submit" class="btn-primary">Crear</button>
-        </div>
-      </form>
+<!-- Modal para crear jugador -->
+  @if (showCreatePlayer()) {
+    <div class="modal-overlay" (click)="showCreatePlayer.set(false)">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Crear Nuevo Jugador</h3>
+        <form (ngSubmit)="createPlayer()">
+          <div class="form-group">
+            <label for="playerName">Nombre del Jugador</label>
+            <input id="playerName" 
+                   type="text" 
+                   [(ngModel)]="newPlayerName"
+                   name="playerName"
+                   placeholder="Ingresa el nombre"
+                   required>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" class="btn-secondary" (click)="showCreatePlayer.set(false)">Cancelar</button>
+            <button type="submit" class="btn-primary">Crear</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
+  }
 
   <!-- Modal para crear barco -->
-  <div *ngIf="showCreateBarco()" class="modal-overlay" (click)="showCreateBarco.set(false)">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <h3>Crear Nuevo Barco</h3>
-      <form (ngSubmit)="createBarco()">
-        <div class="form-group">
-          <label for="jugadorId">Jugador</label>
-          <select id="jugadorId" 
-                  [(ngModel)]="newBarco.jugadorId"
-                  name="jugadorId"
-                  required>
-            <option [value]="0">Selecciona un jugador</option>
-            <option *ngFor="let jugador of jugadores()" [value]="jugador.id">
-              {{jugador.nombre}}
-            </option>
-          </select>
-        </div>
-
-        <div class="velocity-group">
-          <h4>Velocidad Vectorial</h4>
-          <div class="velocity-inputs">
-            <div class="form-group">
-              <label for="velocidadX">Velocidad X (vx)</label>
-              <input id="velocidadX" 
-                     type="number" 
-                     min="-3" 
-                     max="3"
-                     [(ngModel)]="newBarco.velocidadX"
-                     name="velocidadX"
-                     required>
-              <small>Componente horizontal de velocidad (-3 a 3)</small>
-            </div>
-
-            <div class="form-group">
-              <label for="velocidadY">Velocidad Y (vy)</label>
-              <input id="velocidadY" 
-                     type="number" 
-                     min="-3" 
-                     max="3"
-                     [(ngModel)]="newBarco.velocidadY"
-                     name="velocidadY"
-                     required>
-              <small>Componente vertical de velocidad (-3 a 3)</small>
-            </div>
+  @if (showCreateBarco()) {
+    <div class="modal-overlay" (click)="showCreateBarco.set(false)">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Crear Nuevo Barco</h3>
+        <form (ngSubmit)="createBarco()">
+          <div class="form-group">
+            <label for="jugadorId">Jugador</label>
+            <select id="jugadorId" 
+                    [(ngModel)]="newBarco.jugadorId"
+                    name="jugadorId"
+                    required>
+              <option [value]="0">Selecciona un jugador</option>
+              @for (jugador of jugadores(); track jugador.id) {
+                <option [value]="jugador.id">
+                  {{jugador.nombre}}
+                </option>
+              }
+            </select>
           </div>
-          <p class="velocity-explanation">
-            🎯 El barco se moverá según el vector v({{newBarco.velocidadX}}, {{newBarco.velocidadY}}) cada turno.
-            Durante el juego podrás modificar cada componente en ±1.
-          </p>
-        </div>
 
-        <div class="modal-buttons">
-          <button type="button" class="btn-secondary" (click)="showCreateBarco.set(false)">Cancelar</button>
-          <button type="submit" class="btn-primary">Crear</button>
-        </div>
-      </form>
+          <div class="velocity-group">
+            <h4>Velocidad Vectorial</h4>
+            <div class="velocity-inputs">
+              <div class="form-group">
+                <label for="velocidadX">Velocidad X (vx)</label>
+                <input id="velocidadX" 
+                       type="number" 
+                       min="-3" 
+                       max="3"
+                       [(ngModel)]="newBarco.velocidadX"
+                       name="velocidadX"
+                       required>
+                <small>Componente horizontal de velocidad (-3 a 3)</small>
+              </div>
+
+              <div class="form-group">
+                <label for="velocidadY">Velocidad Y (vy)</label>
+                <input id="velocidadY" 
+                       type="number" 
+                       min="-3" 
+                       max="3"
+                       [(ngModel)]="newBarco.velocidadY"
+                       name="velocidadY"
+                       required>
+                <small>Componente vertical de velocidad (-3 a 3)</small>
+              </div>
+            </div>
+            <p class="velocity-explanation">
+              🎯 El barco se moverá según el vector v({{newBarco.velocidadX}}, {{newBarco.velocidadY}}) cada turno.
+              Durante el juego podrás modificar cada componente en ±1.
+            </p>
+          </div>
+
+          <div class="modal-buttons">
+            <button type="button" class="btn-secondary" (click)="showCreateBarco.set(false)">Cancelar</button>
+            <button type="submit" class="btn-primary">Crear</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
+  }
 </div>

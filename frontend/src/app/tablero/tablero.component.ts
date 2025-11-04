@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,7 +7,9 @@ import { BarcoService } from '../shared/barco.service';
 import { TableroService, MovimientoResponse, PosicionResponse } from '../shared/tablero.service';
 import { JugadorService } from '../shared/jugador.service';
 import { PosicionService } from '../shared/posicion.service';
+import { PartidaService } from '../shared/partida.service';
 import { Barco, Celda, CeldaDTO, Jugador, Tablero, Posicion } from '../model/game-models';
+import { Partida } from '../model/partida';
 
 @Component({
   selector: 'app-tablero',
@@ -16,7 +18,7 @@ import { Barco, Celda, CeldaDTO, Jugador, Tablero, Posicion } from '../model/gam
   templateUrl: './tablero.component.html',
   styleUrls: ['./tablero.component.css']
 })
-export class TableroComponent implements OnInit {
+export class TableroComponent implements OnInit, OnDestroy {
   currentUser: any = null;
   tablero = signal<Celda[][]>([]);
   barcos = signal<Barco[]>([]);
@@ -35,6 +37,12 @@ export class TableroComponent implements OnInit {
   turnoActual = signal<number>(0); // Índice del jugador actual
   jugadorActual = signal<Jugador | null>(null);
   faseDelTurno = signal<'seleccionar-barco' | 'mover-barco'>('seleccionar-barco');
+  
+  // Multijugador
+  partidaActual = signal<Partida | null>(null);
+  modoMultijugador = signal<boolean>(false);
+  miJugadorId = signal<number | null>(null);
+  private pollingInterval: any;
   
   // Formularios
   showCreatePlayer = signal(false);
@@ -59,7 +67,8 @@ export class TableroComponent implements OnInit {
     private barcoService: BarcoService,
     private tableroService: TableroService,
     private jugadorService: JugadorService,
-    private posicionService: PosicionService
+    private posicionService: PosicionService,
+    private partidaService: PartidaService
   ) {}
 
   // Método para contar barcos de un jugador
@@ -83,9 +92,50 @@ export class TableroComponent implements OnInit {
     }
     this.currentUser = JSON.parse(userData);
     console.log('Usuario encontrado:', this.currentUser);
+    
+    // Verificar si hay una partida multijugador activa
+    const partidaData = localStorage.getItem('partidaActual');
+    if (partidaData) {
+      const partida = JSON.parse(partidaData);
+      this.partidaActual.set(partida);
+      this.modoMultijugador.set(true);
+      this.juegoIniciado.set(partida.iniciada);
+      console.log('Modo multijugador activado:', partida);
+      
+      // ⭐ Obtener mi jugador ID desde localStorage
+      const miJugadorIdStr = localStorage.getItem('miJugadorId');
+      if (miJugadorIdStr) {
+        const miId = parseInt(miJugadorIdStr, 10);
+        this.miJugadorId.set(miId);
+        console.log('Mi jugador ID desde localStorage:', miId);
+        
+        // Buscar y guardar la información completa del jugador
+        const miJugador = partida.jugadores.find((j: any) => j.id === miId);
+        if (miJugador) {
+          localStorage.setItem('jugadorActual', JSON.stringify(miJugador));
+          console.log('Jugador guardado en localStorage:', miJugador);
+        }
+      } else {
+        // Fallback: intentar encontrar por nombre (para compatibilidad)
+        const jugadorData = localStorage.getItem('jugadorActual');
+        if (jugadorData) {
+          const jugador = JSON.parse(jugadorData);
+          this.miJugadorId.set(jugador.id);
+          console.log('Mi jugador ID desde jugadorActual:', jugador.id);
+        }
+      }
+      
+      // Iniciar polling para actualizar estado
+      this.iniciarPollingMultijugador();
+    }
+    
     this.initializeBoard();
     this.loadJugadores();
     this.loadBarcos();
+  }
+  
+  ngOnDestroy() {
+    this.detenerPollingMultijugador();
   }
 
   initializeBoard() {
@@ -454,6 +504,12 @@ export class TableroComponent implements OnInit {
   }
 
   selectBarco(barco: Barco) {
+    // Verificar modo multijugador y turno
+    if (this.modoMultijugador() && !this.esMiTurno()) {
+      this.gameMessage.set(`❌ No es tu turno. Esperando...`);
+      return;
+    }
+
     // Verificar si puede seleccionar este barco (sistema de turnos)
     if (!this.puedeSeleccionarBarco(barco)) {
       this.gameMessage.set(`❌ No es tu turno. Es el turno de ${this.jugadorActual()?.nombre}`);
@@ -727,7 +783,14 @@ export class TableroComponent implements OnInit {
                 this.juegoTerminado.set(true);
                 const jugador = this.jugadores().find(j => j.id === barco?.jugadorId);
                 this.ganador.set(jugador?.nombre || 'Jugador desconocido');
-                alert(`¡${jugador?.nombre || 'Jugador'} ha ganado la carrera!`);
+                
+                // En multijugador, notificar al servidor
+                if (this.modoMultijugador() && jugador?.id) {
+                  this.finalizarPartidaMultijugador(jugador.id);
+                } else {
+                  alert(`¡${jugador?.nombre || 'Jugador'} ha ganado la carrera!`);
+                }
+                
                 this.selectedBarco.set(null);
               } else if (movResult.tipo === 'DESTRUIDO') {
                 console.log('💥 Barco destruido detectado');
@@ -895,7 +958,14 @@ export class TableroComponent implements OnInit {
             const barco = this.barcos().find(b => b.id === barcoId);
             const jugador = this.jugadores().find(j => j.id === barco?.jugadorId);
             this.ganador.set(jugador?.nombre || 'Jugador desconocido');
-            alert(`¡${jugador?.nombre || 'Jugador'} ha ganado la carrera!`);
+            
+            // En multijugador, notificar al servidor
+            if (this.modoMultijugador() && jugador?.id) {
+              this.finalizarPartidaMultijugador(jugador.id);
+            } else {
+              alert(`¡${jugador?.nombre || 'Jugador'} ha ganado la carrera!`);
+            }
+            
             this.selectedBarco.set(null);
             this.validMoves.set([]);
             break;
@@ -1148,6 +1218,12 @@ export class TableroComponent implements OnInit {
   }
 
   onCeldaClick(celda: Celda) {
+    // Verificar modo multijugador y turno
+    if (this.modoMultijugador() && !this.esMiTurno()) {
+      this.gameMessage.set(`❌ No es tu turno. Esperando...`);
+      return;
+    }
+
     console.log('Clic en celda:', celda);
     console.log('Barco seleccionado:', this.selectedBarco());
     console.log('Tipo de celda:', celda.tipocelda);
@@ -1225,6 +1301,13 @@ export class TableroComponent implements OnInit {
   }
 
   siguienteTurno() {
+    // Si estamos en modo multijugador, usar el método del servidor
+    if (this.modoMultijugador()) {
+      this.siguienteTurnoMultijugador();
+      return;
+    }
+
+    // Modo local - lógica existente
     console.log('🔄 === AVANZANDO TURNO ===');
     console.log('Turno actual antes:', this.turnoActual());
     console.log('Jugador actual antes:', this.jugadorActual()?.nombre);
@@ -1411,5 +1494,139 @@ export class TableroComponent implements OnInit {
     const barco = this.selectedBarco();
     if (!barco || !this.puedeRealizarAccion() || this.velocidadCambiadaEnTurno()) return false;
     return (barco.velocidadY || 0) > -5;
+  }
+
+  // ============================================
+  // M�TODOS MULTIJUGADOR
+  // ============================================
+  
+  iniciarPollingMultijugador(): void {
+    this.detenerPollingMultijugador();
+    this.pollingInterval = setInterval(() => {
+      this.actualizarEstadoPartida();
+    }, 3000);
+  }
+  
+  detenerPollingMultijugador(): void {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+  }
+  
+  actualizarEstadoPartida(): void {
+    const partida = this.partidaActual();
+    if (!partida || !this.modoMultijugador()) return;
+    
+    this.partidaService.obtenerPartida(partida.id).subscribe({
+      next: (partidaActualizada) => {
+        this.partidaActual.set(partidaActualizada);
+        
+        if (partidaActualizada.turnoActualId) {
+          const jugadorTurno = this.jugadores().find(j => j.id === partidaActualizada.turnoActualId);
+          if (jugadorTurno) {
+            this.jugadorActual.set(jugadorTurno);
+          }
+        }
+        
+        if (partidaActualizada.finalizada) {
+          this.juegoTerminado.set(true);
+          this.ganador.set(partidaActualizada.ganadorNombre || null);
+          this.detenerPollingMultijugador();
+          
+          if (partidaActualizada.ganadorId === this.miJugadorId()) {
+            this.gameMessage.set(' Felicidades! Has ganado la partida!');
+          } else {
+            this.gameMessage.set(` Partida finalizada. Ganador: ${partidaActualizada.ganadorNombre}`);
+          }
+        }
+        
+        this.loadJugadores();
+        this.loadBarcos();
+      },
+      error: (error) => {
+        console.error('Error al actualizar partida:', error);
+      }
+    });
+  }
+  
+  esMiTurno(): boolean {
+    if (!this.modoMultijugador()) return true;
+    
+    const partida = this.partidaActual();
+    const miId = this.miJugadorId();
+    
+    if (!partida || !miId) return false;
+    
+    return partida.turnoActualId === miId;
+  }
+  
+  siguienteTurnoMultijugador(): void {
+    const partida = this.partidaActual();
+    if (!partida || !this.modoMultijugador()) return;
+    
+    this.partidaService.siguienteTurno(partida.id).subscribe({
+      next: (partidaActualizada) => {
+        this.partidaActual.set(partidaActualizada);
+        
+        if (partidaActualizada.turnoActualId) {
+          const jugadorTurno = this.jugadores().find(j => j.id === partidaActualizada.turnoActualId);
+          if (jugadorTurno) {
+            this.jugadorActual.set(jugadorTurno);
+            this.gameMessage.set(` Turno de: ${jugadorTurno.nombre}`);
+          }
+        }
+        
+        this.velocidadCambiadaEnTurno.set(false);
+        this.cambioVelocidadTurno.set(null);
+        this.faseDelTurno.set('seleccionar-barco');
+        this.selectedBarco.set(null);
+        this.validMoves.set([]);
+      },
+      error: (error) => {
+        console.error('Error al pasar turno:', error);
+        this.gameMessage.set(' Error al pasar el turno');
+      }
+    });
+  }
+  
+  finalizarPartidaMultijugador(ganadorId: number): void {
+    const partida = this.partidaActual();
+    if (!partida || !this.modoMultijugador()) return;
+    
+    this.partidaService.finalizarPartida(partida.id, ganadorId).subscribe({
+      next: (partidaFinalizada) => {
+        this.partidaActual.set(partidaFinalizada);
+        this.juegoTerminado.set(true);
+        this.ganador.set(partidaFinalizada.ganadorNombre || null);
+        this.detenerPollingMultijugador();
+        
+        this.gameMessage.set(` Partida finalizada! Ganador: ${partidaFinalizada.ganadorNombre}`);
+      },
+      error: (error) => {
+        console.error('Error al finalizar partida:', error);
+      }
+    });
+  }
+  
+  volverAlLobby(): void {
+    localStorage.removeItem('partidaActual');
+    this.detenerPollingMultijugador();
+    this.router.navigate(['/lobby']);
+  }
+  
+  getMensajeTurno(): string {
+    if (!this.modoMultijugador()) {
+      return this.juegoIniciado() ? `Turno de: ${this.jugadorActual()?.nombre || 'N/A'}` : 'Configura el juego';
+    }
+    
+    const partida = this.partidaActual();
+    if (!partida) return '';
+    
+    if (this.esMiTurno()) {
+      return ' ES TU TURNO - Realiza tu movimiento';
+    } else {
+      return ` Turno de: ${partida.turnoActualNombre} - Esperando...`;
+    }
   }
 }

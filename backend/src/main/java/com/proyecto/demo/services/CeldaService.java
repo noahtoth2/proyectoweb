@@ -38,7 +38,7 @@ public class CeldaService {
         celdaRepository.save(entity);
     }
 
-    public void borrarBarco(Long celdaId) {
+    public void borrarCelda(Long celdaId) {
         celdaRepository.deleteById(celdaId);
     }
 }

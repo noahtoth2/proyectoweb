@@ -1460,3 +1460,33 @@
   color: #27ae60;
   font-weight: 500;
 }
+/* Estilos para modo multijugador */
+.partida-info {
+  color: #3498db;
+  font-weight: bold;
+  margin-left: 1rem;
+}
+
+.turn-indicator-active {
+  background: #27ae60;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+.turn-indicator-waiting {
+  background: #e74c3c;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -23,6 +25,10 @@ public class Jugador{
     
     @OneToMany(mappedBy = "jugador")
     private List<Barco> barcos = new ArrayList<>();
+    
+    @ManyToOne
+    @JoinColumn(name = "partida_id")
+    private Partida partida;
     
     public Jugador(){
     }
@@ -53,5 +59,12 @@ public class Jugador{
         return barcos;
     }
 
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void setPartida(Partida partida) {
+        this.partida = partida;
+    }
     
 }

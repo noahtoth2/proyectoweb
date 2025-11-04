@@ -1,0 +1,257 @@
+<div class="lobby-container">
+  <!-- MENÚ PRINCIPAL -->
+  @if (vistaActual() === 'menu') {
+    <div class="menu-principal">
+      <div class="header-lobby">
+        <h1>🏁 Regata Online - Multijugador</h1>
+        <p class="subtitle">Elige una opción para comenzar</p>
+      </div>
+
+      <div class="menu-opciones">
+        <button class="btn-opcion crear" (click)="mostrarCrearPartida()">
+          <span class="icono">➕</span>
+          <span class="texto">Crear Partida</span>
+          <span class="descripcion">Crea una nueva sala de juego</span>
+        </button>
+
+        <button class="btn-opcion unirse" (click)="mostrarUnirsePartida()">
+          <span class="icono">🔑</span>
+          <span class="texto">Unirse con Código</span>
+          <span class="descripcion">Ingresa el código de una partida</span>
+        </button>
+
+        <button class="btn-opcion singleplayer" routerLink="/tablero">
+          <span class="icono">🎮</span>
+          <span class="texto">Modo Local</span>
+          <span class="descripcion">Jugar en el mismo dispositivo</span>
+        </button>
+      </div>
+
+      <!-- PARTIDAS ACTIVAS -->
+      @if (partidasActivas().length > 0) {
+        <div class="partidas-activas">
+          <h3>Partidas Disponibles</h3>
+          <div class="lista-partidas">
+            @for (partida of partidasActivas(); track partida.id) {
+              <div class="partida-card" [class.llena]="partida.cantidadJugadores >= partida.maxJugadores">
+                <div class="partida-info">
+                  <h4>{{ partida.nombre }}</h4>
+                  <p class="creador">Creada por: {{ partida.creadorNombre }}</p>
+                  <div class="partida-detalles">
+                    <span class="jugadores">
+                      👥 {{ partida.cantidadJugadores }}/{{ partida.maxJugadores }}
+                    </span>
+                    <span class="codigo">Código: {{ partida.codigo }}</span>
+                  </div>
+                </div>
+                @if (partida.cantidadJugadores < partida.maxJugadores && !partida.iniciada) {
+                  <button class="btn-unirse-rapido" (click)="unirseAPartidaActiva(partida)">
+                    Unirse
+                  </button>
+                } @else {
+                  <span class="badge-llena">Llena</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- CREAR PARTIDA -->
+  @if (vistaActual() === 'crear') {
+    <div class="formulario-container">
+      <button class="btn-volver" (click)="volverAlMenu()">← Volver</button>
+      
+      <div class="formulario-header">
+        <h2>➕ Crear Nueva Partida</h2>
+        <p>Configura los detalles de tu partida</p>
+      </div>
+
+      <form class="formulario" (ngSubmit)="crearPartida()">
+        <div class="form-group">
+          <label for="nombrePartida">Nombre de la Partida</label>
+          <input 
+            id="nombrePartida"
+            type="text" 
+            [(ngModel)]="nuevaPartida.nombre"
+            name="nombrePartida"
+            placeholder="Ej: Regata del Sábado"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="nombreJugador">Tu Nombre</label>
+          <input 
+            id="nombreJugador"
+            type="text" 
+            [(ngModel)]="nuevaPartida.nombreJugador"
+            name="nombreJugador"
+            placeholder="Ej: Capitán Juan"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="maxJugadores">Máximo de Jugadores</label>
+          <select 
+            id="maxJugadores"
+            [(ngModel)]="nuevaPartida.maxJugadores"
+            name="maxJugadores">
+            <option [value]="2">2 Jugadores</option>
+            <option [value]="3">3 Jugadores</option>
+            <option [value]="4">4 Jugadores</option>
+          </select>
+        </div>
+
+        @if (mensajeError()) {
+          <div class="mensaje-error">
+            ⚠️ {{ mensajeError() }}
+          </div>
+        }
+
+        <button type="submit" class="btn-submit" [disabled]="cargando()">
+          @if (cargando()) {
+            <span>Creando...</span>
+          } @else {
+            <span>Crear Partida</span>
+          }
+        </button>
+      </form>
+    </div>
+  }
+
+  <!-- UNIRSE A PARTIDA -->
+  @if (vistaActual() === 'unirse') {
+    <div class="formulario-container">
+      <button class="btn-volver" (click)="volverAlMenu()">← Volver</button>
+      
+      <div class="formulario-header">
+        <h2>🔑 Unirse a Partida</h2>
+        <p>Ingresa el código de la partida</p>
+      </div>
+
+      <form class="formulario" (ngSubmit)="unirsePartida()">
+        <div class="form-group">
+          <label for="codigoPartida">Código de Partida</label>
+          <input 
+            id="codigoPartida"
+            type="text" 
+            [(ngModel)]="unirseData.codigo"
+            name="codigoPartida"
+            placeholder="Ej: ABC123"
+            maxlength="6"
+            style="text-transform: uppercase;"
+            required>
+          <small>El código tiene 6 caracteres</small>
+        </div>
+
+        <div class="form-group">
+          <label for="nombreJugadorUnirse">Tu Nombre</label>
+          <input 
+            id="nombreJugadorUnirse"
+            type="text" 
+            [(ngModel)]="unirseData.nombreJugador"
+            name="nombreJugadorUnirse"
+            placeholder="Ej: Capitán María"
+            required>
+        </div>
+
+        @if (mensajeError()) {
+          <div class="mensaje-error">
+            ⚠️ {{ mensajeError() }}
+          </div>
+        }
+
+        <button type="submit" class="btn-submit" [disabled]="cargando()">
+          @if (cargando()) {
+            <span>Uniéndose...</span>
+          } @else {
+            <span>Unirse</span>
+          }
+        </button>
+      </form>
+    </div>
+  }
+
+  <!-- SALA DE ESPERA -->
+  @if (vistaActual() === 'sala' && partidaActual()) {
+    <div class="sala-espera">
+      <div class="sala-header">
+        <h2>🎮 {{ partidaActual()?.nombre }}</h2>
+        <div class="codigo-partida">
+          <span>Código de Partida:</span>
+          <div class="codigo-display">
+            <strong>{{ partidaActual()?.codigo }}</strong>
+            <button class="btn-copiar" (click)="copiarCodigo()" title="Copiar código">
+              📋
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sala-contenido">
+        <div class="jugadores-sala">
+          <h3>Jugadores ({{ partidaActual()?.cantidadJugadores }}/{{ partidaActual()?.maxJugadores }})</h3>
+          <div class="lista-jugadores">
+            @for (jugador of partidaActual()?.jugadores; track jugador.id) {
+              <div class="jugador-item" [class.creador]="jugador.id === partidaActual()?.creadorId">
+                <span class="jugador-icono">
+                  @if (jugador.id === partidaActual()?.creadorId) {
+                    <span>👑</span>
+                  } @else {
+                    <span>⚓</span>
+                  }
+                </span>
+                <span class="jugador-nombre">{{ jugador.nombre }}</span>
+                @if (jugador.id === partidaActual()?.creadorId) {
+                  <span class="badge-creador">Anfitrión</span>
+                }
+              </div>
+            }
+          </div>
+
+          @if (partidaActual()!.cantidadJugadores < partidaActual()!.maxJugadores) {
+            <div class="esperando-jugadores">
+              <p>⏳ Esperando más jugadores...</p>
+              <small>Comparte el código con tus amigos</small>
+            </div>
+          }
+        </div>
+
+        <div class="sala-acciones">
+          @if (esCreador()) {
+            <div class="info-anfitrion">
+              <p>👑 Eres el anfitrión de esta partida</p>
+              @if (partidaActual()!.cantidadJugadores >= 2) {
+                <button class="btn-iniciar" (click)="iniciarJuego()" [disabled]="cargando()">
+                  @if (cargando()) {
+                    <span>Iniciando...</span>
+                  } @else {
+                    <span>🚀 Iniciar Partida</span>
+                  }
+                </button>
+              } @else {
+                <p class="advertencia">Se necesitan al menos 2 jugadores</p>
+              }
+            </div>
+          } @else {
+            <div class="info-jugador">
+              <p>⏳ Esperando a que el anfitrión inicie la partida...</p>
+            </div>
+          }
+
+          @if (mensajeError()) {
+            <div class="mensaje-error">
+              ⚠️ {{ mensajeError() }}
+            </div>
+          }
+
+          <button class="btn-salir" (click)="salirDeSala()">
+            Salir de la Sala
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

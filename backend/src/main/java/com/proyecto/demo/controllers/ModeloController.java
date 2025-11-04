@@ -45,7 +45,7 @@ public class ModeloController {
     public ResponseEntity<ModeloDTO> recuperarModelo(
             @Parameter(description = "Identificador único del modelo a buscar", required = true, example = "1") 
             @PathVariable Long idModelo) {
-        ModeloDTO modelo = modeloService.recuperarJugador(idModelo);
+        ModeloDTO modelo = modeloService.recuperarModelo(idModelo);
         return ResponseEntity.status(HttpStatus.OK).body(modelo);
     }
 

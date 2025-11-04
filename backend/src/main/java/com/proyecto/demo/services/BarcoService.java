@@ -2,9 +2,12 @@ package com.proyecto.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.demo.dto.BarcoDTO;
 import com.proyecto.demo.mappers.BarcoMapper;
@@ -21,6 +24,8 @@ import com.proyecto.demo.repository.TableroRepository;
 
 @Service
 public class BarcoService {
+    private final Logger logger = LoggerFactory.getLogger(BarcoService.class);
+    
     @Autowired
     private BarcoRepository barcoRepository;
     
@@ -53,29 +58,48 @@ public class BarcoService {
     }
 
     public BarcoDTO recuperarBarco(Long id) {
-        return BarcoMapper.toDTO(barcoRepository.findById(id).orElseThrow());
+        return BarcoMapper.toDTO(barcoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Barco no encontrado con ID: " + id)));
     }
 
+    @Transactional
     public BarcoDTO crear(BarcoDTO barcoDTO) {
-        System.out.println("=== DEBUG CREAR BARCO ===");
-        System.out.println("JugadorId: " + barcoDTO.getJugadorId());
-        System.out.println("ModeloId: " + barcoDTO.getModeloId());
-        System.out.println("TableroId: " + barcoDTO.getTableroId());
-        System.out.println("PosicionId: " + barcoDTO.getPosicionId());
-        System.out.println("========================");
+        // Validaciones
+        if (barcoDTO.getModeloId() == null) {
+            throw new RuntimeException("El modelo del barco es obligatorio");
+        }
+        if (barcoDTO.getJugadorId() == null) {
+            throw new RuntimeException("El jugador es obligatorio");
+        }
+        if (barcoDTO.getTableroId() == null) {
+            throw new RuntimeException("El tablero es obligatorio");
+        }
+        if (barcoDTO.getPosicionId() == null) {
+            throw new RuntimeException("La posición es obligatoria");
+        }
+
+        // Verificar que existen las entidades relacionadas
+        Modelo modelo = modeloRepository.findById(barcoDTO.getModeloId())
+            .orElseThrow(() -> new RuntimeException("Modelo no encontrado con ID: " + barcoDTO.getModeloId()));
+        Jugador jugador = jugadorRepository.findById(barcoDTO.getJugadorId())
+            .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + barcoDTO.getJugadorId()));
+        Tablero tablero = tableroRepository.findById(barcoDTO.getTableroId())
+            .orElseThrow(() -> new RuntimeException("Tablero no encontrado con ID: " + barcoDTO.getTableroId()));
+        Posicion posicion = posicionRepository.findById(barcoDTO.getPosicionId())
+            .orElseThrow(() -> new RuntimeException("Posición no encontrada con ID: " + barcoDTO.getPosicionId()));
         
         Barco entity = BarcoMapper.toEntity(barcoDTO);
         entity.setId(null);
+        entity.setModelo(modelo);
+        entity.setJugador(jugador);
+        entity.setTablero(tablero);
+        entity.setPosicion(posicion);
+        
         Barco saved = barcoRepository.save(entity);
-        
-        System.out.println("=== BARCO CREADO ===");
-        System.out.println("Barco ID: " + saved.getId());
-        System.out.println("Jugador asignado: " + (saved.getJugador() != null ? saved.getJugador().getNombre() : "NULL"));
-        System.out.println("====================");
-        
         return BarcoMapper.toDTO(saved);
     }
 
+    @Transactional
     public BarcoDTO actualizarBarco(BarcoDTO barcoDTO) {
         Barco entity = barcoRepository.findById(barcoDTO.getId()).orElseThrow();
 
@@ -116,6 +140,7 @@ public class BarcoService {
         return BarcoMapper.toDTO(saved);
     }
 
+    @Transactional
     public void borrarBarco(Long barcoId) {
         barcoRepository.deleteById(barcoId);
     }

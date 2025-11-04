@@ -23,7 +23,7 @@ public class ModeloService {
         return modeloDTOs;
     }
 
-    public ModeloDTO recuperarJugador(Long id) {
+    public ModeloDTO recuperarModelo(Long id) {
         return ModeloMapper.toDTO(modeloRepository.findById(id).orElseThrow());
     }
 
