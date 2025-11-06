@@ -39,13 +39,20 @@ export class AuthComponent {
       return;
     }
 
+    console.log('Intentando login con:', this.username);
+
     fetch('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: this.username, password: this.password })
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log('Response status:', response.status);
+      return response.json();
+    })
     .then((data: AuthResponse) => {
+      console.log('Login response:', data);
+      
       if (data.message && data.message.startsWith('Error')) {
         this.errorMessage.set(data.message);
         return;
@@ -57,24 +64,33 @@ export class AuthComponent {
       localStorage.setItem('userRoles', JSON.stringify(data.user.roles));
       localStorage.setItem('authToken', data.token);
       
-      // Redireccionar según el rol
-      if (data.user.roles.includes('ROLE_ADMIN')) {
+      console.log('Roles del usuario:', data.user.roles);
+      console.log('Barco seleccionado:', data.user.barcoSeleccionado);
+      
+      // Redireccionar según el rol (los roles vienen sin el prefijo ROLE_)
+      if (data.user.roles.includes('ADMIN')) {
+        console.log('Redirigiendo a admin panel');
         // Admin va al panel de administración
         this.router.navigate(['/admin']);
-      } else if (data.user.roles.includes('ROLE_USER')) {
+      } else if (data.user.roles.includes('USER')) {
         // Usuario normal: verificar si ya seleccionó barco
         if (data.user.barcoSeleccionado) {
+          console.log('Usuario tiene barco, redirigiendo a lobby');
           localStorage.setItem('barcoSeleccionadoId', data.user.barcoSeleccionado.id.toString());
           this.router.navigate(['/lobby']);
         } else {
+          console.log('Usuario sin barco, redirigiendo a selección');
           // Ir a selección de barco
           this.router.navigate(['/select-barco']);
         }
+      } else {
+        console.log('Usuario sin roles reconocidos:', data.user.roles);
+        this.errorMessage.set('El usuario no tiene roles asignados');
       }
     })
     .catch(error => {
       this.errorMessage.set('Error de conexión. Intenta nuevamente.');
-      console.error('Error:', error);
+      console.error('Error completo:', error);
     });
   }
   

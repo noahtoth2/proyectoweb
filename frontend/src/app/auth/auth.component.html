@@ -2,6 +2,15 @@
   <div class="auth-card">
     <h1>Regata Virtual</h1>
     
+    <div class="info-box">
+      <strong>🔧 Instrucciones de inicio:</strong>
+      <ol>
+        <li>Asegúrate de que el backend esté corriendo en <code>http://localhost:8080</code></li>
+        <li>Abre la consola del navegador (F12) para ver los logs</li>
+        <li>Si no tienes usuario, haz clic en "Regístrate aquí"</li>
+      </ol>
+    </div>
+    
     @if (errorMessage()) {
       <div class="error-message">{{ errorMessage() }}</div>
     }
