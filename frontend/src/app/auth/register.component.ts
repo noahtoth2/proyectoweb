@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -175,7 +175,7 @@ interface RegisterRequest {
     }
   `]
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
   username = '';
   email = '';
   password = '';
@@ -183,8 +183,15 @@ export class RegisterComponent {
   accountType = 'user';
   
   errorMessage = signal('');
+  private abortController: AbortController | null = null;
   
   constructor(private router: Router) {}
+
+  ngOnDestroy() {
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+  }
   
   onSubmit() {
     this.errorMessage.set('');
@@ -219,11 +226,18 @@ export class RegisterComponent {
       roles: [this.accountType]
     };
     
+    // Cancelar petición anterior si existe
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+    this.abortController = new AbortController();
+    
     // Llamar al servicio de autenticación
     fetch('http://localhost:8080/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(registerRequest)
+      body: JSON.stringify(registerRequest),
+      signal: this.abortController.signal
     })
     .then(response => response.json())
     .then(data => {
@@ -235,6 +249,10 @@ export class RegisterComponent {
       }
     })
     .catch(error => {
+      if (error.name === 'AbortError') {
+        console.log('Petición cancelada (navegación)');
+        return;
+      }
       this.errorMessage.set('Error al registrar. Intenta nuevamente.');
       console.error('Error:', error);
     });

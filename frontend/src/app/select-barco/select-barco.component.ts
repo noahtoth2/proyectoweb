@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -137,11 +137,18 @@ interface Barco {
     }
   `]
 })
-export class SelectBarcoComponent implements OnInit {
+export class SelectBarcoComponent implements OnInit, OnDestroy {
   availableBarcos = signal<Barco[]>([]);
   errorMessage = signal('');
+  private abortController: AbortController | null = null;
   
   constructor(private router: Router) {}
+
+  ngOnDestroy() {
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+  }
   
   ngOnInit() {
     const userId = localStorage.getItem('userId');
@@ -154,12 +161,23 @@ export class SelectBarcoComponent implements OnInit {
   }
   
   loadAvailableBarcos(userId: number) {
-    fetch(`http://localhost:8080/api/auth/available-barcos?userId=${userId}`)
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+    this.abortController = new AbortController();
+
+    fetch(`http://localhost:8080/api/auth/available-barcos?userId=${userId}`, {
+      signal: this.abortController.signal
+    })
       .then(response => response.json())
       .then(data => {
         this.availableBarcos.set(data);
       })
       .catch(error => {
+        if (error.name === 'AbortError') {
+          console.log('Petición cancelada (navegación)');
+          return;
+        }
         this.errorMessage.set('Error al cargar barcos disponibles');
         console.error('Error:', error);
       });
@@ -169,8 +187,14 @@ export class SelectBarcoComponent implements OnInit {
     const userId = localStorage.getItem('userId');
     if (!userId) return;
     
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+    this.abortController = new AbortController();
+    
     fetch(`http://localhost:8080/api/auth/select-barco?userId=${userId}&barcoId=${barcoId}`, {
-      method: 'POST'
+      method: 'POST',
+      signal: this.abortController.signal
     })
       .then(response => response.json())
       .then(data => {
@@ -183,6 +207,10 @@ export class SelectBarcoComponent implements OnInit {
         }
       })
       .catch(error => {
+        if (error.name === 'AbortError') {
+          console.log('Petición cancelada (navegación)');
+          return;
+        }
         this.errorMessage.set('Error al seleccionar barco');
         console.error('Error:', error);
       });

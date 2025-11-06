@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -24,12 +24,20 @@ interface AuthResponse {
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
-export class AuthComponent {
+export class AuthComponent implements OnDestroy {
   username = '';
   password = '';
   errorMessage = signal('');
+  private abortController: AbortController | null = null;
 
   constructor(private router: Router) {}
+
+  ngOnDestroy() {
+    // Cancelar cualquier petición pendiente cuando el componente se destruye
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+  }
 
   onLogin() {
     this.errorMessage.set('');
@@ -41,10 +49,17 @@ export class AuthComponent {
 
     console.log('Intentando login con:', this.username);
 
+    // Cancelar petición anterior si existe
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+    this.abortController = new AbortController();
+
     fetch('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: this.username, password: this.password })
+      body: JSON.stringify({ username: this.username, password: this.password }),
+      signal: this.abortController.signal
     })
     .then(response => {
       console.log('Response status:', response.status);
@@ -89,6 +104,11 @@ export class AuthComponent {
       }
     })
     .catch(error => {
+      // Ignorar errores de abort (cuando navegamos a otra página)
+      if (error.name === 'AbortError') {
+        console.log('Petición cancelada (navegación)');
+        return;
+      }
       this.errorMessage.set('Error de conexión. Intenta nuevamente.');
       console.error('Error completo:', error);
     });
