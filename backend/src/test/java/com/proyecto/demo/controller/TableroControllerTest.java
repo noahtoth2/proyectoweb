@@ -24,6 +24,8 @@ import com.proyecto.demo.repository.JugadorRepository;
 import com.proyecto.demo.repository.ModeloRepository;
 import com.proyecto.demo.repository.PosicionRepository;
 import com.proyecto.demo.repository.TableroRepository;
+import com.proyecto.demo.repository.UserRepository;
+import com.proyecto.demo.repository.RoleRepository;
 
 import org.springframework.http.MediaType;
 
@@ -49,6 +51,12 @@ public class TableroControllerTest {
 
     @Autowired
     private TableroRepository tableroRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
     
     @Autowired
     private WebTestClient webTestClient;
@@ -66,6 +74,27 @@ public class TableroControllerTest {
         tableroRepository.deleteAll();
         jugadorRepository.deleteAll();
         modeloRepository.deleteAll();
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
+
+        // Crear roles
+        Role roleAdmin = new Role();
+        roleAdmin.setName(RoleName.ROLE_ADMIN);
+        roleRepository.save(roleAdmin);
+
+        Role roleUser = new Role();
+        roleUser.setName(RoleName.ROLE_USER);
+        roleRepository.save(roleUser);
+
+        // Crear usuarios con roles
+        User admin = new User("admin", "admin@regata.com", "admin123");
+        admin.setRoles(Set.of(roleAdmin));
+        userRepository.save(admin);
+
+        User jugador = new User("jugador", "jugador@regata.com", "jugador123");
+        jugador.setRoles(Set.of(roleUser));
+        userRepository.save(jugador);
+        
         
         Modelo modeloPrueba = new Modelo("Mini Velero", "#123abc");
         modeloRepository.save(modeloPrueba);
