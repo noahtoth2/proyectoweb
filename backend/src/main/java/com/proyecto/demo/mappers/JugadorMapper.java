@@ -17,6 +17,7 @@ public class JugadorMapper {
         JugadorDTO jugadorDTO = new JugadorDTO();
         jugadorDTO.setId(jugador.getId());
         jugadorDTO.setNombre(jugador.getNombre());
+        jugadorDTO.setBarcoSeleccionadoId(jugador.getBarcoSeleccionadoId());
         List<BarcoDTO> barcosDTO = new ArrayList<>();
         if (jugador.getBarcos() != null) {
             for (Barco barco : jugador.getBarcos()) {

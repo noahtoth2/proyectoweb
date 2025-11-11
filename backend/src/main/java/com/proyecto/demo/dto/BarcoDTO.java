@@ -9,6 +9,11 @@ public class BarcoDTO{
     private Long modeloId;
     private Long jugadorId;
     private Long tableroId;
+    
+    // Objetos anidados para el admin
+    private ModeloDTO modelo;
+    private PosicionDTO posicion;
+    private String jugadorNombre;
 
     public BarcoDTO() {
     }
@@ -76,6 +81,30 @@ public class BarcoDTO{
 
     public void setTableroId(Long tableroId) {
         this.tableroId = tableroId;
-    }  
+    }
+
+    public ModeloDTO getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(ModeloDTO modelo) {
+        this.modelo = modelo;
+    }
+
+    public PosicionDTO getPosicion() {
+        return posicion;
+    }
+
+    public void setPosicion(PosicionDTO posicion) {
+        this.posicion = posicion;
+    }
+
+    public String getJugadorNombre() {
+        return jugadorNombre;
+    }
+
+    public void setJugadorNombre(String jugadorNombre) {
+        this.jugadorNombre = jugadorNombre;
+    }
 }
 

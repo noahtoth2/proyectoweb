@@ -6,11 +6,13 @@ import { AuthComponent } from './auth/auth.component';
 import { RegisterComponent } from './auth/register.component';
 import { TableroComponent } from './tablero/tablero.component';
 import { LobbyComponent } from './lobby/lobby.component';
+import { AdminComponent } from './admin/admin.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: AuthComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'admin', component: AdminComponent },
   { path: 'lobby', component: LobbyComponent },
   { path: 'tablero', component: TableroComponent },
   { path: 'game', redirectTo: 'tablero' },

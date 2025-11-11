@@ -24,6 +24,7 @@ export interface Posicion {
 export interface Jugador {
   id?: number;
   nombre: string;
+  barcoSeleccionadoId?: number; // Barco seleccionado en el lobby
 }
 
 export interface Modelo {

@@ -83,4 +83,11 @@ public class BarcoController {
         barcoService.borrarBarco(idBarco);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Obtener todos los barcos disponibles", description = "Devuelve todos los barcos del sistema para selección en partidas")
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<BarcoDTO>> obtenerBarcosDisponibles() {
+        List<BarcoDTO> barcos = barcoService.listarBarcos();
+        return ResponseEntity.status(HttpStatus.OK).body(barcos);
+    }
 }

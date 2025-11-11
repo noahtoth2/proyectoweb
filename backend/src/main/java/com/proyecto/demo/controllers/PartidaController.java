@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.demo.dto.CrearPartidaRequest;
 import com.proyecto.demo.dto.PartidaDTO;
+import com.proyecto.demo.dto.SeleccionarBarcoRequest;
 import com.proyecto.demo.dto.UnirsePartidaRequest;
 import com.proyecto.demo.services.PartidaService;
 
@@ -53,6 +54,16 @@ public class PartidaController {
     public ResponseEntity<PartidaDTO> iniciarPartida(@PathVariable Long id) {
         try {
             PartidaDTO partida = partidaService.iniciarPartida(id);
+            return ResponseEntity.ok(partida);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    
+    @PostMapping("/{id}/seleccionar-barco")
+    public ResponseEntity<PartidaDTO> seleccionarBarco(@PathVariable Long id, @RequestBody SeleccionarBarcoRequest request) {
+        try {
+            PartidaDTO partida = partidaService.seleccionarBarco(id, request);
             return ResponseEntity.ok(partida);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

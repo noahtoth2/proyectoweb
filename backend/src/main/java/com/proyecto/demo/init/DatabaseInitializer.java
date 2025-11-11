@@ -11,13 +11,11 @@ import com.proyecto.demo.models.Barco;
 import com.proyecto.demo.models.Celda;
 import com.proyecto.demo.models.Jugador;
 import com.proyecto.demo.models.Modelo;
-import com.proyecto.demo.models.Posicion;
 import com.proyecto.demo.models.Tablero;
 import com.proyecto.demo.repository.BarcoRepository;
 import com.proyecto.demo.repository.CeldaRepository;
 import com.proyecto.demo.repository.JugadorRepository;
 import com.proyecto.demo.repository.ModeloRepository;
-import com.proyecto.demo.repository.PosicionRepository;
 import com.proyecto.demo.repository.TableroRepository;
 
 @Component
@@ -36,9 +34,6 @@ public class DatabaseInitializer implements CommandLineRunner {
     private ModeloRepository modeloRepository;
 
     @Autowired
-    private PosicionRepository posicionRepository;
-
-    @Autowired
     private TableroRepository tableroRepository;
 
     @Override
@@ -46,7 +41,6 @@ public class DatabaseInitializer implements CommandLineRunner {
         
         // Limpiar base de datos si es necesario
         barcoRepository.deleteAll();
-        posicionRepository.deleteAll();
         celdaRepository.deleteAll();
         tableroRepository.deleteAll();
         jugadorRepository.deleteAll();
@@ -87,18 +81,15 @@ public class DatabaseInitializer implements CommandLineRunner {
         // 4. Crear mapa según la imagen 
         createMapFromImage(tablero);
 
-        // 5. Crear posiciones iniciales para barcos
-        List<Posicion> posicionesIniciales = createInitialPositions();
-
-        // 6. Crear barcos con velocidad vectorial
-        createInitialBoats(modelos, jugadores, tablero, posicionesIniciales);
+        // 5. Crear barcos SIN posición inicial (se colocan durante el juego)
+        createInitialBoats(modelos);
 
         System.out.println("Base de datos inicializada con:");
         System.out.println("   - " + modelos.size() + " modelos de barcos");
         System.out.println("   - " + jugadores.size() + " jugadores");
         System.out.println("   - 1 tablero con mapa según especificación");
-        System.out.println("   - " + barcoRepository.count() + " barcos de prueba");
-        System.out.println("   - Sistema de velocidad vectorial implementado");
+        System.out.println("   - " + barcoRepository.count() + " barcos disponibles (sin posición inicial)");
+        System.out.println("   - Los barcos se colocarán cuando los jugadores los seleccionen");
     }
 
     private void createMapFromImage(Tablero tablero) {
@@ -152,50 +143,20 @@ public class DatabaseInitializer implements CommandLineRunner {
         return 'X';
     }
 
-    private List<Posicion> createInitialPositions() {
-        List<Posicion> posiciones = new ArrayList<>();
+    private void createInitialBoats(List<Modelo> modelos) {
+        // Crear barcos disponibles SIN posición inicial ni jugador asignado
+        // Los jugadores los seleccionarán y colocarán durante el juego
         
-        // Posiciones de partida (P) en el mapa en forma de H
-        Posicion pos1 = new Posicion(3, 1);   // Brazo izquierdo de la H
-        Posicion pos2 = new Posicion(17, 1);  // Brazo derecho de la H
-        Posicion pos3 = new Posicion(4, 2);   // Cerca del brazo izquierdo (agua)
-        
-        posicionRepository.save(pos1);
-        posicionRepository.save(pos2);
-        posicionRepository.save(pos3);
-        
-        posiciones.add(pos1);
-        posiciones.add(pos2);
-        posiciones.add(pos3);
-        
-        return posiciones;
-    }
-
-    private void createInitialBoats(List<Modelo> modelos, List<Jugador> jugadores, 
-                                   Tablero tablero, List<Posicion> posiciones) {
-        
-        // Barco 1: En brazo izquierdo, velocidad hacia el centro y abajo
-        Barco barco1 = new Barco(1.0, 1.0); // vx=1 (hacia derecha), vy=1 (hacia abajo)
-        barco1.setModelo(modelos.get(0));
-        barco1.setJugador(jugadores.get(0));
-        barco1.setTablero(tablero);
-        barco1.setPosicion(posiciones.get(0));
-        barcoRepository.save(barco1);
-
-        // Barco 2: En brazo derecho, velocidad hacia el centro y abajo
-        Barco barco2 = new Barco(-1.0, 1.0); // vx=-1 (hacia izquierda), vy=1 (hacia abajo)
-        barco2.setModelo(modelos.get(1));
-        barco2.setJugador(jugadores.get(1));
-        barco2.setTablero(tablero);
-        barco2.setPosicion(posiciones.get(1));
-        barcoRepository.save(barco2);
-
-        // Barco 3: En brazo izquierdo, velocidad detenido
-        Barco barco3 = new Barco(0.0, 0.0); // vx=0, vy=0 (detenido)
-        barco3.setModelo(modelos.get(2));
-        barco3.setJugador(jugadores.get(2));
-        barco3.setTablero(tablero);
-        barco3.setPosicion(posiciones.get(2));
-        barcoRepository.save(barco3);
+        // Crear varios barcos de cada modelo para que los jugadores puedan elegir
+        for (Modelo modelo : modelos) {
+            // Crear 3 barcos de cada modelo
+            for (int i = 0; i < 3; i++) {
+                Barco barco = new Barco(0.0, 0.0); // Velocidad inicial en 0
+                barco.setModelo(modelo);
+                // NO asignar jugador, posición ni tablero
+                // Estos se asignarán cuando el jugador seleccione el barco
+                barcoRepository.save(barco);
+            }
+        }
     }
 }

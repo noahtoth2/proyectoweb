@@ -212,6 +212,15 @@ export class LobbyComponent implements OnInit, OnDestroy {
           const miJugador = partidaActualizada.jugadores.find(j => j.id === miId);
           if (miJugador) {
             localStorage.setItem('jugadorActual', JSON.stringify(miJugador));
+            
+            // ⭐⭐ CRÍTICO: Crear currentUser desde jugador para el tablero
+            const currentUser = {
+              id: miJugador.id,
+              nombre: miJugador.nombre,
+              email: `jugador${miJugador.id}@regata.com`
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            console.log('✅ currentUser guardado para tablero:', currentUser);
           }
         }
         
@@ -247,12 +256,11 @@ export class LobbyComponent implements OnInit, OnDestroy {
   // ========== SELECCIÓN DE BARCOS ==========
   
   cargarBarcosDisponibles(): void {
-    const userId = localStorage.getItem('userId');
-    if (!userId) return;
-
-    fetch(`http://localhost:8080/api/auth/available-barcos?userId=${userId}`)
+    // ⭐ Cambiar a endpoint que devuelve TODOS los barcos
+    fetch('http://localhost:8080/api/barco/disponibles')
       .then(response => response.json())
       .then((barcos: Barco[]) => {
+        console.log('Barcos cargados:', barcos);
         this.barcosDisponibles.set(barcos);
       })
       .catch(error => {
@@ -261,16 +269,41 @@ export class LobbyComponent implements OnInit, OnDestroy {
   }
 
   seleccionarBarco(barcoId: number): void {
+    const partida = this.partidaActual();
+    const miId = this.miJugadorId();
+    
+    if (!partida || !miId) {
+      this.mensajeError.set('Error: No se encontró la partida o el jugador');
+      return;
+    }
+
     // Verificar si el barco ya está ocupado por otro jugador en esta partida
     if (this.barcosOcupados().has(barcoId)) {
       this.mensajeError.set('Este barco ya fue seleccionado por otro jugador');
       return;
     }
 
-    this.barcoSeleccionado.set(barcoId);
-    this.barcosOcupados().add(barcoId);
-    localStorage.setItem('barcoSeleccionadoId', barcoId.toString());
-    this.mensajeError.set('');
+    this.cargando.set(true);
+    
+    // ⭐ AHORA hacemos POST al backend para persistir la selección
+    this.partidaService.seleccionarBarco(partida.id, miId, barcoId).subscribe({
+      next: (partidaActualizada) => {
+        this.partidaActual.set(partidaActualizada);
+        this.barcoSeleccionado.set(barcoId);
+        localStorage.setItem('barcoSeleccionadoId', barcoId.toString());
+        
+        // ⭐ Sincronizar barcos ocupados desde el backend
+        this.sincronizarBarcosOcupados(partidaActualizada);
+        
+        this.mensajeError.set('');
+        this.cargando.set(false);
+      },
+      error: (error) => {
+        console.error('Error al seleccionar barco:', error);
+        this.mensajeError.set(error.error?.message || 'Error al seleccionar el barco');
+        this.cargando.set(false);
+      }
+    });
   }
 
   barcoEstaOcupado(barcoId: number): boolean {
@@ -281,6 +314,46 @@ export class LobbyComponent implements OnInit, OnDestroy {
     return this.barcoSeleccionado() === barcoId;
   }
 
+  // ⭐ Obtener el nombre del jugador que seleccionó un barco
+  obtenerJugadorQueSeleccionoBarco(barcoId: number): string | null {
+    const partida = this.partidaActual();
+    if (!partida || !partida.jugadorBarcoSelecciones) return null;
+    
+    const miId = this.miJugadorId();
+    
+    for (const [jugadorIdStr, barcoIdSeleccionado] of Object.entries(partida.jugadorBarcoSelecciones)) {
+      if (barcoIdSeleccionado === barcoId) {
+        const jugadorId = Number(jugadorIdStr);
+        
+        // Si soy yo, no mostrar nombre
+        if (jugadorId === miId) return null;
+        
+        // Buscar el nombre del jugador
+        const jugador = partida.jugadores.find(j => j.id === jugadorId);
+        return jugador ? jugador.nombre : null;
+      }
+    }
+    
+    return null;
+  }
+
+  // ⭐ Método para sincronizar barcos ocupados desde el backend
+  private sincronizarBarcosOcupados(partida: Partida): void {
+    const ocupados = new Set<number>();
+    const miId = this.miJugadorId();
+    
+    // Recorrer las selecciones de barcos de todos los jugadores
+    if (partida.jugadorBarcoSelecciones) {
+      Object.entries(partida.jugadorBarcoSelecciones).forEach(([jugadorIdStr, barcoId]) => {
+        const jugadorId = Number(jugadorIdStr);
+        // Agregar todos los barcos seleccionados, incluyendo el mío
+        ocupados.add(barcoId);
+      });
+    }
+    
+    this.barcosOcupados.set(ocupados);
+  }
+
   private iniciarPolling(): void {
     this.detenerPolling();
     this.pollingInterval = setInterval(() => {
@@ -289,6 +362,9 @@ export class LobbyComponent implements OnInit, OnDestroy {
         this.partidaService.obtenerPartida(partida.id).subscribe({
           next: (partidaActualizada) => {
             this.partidaActual.set(partidaActualizada);
+            
+            // ⭐ Sincronizar barcos ocupados en cada polling
+            this.sincronizarBarcosOcupados(partidaActualizada);
             
             // Si la partida ya se inició, navegar al tablero
             if (partidaActualizada.iniciada) {
@@ -303,6 +379,15 @@ export class LobbyComponent implements OnInit, OnDestroy {
                 const miJugador = partidaActualizada.jugadores.find(j => j.id === miId);
                 if (miJugador) {
                   localStorage.setItem('jugadorActual', JSON.stringify(miJugador));
+                  
+                  // ⭐⭐ CRÍTICO: Crear currentUser desde jugador para el tablero
+                  const currentUser = {
+                    id: miJugador.id,
+                    nombre: miJugador.nombre,
+                    email: `jugador${miJugador.id}@regata.com`
+                  };
+                  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                  console.log('✅ currentUser guardado para tablero (polling):', currentUser);
                 }
               }
               
