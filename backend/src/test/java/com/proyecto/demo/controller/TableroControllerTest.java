@@ -47,11 +47,11 @@ public class TableroControllerTest {
 
         // Crear roles
         Role roleAdmin = new Role();
-        roleAdmin.setName(RoleName.ROLE_ADMIN);
+        roleAdmin.setName(Role.RoleName.ROLE_ADMIN);
         roleRepository.save(roleAdmin);
 
         Role roleUser = new Role();
-        roleUser.setName(RoleName.ROLE_USER);
+        roleUser.setName(Role.RoleName.ROLE_USER);
         roleRepository.save(roleUser);
 
         // Crear usuarios con roles
