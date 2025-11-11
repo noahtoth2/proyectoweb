@@ -94,7 +94,7 @@ public class TableroControllerTest {
         User jugador = new User("jugador", "jugador@regata.com", "jugador123");
         jugador.setRoles(Set.of(roleUser));
         userRepository.save(jugador);
-        
+
         
         Modelo modeloPrueba = new Modelo("Mini Velero", "#123abc");
         modeloRepository.save(modeloPrueba);
@@ -168,18 +168,22 @@ public class TableroControllerTest {
     // INICIO DE LAS PRUEBAS POR CADA METODO//
 
     //POST
-    @Test
+     @Test
     void testCambiarVelocidadBarco() {
-    webTestClient.post()
-        .uri("http://localhost:8081/api/tablero/1/barco/1/cambiar-velocidad")
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue("{\"velocidadX\": 1.0, \"velocidadY\": 0.5}")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody()
-        .jsonPath("$.velocidadX").isEqualTo(1.0)
-        .jsonPath("$.velocidadY").isEqualTo(0.5);
-        }
+        String token = loginAndGetToken("jugador", "jugador123");
+
+        webTestClient.post()
+                .uri("http://localhost:8081/api/tablero/1/barco/1/cambiar-velocidad")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"velocidadX\": 1.0, \"velocidadY\": 0.5}")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.velocidadX").isEqualTo(1.0)
+                .jsonPath("$.velocidadY").isEqualTo(0.5);
+    }
+
 
     
     //GET
