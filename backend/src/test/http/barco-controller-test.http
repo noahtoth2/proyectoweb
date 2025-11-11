@@ -14,7 +14,7 @@ Content-Type: application/json
   "roles": ["admin"]
 }
 
-#Registro de usuario jugador
+### Registro de usuario jugador
 POST {{host}}/api/auth/register
 Content-Type: application/json
 
@@ -25,7 +25,7 @@ Content-Type: application/json
   "roles": ["user"]
 }
 
-#Login como administrador
+###Login como administrador
 # @name login_admin
 POST {{host}}/api/auth/login
 Content-Type: application/json
@@ -35,7 +35,7 @@ Content-Type: application/json
   "password": "admin123"
 }
 
-#Login como jugador
+###Login como jugador
 # @name login_user
 POST {{host}}/api/auth/login
 Content-Type: application/json
@@ -46,23 +46,23 @@ Content-Type: application/json
 }
 
 
-#Listar todos los barcos (solo ADMIN)
+###Listar todos los barcos (solo ADMIN)
 GET {{host}}/api/barco/list
 Authorization: Bearer {{admin_token}}
 
-#Obtener barco por ID (ADMIN)
+###Obtener barco por ID (ADMIN)
 GET {{host}}/api/barco/1
 Authorization: Bearer {{admin_token}}
 
-#Intentar obtener barco con ID inexistente
+###Intentar obtener barco con ID inexistente
 GET {{host}}/api/barco/555
 Authorization: Bearer {{admin_token}}
 
-#Listar barcos por jugadorId (ADMIN)
+###Listar barcos por jugadorId (ADMIN)
 GET {{host}}/api/barco/list/2
 Authorization: Bearer {{admin_token}}
 
-#Crear nuevo barco (ADMIN)
+###Crear nuevo barco (ADMIN)
 POST {{host}}/api/barco
 Authorization: Bearer {{admin_token}}
 Content-Type: application/json
@@ -76,7 +76,7 @@ Content-Type: application/json
 }
 
 
-#Actualizar barco existente (ADMIN)
+###Actualizar barco existente (ADMIN)
 PUT {{host}}/api/barco
 Authorization: Bearer {{admin_token}}
 Content-Type: application/json
@@ -90,29 +90,29 @@ Content-Type: application/json
   "tableroId": 1
 }
 
-#Eliminar barco (ADMIN)
+###Eliminar barco (ADMIN)
 DELETE {{host}}/api/barco/1
 Authorization: Bearer {{admin_token}}
 
-#Buscar barco por texto (ADMIN)
+###Buscar barco por texto (ADMIN)
 GET {{host}}/api/barco/search?searchText=Velero
 Authorization: Bearer {{admin_token}}
 
 
 
 
-#Jugador intentando listar barcos (debe fallar)
+###Jugador intentando listar barcos (debe fallar)
 GET {{host}}/api/barco/list
 Authorization: Bearer {{user_token}}
 
-# Sin token (debe fallar)
+### Sin token (debe fallar)
 GET {{host}}/api/barco/list
 
-#Jugador selecciona barco (permitido)
+###Jugador selecciona barco (permitido)
 POST {{host}}/api/auth/select-barco?userId=2&barcoId=3
 Authorization: Bearer {{user_token}}
 
-# Listar barcos disponibles para jugador
+### Listar barcos disponibles para jugador
 GET {{host}}/api/auth/available-barcos?userId=2
 Authorization: Bearer {{user_token}}
 
