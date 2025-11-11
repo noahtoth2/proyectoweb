@@ -1,44 +1,84 @@
-@host=http://localhost:8080
+@host = http://localhost:8080
+@admin_token = {{login_admin.response.body.token}}
+@user_token = {{login_user.response.body.token}}
 
-###
+
+# Login como ADMIN
+# @name login_admin
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+#Login como JUGADOR
+# @name login_user
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "jugador",
+  "password": "jugador123"
+}
+
+
+
+#PRUEBAS CRUD DE TABLERO (SOLO ADMIN)
+
+
+# Listar todos los tableros
 GET {{host}}/api/tablero/list
+Authorization: Bearer {{admin_token}}
 
-###
+# Obtener tablero por ID
 GET {{host}}/api/tablero/1
+Authorization: Bearer {{admin_token}}
 
-###
+#Obtener tablero inexistente
 GET {{host}}/api/tablero/555
+Authorization: Bearer {{admin_token}}
 
-###
+#Crear nuevo tablero
 POST {{host}}/api/tablero
+Authorization: Bearer {{admin_token}}
 Content-Type: application/json
 
 {
   "nombre": "Tablero de prueba",
-  "descripcion": "Tablero generado desde archivo .rest",
+  "descripcion": "Tablero generado desde archivo .http",
   "ancho": 10,
   "alto": 10
 }
 
-###
+#Actualizar tablero existente
 PUT {{host}}/api/tablero/1
+Authorization: Bearer {{admin_token}}
 Content-Type: application/json
 
 {
   "nombre": "Tablero actualizado",
-  "descripcion": "Actualizado desde archivo .rest",
+  "descripcion": "Actualizado desde archivo .http",
   "ancho": 12,
   "alto": 12
 }
 
-###
+#Eliminar tablero
 DELETE {{host}}/api/tablero/1
+Authorization: Bearer {{admin_token}}
 
-###
+#Inicializar tablero (crear mapa base)
 POST {{host}}/api/tablero/initialize
+Authorization: Bearer {{admin_token}}
 
-###
+
+
+#INTERACCIÓN CON TABLERO (ROL: JUGADOR)
+
+#Cambiar velocidad del barco en tablero
 POST {{host}}/api/tablero/1/barco/5/cambiar-velocidad
+Authorization: Bearer {{user_token}}
 Content-Type: application/json
 
 {
@@ -46,11 +86,33 @@ Content-Type: application/json
   "deltaVy": -1.3
 }
 
-###
+# Mover barco en tablero
 POST {{host}}/api/tablero/1/barco/5/mover
+Authorization: Bearer {{user_token}}
 
-###
+#Consultar posición futura del barco
 GET {{host}}/api/tablero/1/barco/5/posicion-futura
+Authorization: Bearer {{user_token}}
 
-###
+#Obtener celdas del tablero (solo lectura)
 GET {{host}}/api/tablero/1/celdas
+Authorization: Bearer {{user_token}}
+
+
+# PRUEBAS DE SEGURIDAD
+
+
+#Jugador intentando crear tablero (debe fallar)
+POST {{host}}/api/tablero
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "nombre": "Tablero no permitido",
+  "descripcion": "El jugador no debería poder crear tableros",
+  "ancho": 5,
+  "alto": 5
+}
+
+#Sin token (debe fallar)
+GET {{host}}/api/tablero/list
