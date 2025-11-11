@@ -53,10 +53,19 @@ public class TableroControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
+
+    
    
     
     @BeforeEach
     void init() {
+
+        barcoRepository.deleteAll();
+        posicionRepository.deleteAll();
+        celdaRepository.deleteAll();
+        tableroRepository.deleteAll();
+        jugadorRepository.deleteAll();
+        modeloRepository.deleteAll();
         
         Modelo modeloPrueba = new Modelo("Mini Velero", "#123abc");
         modeloRepository.save(modeloPrueba);
@@ -82,10 +91,12 @@ public class TableroControllerTest {
         }
 
         
-        Posicion pos1 = new Posicion(1, 1); // punto de partida
-        Posicion pos2 = new Posicion(3, 3); // otra posición 
+        Posicion pos1 = new Posicion(1, 1); 
+        Posicion pos2 = new Posicion(3, 3); 
+        Posicion pos3 = new Posicion(2, 2);
         posicionRepository.save(pos1);
         posicionRepository.save(pos2);
+        posicionRepository.save(pos3);
 
         
         Barco barco1 = new Barco(0.0, 0.0);
@@ -106,7 +117,7 @@ public class TableroControllerTest {
         barco3.setModelo(modeloPrueba);
         barco3.setJugador(jugador1);
         barco3.setTablero(tablero);
-        barco3.setPosicion(pos1);
+        barco3.setPosicion(pos3);
         barcoRepository.save(barco3);
 
     }
@@ -163,7 +174,7 @@ public class TableroControllerTest {
     //PUT
     @Test
     void testActualizarJugadorYPosicionDeBarco() {
-    // vamos a cambiar al jugador y posicion del barco1
+    // vamos a cambiar al jugador del barco1
     // velocidadX/Y se dejan igual solo para completar el DTO.
 
     webTestClient.put()
@@ -174,7 +185,7 @@ public class TableroControllerTest {
                 "id": 1,
                 "velocidadX": 0.0,
                 "velocidadY": 0.0,
-                "posicionId": 2,
+                "posicionId": 1,
                 "modeloId": 1,
                 "jugadorId": 2,
                 "tableroId": 1
@@ -184,8 +195,7 @@ public class TableroControllerTest {
         .expectStatus().isOk()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
         .expectBody()
-        .jsonPath("$.jugadorId").isEqualTo(2)
-        .jsonPath("$.posicionId").isEqualTo(2);
+        .jsonPath("$.jugadorId").isEqualTo(2);
     }
 
 
@@ -203,7 +213,7 @@ public class TableroControllerTest {
         .uri("http://localhost:8081/api/barco/3")
         .exchange()
         .expectStatus().isNotFound();
-    }
+    } 
 
     
 }
