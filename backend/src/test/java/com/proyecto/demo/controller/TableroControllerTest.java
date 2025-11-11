@@ -205,13 +205,17 @@ public class TableroControllerTest {
     // MÉTODO AUXILIAR PARA LOGIN Y TOKEN
 
     private String loginAndGetToken(String username, String password) {
-        return webTestClient.post()
-                .uri("http://localhost:8081/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.token").value(String.class);
+      String token = webTestClient.post()
+        .uri("http://localhost:8081/api/auth/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}")
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody()
+        .jsonPath("$.token").value(token -> {})
+        .returnResult()
+        .getResponseBody()
+        .toString();
+    return token;
     }
 }
