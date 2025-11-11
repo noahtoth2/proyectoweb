@@ -116,36 +116,46 @@ public class TableroSystemTest {
     page.locator("input[name='password']").fill("123456");
     page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("Iniciar\\s*Sesión", Pattern.CASE_INSENSITIVE))).click();
 
-    // 2) Si el usuario no tiene barco, seleccionar uno
-    if (page.url().contains("/select-barco")) {
-      page.waitForSelector(".barco-card");
-      page.locator(".barco-card").first().click();
-    }
-
-    // 3) Llega a /lobby (multijugador)
+    // 2) Llega a /lobby (multijugador) - ya no hay pantalla de selección de barco después del login
     page.waitForURL(url -> url.contains("/lobby"), new Page.WaitForURLOptions().setTimeout(5000));
     
-    // 4) Crear una partida
+    // 3) Crear una partida
+    page.waitForSelector("button:has-text('Crear Partida')");
     page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("Crear\\s*Partida", Pattern.CASE_INSENSITIVE))).click();
     
-    // Esperar a estar en sala de espera
-    page.waitForSelector("text=/Sala de Espera/i");
+    // Llenar formulario de creación
+    page.waitForSelector("input[name='nombrePartida']");
+    page.locator("input[name='nombrePartida']").fill("Partida de Prueba");
+    page.locator("input[name='nombreJugador']").fill("TestPlayer");
+    page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("^\\s*Crear\\s*Partida\\s*$", Pattern.CASE_INSENSITIVE))).click();
     
-    // 5) Iniciar partida (como anfitrión)
-    var iniciarBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("Iniciar\\s*Partida", Pattern.CASE_INSENSITIVE)));
+    // 4) Esperar a estar en sala de espera
+    page.waitForSelector("text=/Sala de Espera|Código de Partida/i", new Page.WaitForSelectorOptions().setTimeout(5000));
+    
+    // 5) Seleccionar un barco en la sala de espera
+    page.waitForSelector(".barco-card-mini", new Page.WaitForSelectorOptions().setTimeout(3000));
+    Locator primerBarco = page.locator(".barco-card-mini").first();
+    assertTrue(primerBarco.isVisible(), "No hay barcos disponibles para seleccionar");
+    primerBarco.click();
+    
+    // Verificar que el barco fue seleccionado
+    page.waitForSelector(".barco-confirmado", new Page.WaitForSelectorOptions().setTimeout(2000));
+    
+    // 6) Iniciar partida (como anfitrión)
+    Locator iniciarBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("Iniciar\\s*Partida", Pattern.CASE_INSENSITIVE)));
     iniciarBtn.waitFor(new Locator.WaitForOptions().setTimeout(3000));
-    assertTrue(iniciarBtn.isEnabled(), "El botón 'Iniciar Partida' debería estar habilitado");
+    assertTrue(iniciarBtn.isEnabled(), "El botón 'Iniciar Partida' debería estar habilitado después de seleccionar barco");
     iniciarBtn.click();
 
-    // 6) Debe redirigir al tablero de juego
+    // 7) Debe redirigir al tablero de juego
     page.waitForURL(url -> url.contains("/tablero"), new Page.WaitForURLOptions().setTimeout(5000));
     assertTrue(page.url().contains("/tablero"), "No navegó a /tablero");
 
-    // 7) Verificar que el tablero se cargó
+    // 8) Verificar que el tablero se cargó
     page.waitForSelector(".tablero-container");
     assertTrue(page.locator(".tablero-container").isVisible(), "El tablero no está visible");
 
-    // 8) Verificar que hay información del turno
+    // 9) Verificar que hay información del turno
     boolean turnoVisible = page.locator("text=/Turno/i").isVisible();
     assertTrue(turnoVisible, "No se muestra información del turno en el juego");
   }

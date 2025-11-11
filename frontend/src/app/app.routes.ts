@@ -4,7 +4,6 @@ import { BarcoListComponent } from './barco/barco-list/barco-list.component';
 import { BarcoEditComponent } from './barco/barco-edit/barco-edit.component';
 import { AuthComponent } from './auth/auth.component';
 import { RegisterComponent } from './auth/register.component';
-import { SelectBarcoComponent } from './select-barco/select-barco.component';
 import { TableroComponent } from './tablero/tablero.component';
 import { LobbyComponent } from './lobby/lobby.component';
 
@@ -12,7 +11,6 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: AuthComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'select-barco', component: SelectBarcoComponent },
   { path: 'lobby', component: LobbyComponent },
   { path: 'tablero', component: TableroComponent },
   { path: 'game', redirectTo: 'tablero' },
