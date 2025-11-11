@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.proyecto.demo.models.Barco;
@@ -18,6 +19,7 @@ import com.proyecto.demo.repository.JugadorRepository;
 import com.proyecto.demo.repository.ModeloRepository;
 import com.proyecto.demo.repository.TableroRepository;
 
+@Profile({"default"})
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
 

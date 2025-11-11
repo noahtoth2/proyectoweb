@@ -4,10 +4,12 @@ import com.proyecto.demo.models.Role;
 import com.proyecto.demo.models.Role.RoleName;
 import com.proyecto.demo.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
+@Profile({"default"})
 @Component
 public class RoleDataInitializer {
     
