@@ -18,6 +18,7 @@ export interface Partida {
   ganadorId?: number;
   ganadorNombre?: string;
   cantidadJugadores: number;
+  jugadorBarcoSelecciones: { [jugadorId: number]: number }; // jugadorId -> barcoId
 }
 
 export interface CrearPartidaRequest {

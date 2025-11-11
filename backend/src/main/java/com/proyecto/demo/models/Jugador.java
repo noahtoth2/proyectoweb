@@ -26,6 +26,9 @@ public class Jugador{
     @OneToMany(mappedBy = "jugador")
     private List<Barco> barcos = new ArrayList<>();
     
+    // Barco seleccionado en el lobby para esta partida
+    private Long barcoSeleccionadoId;
+    
     @ManyToOne
     @JoinColumn(name = "partida_id")
     private Partida partida;
@@ -65,6 +68,14 @@ public class Jugador{
 
     public void setPartida(Partida partida) {
         this.partida = partida;
+    }
+
+    public Long getBarcoSeleccionadoId() {
+        return barcoSeleccionadoId;
+    }
+
+    public void setBarcoSeleccionadoId(Long barcoSeleccionadoId) {
+        this.barcoSeleccionadoId = barcoSeleccionadoId;
     }
     
 }

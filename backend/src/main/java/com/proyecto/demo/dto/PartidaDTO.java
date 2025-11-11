@@ -1,7 +1,9 @@
 package com.proyecto.demo.dto;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PartidaDTO {
     private Long id;
@@ -21,6 +23,7 @@ public class PartidaDTO {
     private Long ganadorId;
     private String ganadorNombre;
     private Integer cantidadJugadores;
+    private Map<Long, Long> jugadorBarcoSelecciones = new HashMap<>(); // jugadorId -> barcoId
 
     // Constructors
     public PartidaDTO() {
@@ -161,5 +164,13 @@ public class PartidaDTO {
 
     public void setCantidadJugadores(Integer cantidadJugadores) {
         this.cantidadJugadores = cantidadJugadores;
+    }
+
+    public Map<Long, Long> getJugadorBarcoSelecciones() {
+        return jugadorBarcoSelecciones;
+    }
+
+    public void setJugadorBarcoSelecciones(Map<Long, Long> jugadorBarcoSelecciones) {
+        this.jugadorBarcoSelecciones = jugadorBarcoSelecciones;
     }
 }

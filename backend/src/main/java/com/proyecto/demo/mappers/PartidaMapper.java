@@ -1,10 +1,13 @@
 package com.proyecto.demo.mappers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import com.proyecto.demo.dto.PartidaDTO;
+import com.proyecto.demo.models.Jugador;
 import com.proyecto.demo.models.Partida;
 
 @Component
@@ -52,6 +55,15 @@ public class PartidaMapper {
                 .map(jugadorMapper::toDTO)
                 .collect(Collectors.toList()));
             dto.setCantidadJugadores(partida.getJugadores().size());
+            
+            // ⭐ Mapear selecciones de barcos
+            Map<Long, Long> selecciones = new HashMap<>();
+            for (Jugador jugador : partida.getJugadores()) {
+                if (jugador.getBarcoSeleccionadoId() != null) {
+                    selecciones.put(jugador.getId(), jugador.getBarcoSeleccionadoId());
+                }
+            }
+            dto.setJugadorBarcoSelecciones(selecciones);
         }
         
         return dto;

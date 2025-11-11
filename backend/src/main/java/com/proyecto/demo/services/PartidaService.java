@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.demo.dto.CrearPartidaRequest;
 import com.proyecto.demo.dto.PartidaDTO;
+import com.proyecto.demo.dto.SeleccionarBarcoRequest;
 import com.proyecto.demo.dto.UnirsePartidaRequest;
 import com.proyecto.demo.mappers.PartidaMapper;
 import com.proyecto.demo.models.Jugador;
@@ -100,6 +101,13 @@ public class PartidaService {
             throw new RuntimeException("Se necesitan al menos 2 jugadores");
         }
         
+        // ⭐ Validar que todos los jugadores hayan seleccionado un barco
+        for (Jugador jugador : partida.getJugadores()) {
+            if (jugador.getBarcoSeleccionadoId() == null) {
+                throw new RuntimeException("Todos los jugadores deben seleccionar un barco antes de iniciar");
+            }
+        }
+        
         partida.setIniciada(true);
         partida.setFechaInicio(LocalDateTime.now());
         
@@ -109,6 +117,43 @@ public class PartidaService {
         }
         
         partida = partidaRepository.save(partida);
+        return partidaMapper.toDTO(partida);
+    }
+    
+    @Transactional
+    public PartidaDTO seleccionarBarco(Long partidaId, SeleccionarBarcoRequest request) {
+        Partida partida = partidaRepository.findById(partidaId)
+            .orElseThrow(() -> new RuntimeException("Partida no encontrada"));
+        
+        if (partida.getIniciada()) {
+            throw new RuntimeException("No se puede seleccionar barco después de iniciar la partida");
+        }
+        
+        Jugador jugador = jugadorRepository.findById(request.getJugadorId())
+            .orElseThrow(() -> new RuntimeException("Jugador no encontrado"));
+        
+        // Validar que el jugador pertenece a esta partida
+        if (!partida.getJugadores().contains(jugador)) {
+            throw new RuntimeException("El jugador no pertenece a esta partida");
+        }
+        
+        // Validar que el barco no esté ocupado por otro jugador
+        for (Jugador j : partida.getJugadores()) {
+            if (j.getBarcoSeleccionadoId() != null && 
+                j.getBarcoSeleccionadoId().equals(request.getBarcoId()) &&
+                !j.getId().equals(jugador.getId())) {
+                throw new RuntimeException("Este barco ya fue seleccionado por otro jugador");
+            }
+        }
+        
+        // Asignar el barco al jugador
+        jugador.setBarcoSeleccionadoId(request.getBarcoId());
+        jugadorRepository.save(jugador);
+        
+        // Refrescar partida y retornar
+        partida = partidaRepository.findById(partidaId)
+            .orElseThrow(() -> new RuntimeException("Partida no encontrada"));
+        
         return partidaMapper.toDTO(partida);
     }
     

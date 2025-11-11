@@ -23,6 +23,13 @@ export class PartidaService {
     return this.http.post<Partida>(`${this.apiUrl}/${partidaId}/iniciar`, {});
   }
 
+  seleccionarBarco(partidaId: number, jugadorId: number, barcoId: number): Observable<Partida> {
+    return this.http.post<Partida>(`${this.apiUrl}/${partidaId}/seleccionar-barco`, {
+      jugadorId,
+      barcoId
+    });
+  }
+
   siguienteTurno(partidaId: number): Observable<Partida> {
     return this.http.post<Partida>(`${this.apiUrl}/${partidaId}/siguiente-turno`, {});
   }

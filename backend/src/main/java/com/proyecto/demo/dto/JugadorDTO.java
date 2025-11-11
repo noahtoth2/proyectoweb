@@ -6,7 +6,8 @@ public class JugadorDTO{
     private Long id;
     private String nombre;
     private List<BarcoDTO> barcos;
-    private List<Long> barcosIds; 
+    private List<Long> barcosIds;
+    private Long barcoSeleccionadoId; // Barco seleccionado en el lobby
 
     public JugadorDTO(){
 
@@ -39,5 +40,13 @@ public class JugadorDTO{
     }
     public void setBarcosIds(List<Long> barcosIds) { 
         this.barcosIds = barcosIds; 
+    }
+    
+    public Long getBarcoSeleccionadoId() {
+        return barcoSeleccionadoId;
+    }
+    
+    public void setBarcoSeleccionadoId(Long barcoSeleccionadoId) {
+        this.barcoSeleccionadoId = barcoSeleccionadoId;
     }
 }

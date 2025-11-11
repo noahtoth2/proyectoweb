@@ -83,15 +83,43 @@ export class TableroComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('TableroComponent ngOnInit iniciado');
+    console.log('🚀 === TableroComponent ngOnInit iniciado ===');
+    console.log('📍 URL actual:', window.location.href);
+    console.log('📦 localStorage keys:', Object.keys(localStorage));
+    
     const userData = localStorage.getItem('currentUser');
+    console.log('👤 userData desde localStorage:', userData);
+    
     if (!userData) {
-      console.log('No hay usuario en localStorage, redirigiendo a home');
-      this.router.navigate(['/']);
-      return;
+      console.log('❌ No hay usuario en localStorage');
+      
+      // 🔄 INTENTO DE RECUPERACIÓN: Verificar si viene desde lobby
+      const partidaData = localStorage.getItem('partidaActual');
+      const jugadorData = localStorage.getItem('jugadorActual');
+      
+      console.log('🎮 partidaData:', partidaData);
+      console.log('👥 jugadorData:', jugadorData);
+      
+      if (jugadorData) {
+        // Usar el jugador actual como currentUser
+        const jugador = JSON.parse(jugadorData);
+        const mockUser = {
+          nombre: jugador.nombre,
+          id: jugador.id,
+          email: `jugador${jugador.id}@regata.com`
+        };
+        localStorage.setItem('currentUser', JSON.stringify(mockUser));
+        this.currentUser = mockUser;
+        console.log('✅ Usuario creado desde jugadorActual:', mockUser);
+      } else {
+        console.log('⚠️ Redirigiendo a home - no se encontró información de usuario');
+        this.router.navigate(['/']);
+        return;
+      }
+    } else {
+      this.currentUser = JSON.parse(userData);
+      console.log('✅ Usuario encontrado:', this.currentUser);
     }
-    this.currentUser = JSON.parse(userData);
-    console.log('Usuario encontrado:', this.currentUser);
     
     // Verificar si hay una partida multijugador activa
     const partidaData = localStorage.getItem('partidaActual');
@@ -100,20 +128,20 @@ export class TableroComponent implements OnInit, OnDestroy {
       this.partidaActual.set(partida);
       this.modoMultijugador.set(true);
       this.juegoIniciado.set(partida.iniciada);
-      console.log('Modo multijugador activado:', partida);
+      console.log('🎮 Modo multijugador activado:', partida);
       
       // ⭐ Obtener mi jugador ID desde localStorage
       const miJugadorIdStr = localStorage.getItem('miJugadorId');
       if (miJugadorIdStr) {
         const miId = parseInt(miJugadorIdStr, 10);
         this.miJugadorId.set(miId);
-        console.log('Mi jugador ID desde localStorage:', miId);
+        console.log('🆔 Mi jugador ID desde localStorage:', miId);
         
         // Buscar y guardar la información completa del jugador
         const miJugador = partida.jugadores.find((j: any) => j.id === miId);
         if (miJugador) {
           localStorage.setItem('jugadorActual', JSON.stringify(miJugador));
-          console.log('Jugador guardado en localStorage:', miJugador);
+          console.log('💾 Jugador guardado en localStorage:', miJugador);
         }
       } else {
         // Fallback: intentar encontrar por nombre (para compatibilidad)
@@ -121,7 +149,7 @@ export class TableroComponent implements OnInit, OnDestroy {
         if (jugadorData) {
           const jugador = JSON.parse(jugadorData);
           this.miJugadorId.set(jugador.id);
-          console.log('Mi jugador ID desde jugadorActual:', jugador.id);
+          console.log('🆔 Mi jugador ID desde jugadorActual:', jugador.id);
         }
       }
       
@@ -129,9 +157,11 @@ export class TableroComponent implements OnInit, OnDestroy {
       this.iniciarPollingMultijugador();
     }
     
+    console.log('🎯 Inicializando tablero...');
     this.initializeBoard();
     this.loadJugadores();
     this.loadBarcos();
+    console.log('✅ === ngOnInit completado ===');
   }
   
   ngOnDestroy() {
@@ -163,8 +193,10 @@ export class TableroComponent implements OnInit, OnDestroy {
   }
 
   loadBoardFromBackend(tableroId: number) {
+    console.log('🎯 Cargando tablero desde backend, ID:', tableroId);
     this.tableroService.getCeldas(tableroId).subscribe({
       next: (celdas: CeldaDTO[]) => {
+        console.log(`📦 Celdas recibidas del backend: ${celdas.length} celdas`);
         const board: Celda[][] = [];
         
         // Inicializar tablero vacío
@@ -193,10 +225,12 @@ export class TableroComponent implements OnInit, OnDestroy {
         });
 
         this.tablero.set(board);
-        console.log('Tablero cargado desde el backend:', board);
+        console.log('✅ Tablero cargado desde el backend:', board.length, 'filas');
+        console.log('✅ Primera fila:', board[0]?.length, 'celdas');
       },
       error: (error) => {
-        console.error('Error loading celdas:', error);
+        console.error('❌ Error loading celdas:', error);
+        console.log('🔄 Creando tablero local como fallback');
         this.createLocalBoard();
       }
     });

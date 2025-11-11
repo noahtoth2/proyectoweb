@@ -18,12 +18,15 @@ public class BarcoMapper {
         // Mapear IDs de las relaciones
         if (barco.getPosicion() != null) {
             barcoDTO.setPosicionId(barco.getPosicion().getId());
+            barcoDTO.setPosicion(PosicionMapper.toDTO(barco.getPosicion()));
         }
         if (barco.getModelo() != null) {
             barcoDTO.setModeloId(barco.getModelo().getId());
+            barcoDTO.setModelo(ModeloMapper.toDTO(barco.getModelo()));
         }
         if (barco.getJugador() != null) {
             barcoDTO.setJugadorId(barco.getJugador().getId());
+            barcoDTO.setJugadorNombre(barco.getJugador().getNombre());
         }
         if (barco.getTablero() != null) {
             barcoDTO.setTableroId(barco.getTablero().getId());

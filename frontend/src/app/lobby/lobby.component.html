@@ -239,7 +239,11 @@
                 (click)="seleccionarBarco(barco.id)">
                 <div class="barco-nombre">{{ barco.modelo.nombre }}</div>
                 @if (barcoEstaOcupado(barco.id) && !barcoEsMiSeleccion(barco.id)) {
-                  <span class="badge-ocupado">Ocupado</span>
+                  @if (obtenerJugadorQueSeleccionoBarco(barco.id); as nombreJugador) {
+                    <span class="badge-ocupado">{{ nombreJugador }}</span>
+                  } @else {
+                    <span class="badge-ocupado">Ocupado</span>
+                  }
                 }
                 @if (barcoEsMiSeleccion(barco.id)) {
                   <span class="badge-tuyo">Tu barco</span>
