@@ -202,7 +202,6 @@ public class TableroControllerTest {
     }
 
     
-
     private String loginAndGetToken(String username, String password) {
       String token = webTestClient.post()
         .uri("http://localhost:8081/api/auth/login")
