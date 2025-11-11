@@ -202,7 +202,6 @@ public class TableroControllerTest {
     }
 
     
-    // MÉTODO AUXILIAR PARA LOGIN Y TOKEN
 
     private String loginAndGetToken(String username, String password) {
       String token = webTestClient.post()
