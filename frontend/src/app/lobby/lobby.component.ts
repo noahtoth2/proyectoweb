@@ -1,9 +1,16 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { PartidaService } from '../shared/partida.service';
 import { Partida, CrearPartidaRequest, UnirsePartidaRequest } from '../model/partida';
+
+interface Barco {
+  id: number;
+  modelo: {
+    nombre: string;
+  };
+}
 
 @Component({
   selector: 'app-lobby',
@@ -12,13 +19,18 @@ import { Partida, CrearPartidaRequest, UnirsePartidaRequest } from '../model/par
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.css']
 })
-export class LobbyComponent implements OnInit {
+export class LobbyComponent implements OnInit, OnDestroy {
   vistaActual = signal<'menu' | 'crear' | 'unirse' | 'sala'>('menu');
   partidasActivas = signal<Partida[]>([]);
   partidaActual = signal<Partida | null>(null);
   mensajeError = signal<string>('');
   cargando = signal<boolean>(false);
-  miJugadorId = signal<number | null>(null); // ⭐ NUEVO: ID del jugador actual
+  miJugadorId = signal<number | null>(null);
+  
+  // Para selección de barcos
+  barcosDisponibles = signal<Barco[]>([]);
+  barcoSeleccionado = signal<number | null>(null);
+  barcosOcupados = signal<Set<number>>(new Set());
 
   // Para crear partida
   nuevaPartida: CrearPartidaRequest = {
@@ -93,6 +105,7 @@ export class LobbyComponent implements OnInit {
           localStorage.setItem('miJugadorId', partida.jugadores[0].id.toString());
         }
         this.vistaActual.set('sala');
+        this.cargarBarcosDisponibles(); // ⭐ Cargar barcos disponibles
         this.iniciarPolling();
         this.cargando.set(false);
         this.mensajeError.set('');
@@ -124,6 +137,7 @@ export class LobbyComponent implements OnInit {
           }
         }
         this.vistaActual.set('sala');
+        this.cargarBarcosDisponibles(); // ⭐ Cargar barcos disponibles
         this.iniciarPolling();
         this.cargando.set(false);
         this.mensajeError.set('');
@@ -156,6 +170,7 @@ export class LobbyComponent implements OnInit {
           }
         }
         this.vistaActual.set('sala');
+        this.cargarBarcosDisponibles(); // ⭐ Cargar barcos disponibles
         this.iniciarPolling();
         this.cargando.set(false);
       },
@@ -173,6 +188,12 @@ export class LobbyComponent implements OnInit {
 
     if (partida.jugadores.length < 2) {
       this.mensajeError.set('Se necesitan al menos 2 jugadores para iniciar');
+      return;
+    }
+
+    // ⭐ Validar que todos los jugadores hayan seleccionado un barco
+    if (!this.barcoSeleccionado()) {
+      this.mensajeError.set('Debes seleccionar un barco antes de iniciar');
       return;
     }
 
@@ -209,6 +230,8 @@ export class LobbyComponent implements OnInit {
     this.detenerPolling();
     this.partidaActual.set(null);
     this.miJugadorId.set(null);
+    this.barcoSeleccionado.set(null);
+    this.barcosOcupados.set(new Set());
     localStorage.removeItem('miJugadorId');
     this.volverAlMenu();
   }
@@ -219,6 +242,43 @@ export class LobbyComponent implements OnInit {
       navigator.clipboard.writeText(partida.codigo);
       alert('Código copiado al portapapeles');
     }
+  }
+
+  // ========== SELECCIÓN DE BARCOS ==========
+  
+  cargarBarcosDisponibles(): void {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+
+    fetch(`http://localhost:8080/api/auth/available-barcos?userId=${userId}`)
+      .then(response => response.json())
+      .then((barcos: Barco[]) => {
+        this.barcosDisponibles.set(barcos);
+      })
+      .catch(error => {
+        console.error('Error al cargar barcos:', error);
+      });
+  }
+
+  seleccionarBarco(barcoId: number): void {
+    // Verificar si el barco ya está ocupado por otro jugador en esta partida
+    if (this.barcosOcupados().has(barcoId)) {
+      this.mensajeError.set('Este barco ya fue seleccionado por otro jugador');
+      return;
+    }
+
+    this.barcoSeleccionado.set(barcoId);
+    this.barcosOcupados().add(barcoId);
+    localStorage.setItem('barcoSeleccionadoId', barcoId.toString());
+    this.mensajeError.set('');
+  }
+
+  barcoEstaOcupado(barcoId: number): boolean {
+    return this.barcosOcupados().has(barcoId);
+  }
+
+  barcoEsMiSeleccion(barcoId: number): boolean {
+    return this.barcoSeleccionado() === barcoId;
   }
 
   private iniciarPolling(): void {

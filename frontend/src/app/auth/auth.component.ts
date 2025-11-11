@@ -88,16 +88,9 @@ export class AuthComponent implements OnDestroy {
         // Admin va al panel de administración
         this.router.navigate(['/admin']);
       } else if (data.user.roles.includes('USER')) {
-        // Usuario normal: verificar si ya seleccionó barco
-        if (data.user.barcoSeleccionado) {
-          console.log('Usuario tiene barco, redirigiendo a lobby');
-          localStorage.setItem('barcoSeleccionadoId', data.user.barcoSeleccionado.id.toString());
-          this.router.navigate(['/lobby']);
-        } else {
-          console.log('Usuario sin barco, redirigiendo a selección');
-          // Ir a selección de barco
-          this.router.navigate(['/select-barco']);
-        }
+        // Usuario normal va directo al lobby (seleccionará barco al crear/unirse a partida)
+        console.log('Usuario autenticado, redirigiendo a lobby');
+        this.router.navigate(['/lobby']);
       } else {
         console.log('Usuario sin roles reconocidos:', data.user.roles);
         this.errorMessage.set('El usuario no tiene roles asignados');

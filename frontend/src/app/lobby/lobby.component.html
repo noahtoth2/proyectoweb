@@ -219,11 +219,43 @@
           }
         </div>
 
+        <!-- ⭐ SELECCIÓN DE BARCOS -->
+        <div class="seleccion-barcos">
+          <h3>🚢 Selecciona tu Barco</h3>
+          @if (barcoSeleccionado()) {
+            <div class="barco-confirmado">
+              <p>✅ Barco seleccionado</p>
+            </div>
+          } @else {
+            <p class="instruccion">Elige el barco con el que navegarás</p>
+          }
+          
+          <div class="barcos-grid">
+            @for (barco of barcosDisponibles(); track barco.id) {
+              <div 
+                class="barco-card-mini" 
+                [class.ocupado]="barcoEstaOcupado(barco.id) && !barcoEsMiSeleccion(barco.id)"
+                [class.seleccionado]="barcoEsMiSeleccion(barco.id)"
+                (click)="seleccionarBarco(barco.id)">
+                <div class="barco-nombre">{{ barco.modelo.nombre }}</div>
+                @if (barcoEstaOcupado(barco.id) && !barcoEsMiSeleccion(barco.id)) {
+                  <span class="badge-ocupado">Ocupado</span>
+                }
+                @if (barcoEsMiSeleccion(barco.id)) {
+                  <span class="badge-tuyo">Tu barco</span>
+                }
+              </div>
+            } @empty {
+              <p class="no-barcos">Cargando barcos...</p>
+            }
+          </div>
+        </div>
+
         <div class="sala-acciones">
           @if (esCreador()) {
             <div class="info-anfitrion">
               <p>👑 Eres el anfitrión de esta partida</p>
-              @if (partidaActual()!.cantidadJugadores >= 2) {
+              @if (partidaActual()!.cantidadJugadores >= 2 && barcoSeleccionado()) {
                 <button class="btn-iniciar" (click)="iniciarJuego()" [disabled]="cargando()">
                   @if (cargando()) {
                     <span>Iniciando...</span>
@@ -232,12 +264,20 @@
                   }
                 </button>
               } @else {
-                <p class="advertencia">Se necesitan al menos 2 jugadores</p>
+                @if (!barcoSeleccionado()) {
+                  <p class="advertencia">⚠️ Selecciona un barco para continuar</p>
+                } @else if (partidaActual()!.cantidadJugadores < 2) {
+                  <p class="advertencia">Se necesitan al menos 2 jugadores</p>
+                }
               }
             </div>
           } @else {
             <div class="info-jugador">
-              <p>⏳ Esperando a que el anfitrión inicie la partida...</p>
+              @if (!barcoSeleccionado()) {
+                <p>⚠️ Selecciona tu barco para estar listo</p>
+              } @else {
+                <p>✅ Listo - Esperando a que el anfitrión inicie la partida...</p>
+              }
             </div>
           }
 
