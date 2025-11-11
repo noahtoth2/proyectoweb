@@ -54,9 +54,7 @@ public class TableroControllerTest {
     private WebTestClient webTestClient;
 
 
-    //NUEVO
-    private String adminToken = "Bearer fake-admin-token";
-    private String userToken  = "Bearer fake-user-token";
+    
    
     
     @BeforeEach
@@ -145,7 +143,6 @@ public class TableroControllerTest {
     void testCambiarVelocidadBarco() {
     webTestClient.post()
         .uri("http://localhost:8081/api/tablero/1/barco/1/cambiar-velocidad")
-        .header("Authorization", userToken)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue("{\"velocidadX\": 1.0, \"velocidadY\": 0.5}")
         .exchange()
@@ -165,7 +162,6 @@ public class TableroControllerTest {
 
     webTestClient.get()
         .uri("http://localhost:8081/api/tablero/1/barco/2/posicion-futura")
-        .header("Authorization", userToken)
         .exchange()
         .expectStatus().isOk()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -183,7 +179,6 @@ public class TableroControllerTest {
 
     webTestClient.put()
         .uri("http://localhost:8081/api/barco")
-        .header("Authorization", adminToken)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue("""
             {
@@ -210,14 +205,12 @@ public class TableroControllerTest {
     // eliminar el barco3
     webTestClient.delete()
         .uri("http://localhost:8081/api/barco/3")
-        .header("Authorization", adminToken)
         .exchange()
         .expectStatus().isOk(); 
 
     // intentar obtenerlo y verificar que ya no existe
     webTestClient.get()
         .uri("http://localhost:8081/api/barco/3")
-        .header("Authorization", adminToken)
         .exchange()
         .expectStatus().isNotFound();
     } 
