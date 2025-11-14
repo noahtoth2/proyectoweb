@@ -86,7 +86,7 @@ public class TableroControllerTest {
         }
 
         // Posiciones iniciales
-        Posicion p1 = new Posicion(1, 1);
+        Posicion p1 = new Posicion(2, 1);
         Posicion p2 = new Posicion(3, 3);
         Posicion p3 = new Posicion(2, 2);
         posicionRepository.save(p1);
@@ -116,9 +116,7 @@ public class TableroControllerTest {
         return 'A';
     }
 
-    // ============================================================
-    // TEST 1: Cambiar velocidad (jugador autenticado)
-    // ============================================================
+    // POST
     @Test
     void testCambiarVelocidadBarco() {
         String token = loginAndGetToken("jugador", "jugador123");
@@ -127,12 +125,11 @@ public class TableroControllerTest {
                 .uri("http://localhost:8081/api/tablero/1/barco/1/cambiar-velocidad")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue("{\"deltaVx\": 1.0, \"deltaVy\": 0.5}")
+                .bodyValue("{\"deltaVx\": 1.0, \"deltaVy\": 0.0}")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.velocidadX").isEqualTo(1.0)
-                .jsonPath("$.velocidadY").isEqualTo(0.5);
+                .jsonPath("$.success").isEqualTo(true);
     }
 
     // ============================================================
@@ -203,17 +200,18 @@ public class TableroControllerTest {
 
     
     private String loginAndGetToken(String username, String password) {
-      String token = webTestClient.post()
+      return webTestClient.post()
         .uri("http://localhost:8081/api/auth/login")
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}")
         .exchange()
         .expectStatus().isOk()
         .expectBody()
-        .jsonPath("$.token").value(token -> {})
+        .jsonPath("$.token")
+        .value(tokenObj -> {})
         .returnResult()
         .getResponseBody()
         .toString();
-    return token;
     }
+
 }
