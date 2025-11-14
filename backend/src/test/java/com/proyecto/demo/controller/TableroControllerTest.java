@@ -31,9 +31,7 @@ public class TableroControllerTest {
     @Autowired private UserRepository userRepository;
     @Autowired private WebTestClient webTestClient;
 
-    // ============================================================
-    // 🔹 INICIALIZACIÓN DE ROLES Y USUARIOS PARA AUTENTICACIÓN
-    // ============================================================
+
     @BeforeEach
     void init() {
         barcoRepository.deleteAll();
