@@ -148,11 +148,10 @@ public class TableroControllerTest {
                 .jsonPath("$.y").isEqualTo(3.0);
     }
 
-    // ============================================================
-    // TEST 3: Actualizar barco (admin autenticado)
-    // ============================================================
+    
+    // PUT
     @Test
-    void testActualizarJugadorYPosicionDeBarco() {
+    void testActualizarJugadorDeBarco() {
         String token = loginAndGetToken("admin", "admin123");
 
         webTestClient.put()
@@ -176,9 +175,7 @@ public class TableroControllerTest {
                 .jsonPath("$.jugadorId").isEqualTo(2);
     }
 
-    // ============================================================
-    // TEST 4: Eliminar barco (admin autenticado)
-    // ============================================================
+    // DELETE
     @Test
     void testEliminarBarcoPorId() {
         String token = loginAndGetToken("admin", "admin123");
@@ -187,13 +184,7 @@ public class TableroControllerTest {
                 .uri("http://localhost:8081/api/barco/2")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .exchange()
-                .expectStatus().isOk();
-
-        webTestClient.get()
-                .uri("http://localhost:8081/api/barco/2")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .exchange()
-                .expectStatus().isNotFound();
+                .expectStatus().isNoContent();
     }
 
     

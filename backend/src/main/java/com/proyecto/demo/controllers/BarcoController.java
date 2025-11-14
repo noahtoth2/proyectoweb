@@ -1,6 +1,7 @@
 package com.proyecto.demo.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -53,6 +54,7 @@ public class BarcoController {
             @PathVariable Long idBarco) {
         BarcoDTO barco = barcoService.recuperarBarco(idBarco);
         return ResponseEntity.status(HttpStatus.OK).body(barco);
+    
     }
 
     @Operation(summary = "Crear nuevo barco", description = "Registra un nuevo barco en el sistema con los datos proporcionados")
