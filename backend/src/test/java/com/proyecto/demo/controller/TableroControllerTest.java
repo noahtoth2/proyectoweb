@@ -101,7 +101,7 @@ public class TableroControllerTest {
         b1.setPosicion(p1);
         barcoRepository.save(b1);
 
-        Barco b2 = new Barco(1.0, 0.5);
+        Barco b2 = new Barco(1.0, 0.0);
         b2.setModelo(modelo);
         b2.setJugador(j2);
         b2.setTablero(tablero);
@@ -132,9 +132,7 @@ public class TableroControllerTest {
                 .jsonPath("$.success").isEqualTo(true);
     }
 
-    // ============================================================
-    // TEST 2: Obtener posición futura (jugador autenticado)
-    // ============================================================
+    // GET
     @Test
     void testObtenerPosicionFutura() {
         String token = loginAndGetToken("jugador", "jugador123");
@@ -147,7 +145,7 @@ public class TableroControllerTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.x").isEqualTo(4.0)
-                .jsonPath("$.y").isEqualTo(3.5);
+                .jsonPath("$.y").isEqualTo(3.0);
     }
 
     // ============================================================
