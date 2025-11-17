@@ -54,20 +54,8 @@ public class TableroSystemTest {
   long baseJugadores;
   long baseBarcos;
 
-  // --- Verificamos SÓLO el frontend; el backend lo arranca SpringBootTest ---
   @BeforeAll
-  static void preflightFrontend() {
-    HttpClient http = HttpClient.newHttpClient();
-    try {
-      HttpResponse<Void> r = http.send(
-        HttpRequest.newBuilder(URI.create(BASE_URL + "/")).GET().build(),
-        HttpResponse.BodyHandlers.discarding()
-      );
-      Assumptions.assumeTrue(r.statusCode() < 500, "Levanta el frontend en " + BASE_URL);
-    } catch (Exception ex) {
-      Assumptions.assumeTrue(false, "Frontend no accesible en " + BASE_URL);
-    }
-
+  static void setupPlaywright() {
     playwright = Playwright.create();
     browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
   }
@@ -106,6 +94,18 @@ public class TableroSystemTest {
 
   @Test
   void flujoCompleto_DeIniciarSesion_A_IniciarPartida_Y_MoverPrimerTurno() {
+    // Verificar que el frontend esté accesible antes de ejecutar el test
+    HttpClient http = HttpClient.newHttpClient();
+    try {
+      HttpResponse<Void> r = http.send(
+        HttpRequest.newBuilder(URI.create(BASE_URL + "/")).GET().build(),
+        HttpResponse.BodyHandlers.discarding()
+      );
+      Assumptions.assumeTrue(r.statusCode() < 500, "Levanta el frontend en " + BASE_URL);
+    } catch (Exception ex) {
+      Assumptions.assumeTrue(false, "Frontend no accesible en " + BASE_URL + ": " + ex.getMessage());
+    }
+    
     // 1) Login (con el nuevo sistema de autenticación)
     page.navigate(BASE_URL + "/");
     
