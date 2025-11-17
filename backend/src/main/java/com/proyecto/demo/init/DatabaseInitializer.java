@@ -1,11 +1,14 @@
 package com.proyecto.demo.init;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.proyecto.demo.models.Barco;
@@ -13,11 +16,15 @@ import com.proyecto.demo.models.Celda;
 import com.proyecto.demo.models.Jugador;
 import com.proyecto.demo.models.Modelo;
 import com.proyecto.demo.models.Tablero;
+import com.proyecto.demo.models.User;
+import com.proyecto.demo.models.Role;
 import com.proyecto.demo.repository.BarcoRepository;
 import com.proyecto.demo.repository.CeldaRepository;
 import com.proyecto.demo.repository.JugadorRepository;
 import com.proyecto.demo.repository.ModeloRepository;
 import com.proyecto.demo.repository.TableroRepository;
+import com.proyecto.demo.repository.UserRepository;
+import com.proyecto.demo.repository.RoleRepository;
 
 @Profile({"default"})
 @Component
@@ -37,6 +44,15 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     @Autowired
     private TableroRepository tableroRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -47,6 +63,10 @@ public class DatabaseInitializer implements CommandLineRunner {
         tableroRepository.deleteAll();
         jugadorRepository.deleteAll();
         modeloRepository.deleteAll();
+        userRepository.deleteAll();
+
+        // 0. Crear usuarios de prueba
+        createTestUsers();
 
         // 1. Crear modelos de barcos
         List<Modelo> modelos = new ArrayList<>();
@@ -92,6 +112,39 @@ public class DatabaseInitializer implements CommandLineRunner {
         System.out.println("   - 1 tablero con mapa según especificación");
         System.out.println("   - " + barcoRepository.count() + " barcos disponibles (sin posición inicial)");
         System.out.println("   - Los barcos se colocarán cuando los jugadores los seleccionen");
+        System.out.println("   - 2 usuarios de prueba creados (test1 y test2)");
+    }
+    
+    private void createTestUsers() {
+        // Crear o buscar el rol USER
+        Role userRole = roleRepository.findByName(Role.RoleName.ROLE_USER)
+            .orElseGet(() -> {
+                Role newRole = new Role(Role.RoleName.ROLE_USER);
+                return roleRepository.save(newRole);
+            });
+        
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+        
+        // Crear usuario test1
+        User test1 = new User();
+        test1.setUsername("test1");
+        test1.setEmail("test1@regata.com");
+        test1.setPassword(passwordEncoder.encode("123456"));
+        test1.setRoles(roles);
+        userRepository.save(test1);
+        
+        // Crear usuario test2
+        User test2 = new User();
+        test2.setUsername("test2");
+        test2.setEmail("test2@regata.com");
+        test2.setPassword(passwordEncoder.encode("123456"));
+        test2.setRoles(roles);
+        userRepository.save(test2);
+        
+        System.out.println("✅ Usuarios de prueba creados:");
+        System.out.println("   - Username: test1, Password: 123456");
+        System.out.println("   - Username: test2, Password: 123456");
     }
 
     private void createMapFromImage(Tablero tablero) {

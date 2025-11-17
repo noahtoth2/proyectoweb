@@ -19,6 +19,7 @@ export interface Posicion {
   x: number;
   y: number;
   barcoId?: number;
+  tableroId?: number; // ⭐ Agregar tableroId
 }
 
 export interface Jugador {

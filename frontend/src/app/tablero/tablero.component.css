@@ -994,6 +994,20 @@
   filter: drop-shadow(0 0 3px #e74c3c);
 }
 
+/* Barcos en modo multijugador */
+.barco-sprite.mi-barco {
+  filter: drop-shadow(0 0 2px #27ae60);
+}
+
+.barco-sprite.barco-enemigo {
+  filter: drop-shadow(0 0 2px #e74c3c);
+  opacity: 0.8;
+}
+
+.barco-sprite.mi-barco.selected-barco {
+  filter: drop-shadow(0 0 5px #27ae60);
+}
+
 /* Indicador de movimiento */
 .move-indicator {
   font-size: 10px;
@@ -1489,4 +1503,43 @@
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+/* Selector de barco inline para multijugador */
+.barco-selector-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.barco-selector-inline span {
+  font-weight: 600;
+  color: #856404;
+}
+
+.btn-seleccionar-barco {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-seleccionar-barco:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+}
+
+.btn-seleccionar-barco:active {
+  transform: translateY(0);
 }

@@ -2,8 +2,10 @@ package com.proyecto.demo.dto;
 
 public class PosicionDTO{
     private Long id;
-        private Integer x;
-        private Integer y;
+    private Integer x;
+    private Integer y;
+    private Long barcoId;  // ⭐ Agregar barcoId para vincular posición con barco
+    private Long tableroId; // ⭐ Agregar tableroId para vincular barco con tablero
 
 
 
@@ -32,6 +34,20 @@ public class PosicionDTO{
     }
     public void setY(Integer y){
         this.y=y;
+    }
+    
+    public Long getBarcoId() {
+        return barcoId;
+    }
+    public void setBarcoId(Long barcoId) {
+        this.barcoId = barcoId;
+    }
+    
+    public Long getTableroId() {
+        return tableroId;
+    }
+    public void setTableroId(Long tableroId) {
+        this.tableroId = tableroId;
     }
     
 }

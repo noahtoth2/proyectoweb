@@ -22,12 +22,14 @@
     <div class="header-controls">
       @if (!juegoIniciado()) {
         <div class="game-status">
-          <span>🎮 Jugadores: {{jugadores().length}} | Barcos: {{getBarcosColocados()}}</span>
           @if (!modoMultijugador()) {
+            <span>🎮 Jugadores: {{jugadores().length}} | Barcos: {{getBarcosColocados()}}</span>
             <button class="btn-start-game small" (click)="iniciarJuego()" 
                     [disabled]="jugadores().length < 2">
               🚀 Iniciar Juego
             </button>
+          } @else {
+            <span>🎮 Esperando inicio de partida...</span>
           }
         </div>
       } @else {
@@ -36,6 +38,18 @@
             <strong>{{getMensajeTurno()}}</strong>
             @if (esMiTurno()) {
               <span class="turn-indicator-active">🟢 TU TURNO</span>
+              
+              <!-- Selector de barco si no hay barco seleccionado y tiene barcos sin posición -->
+              @if (!selectedBarco() && tieneBarcosSinPosicion()) {
+                <div class="barco-selector-inline">
+                  <span>Selecciona tu barco:</span>
+                  @for (barco of getBarcosSinPosicion(); track barco.id) {
+                    <button class="btn-seleccionar-barco" (click)="selectBarco(barco)">
+                      🚢 Barco #{{barco.id}}
+                    </button>
+                  }
+                </div>
+              }
             } @else {
               <span class="turn-indicator-waiting">🔴 ESPERANDO</span>
             }
@@ -46,59 +60,61 @@
         </div>
       }
 
-          <!-- Menús desplegables -->
-      <div class="dropdown-menus">
-        <div class="dropdown">
-          <button class="dropdown-btn" (click)="showPlayersDropdown = !showPlayersDropdown">
-            👥 Jugadores ({{jugadores().length}}) ▼
-          </button>
-          @if (showPlayersDropdown) {
-            <div class="dropdown-content">
-              @for (jugador of jugadores(); track jugador.id) {
-                <div class="player-item-dropdown"
-                     [class.current-turn]="juegoIniciado() && jugadorActual()?.id === jugador.id">
-                  <span>{{jugador.nombre}} ({{getBarcoCountForJugador(jugador)}} barcos)</span>
-                </div>
-              }
-              <button class="btn-create-small" (click)="showCreatePlayer.set(true); showPlayersDropdown = false" 
-                      [disabled]="juegoIniciado()">+ Crear Jugador</button>
-            </div>
-          }
-        </div>
+      <!-- Menús desplegables SOLO en modo local -->
+      @if (!modoMultijugador()) {
+        <div class="dropdown-menus">
+          <div class="dropdown">
+            <button class="dropdown-btn" (click)="showPlayersDropdown = !showPlayersDropdown">
+              👥 Jugadores ({{jugadores().length}}) ▼
+            </button>
+            @if (showPlayersDropdown) {
+              <div class="dropdown-content">
+                @for (jugador of jugadores(); track jugador.id) {
+                  <div class="player-item-dropdown"
+                       [class.current-turn]="juegoIniciado() && jugadorActual()?.id === jugador.id">
+                    <span>{{jugador.nombre}} ({{getBarcoCountForJugador(jugador)}} barcos)</span>
+                  </div>
+                }
+                <button class="btn-create-small" (click)="showCreatePlayer.set(true); showPlayersDropdown = false" 
+                        [disabled]="juegoIniciado()">+ Crear Jugador</button>
+              </div>
+            }
+          </div>
 
-        <div class="dropdown">
-          <button class="dropdown-btn" (click)="showBoatsDropdown = !showBoatsDropdown">
-            🚢 Barcos ({{barcos().length}}) ▼
-          </button>
-          @if (showBoatsDropdown) {
-            <div class="dropdown-content boats-dropdown">
-              @for (barco of barcos(); track barco.id) {
-                <div class="boat-item-dropdown"
-                     [class.selected]="selectedBarco()?.id === barco.id"
-                     [class.can-select]="puedeSeleccionarBarco(barco)"
-                     [class.disabled]="juegoIniciado() && !puedeSeleccionarBarco(barco)"
-                     (click)="selectBarco(barco); showBoatsDropdown = false">
-                  <div class="boat-mini">
-                    <span class="boat-icon-small">🚢</span>
-                    <div class="boat-info-mini">
-                      <div class="boat-name-small">{{getJugadorName(barco.jugadorId || 0)}} - Barco #{{barco.id}}</div>
-                      <div class="boat-details-small">v({{barco.velocidadX}},{{barco.velocidadY}})
-                        @if (barco.posicion) {
-                          <span> | ({{barco.posicion.x}}, {{barco.posicion.y}})</span>
-                        } @else {
-                          <span class="pending-small">Sin colocar</span>
-                        }
+          <div class="dropdown">
+            <button class="dropdown-btn" (click)="showBoatsDropdown = !showBoatsDropdown">
+              🚢 Barcos ({{barcos().length}}) ▼
+            </button>
+            @if (showBoatsDropdown) {
+              <div class="dropdown-content boats-dropdown">
+                @for (barco of barcos(); track barco.id) {
+                  <div class="boat-item-dropdown"
+                       [class.selected]="selectedBarco()?.id === barco.id"
+                       [class.can-select]="puedeSeleccionarBarco(barco)"
+                       [class.disabled]="juegoIniciado() && !puedeSeleccionarBarco(barco)"
+                       (click)="selectBarco(barco); showBoatsDropdown = false">
+                    <div class="boat-mini">
+                      <span class="boat-icon-small">🚢</span>
+                      <div class="boat-info-mini">
+                        <div class="boat-name-small">{{getJugadorName(barco.jugadorId || 0)}} - Barco #{{barco.id}}</div>
+                        <div class="boat-details-small">v({{barco.velocidadX}},{{barco.velocidadY}})
+                          @if (barco.posicion) {
+                            <span> | ({{barco.posicion.x}}, {{barco.posicion.y}})</span>
+                          } @else {
+                            <span class="pending-small">Sin colocar</span>
+                          }
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              }
-              <button class="btn-create-small" (click)="showCreateBarco.set(true); showBoatsDropdown = false" 
-                      [disabled]="juegoIniciado()">+ Crear Barco</button>
-            </div>
-          }
+                }
+                <button class="btn-create-small" (click)="showCreateBarco.set(true); showBoatsDropdown = false" 
+                        [disabled]="juegoIniciado()">+ Crear Barco</button>
+              </div>
+            }
+          </div>
         </div>
-      </div>
+      }
     </div>
 
     <!-- Mensajes del juego -->
@@ -138,7 +154,9 @@
                 
                   @if (getBarcoAtPosition(celda.x, celda.y); as barco) {
                     <div class="barco-sprite"
-                         [class.selected-barco]="selectedBarco()?.id === barco.id">
+                         [class.selected-barco]="selectedBarco()?.id === barco.id"
+                         [class.mi-barco]="modoMultijugador() && barco.jugadorId === miJugadorId()"
+                         [class.barco-enemigo]="modoMultijugador() && barco.jugadorId !== miJugadorId()">
                       🚢
                     </div>
                   }
@@ -301,21 +319,23 @@
           </div>
         }
 
-        <!-- Botones de administración del barco -->
-        <div class="boat-admin-panel">
-          <h4>⚙️ Administrar Barco</h4>
-          <div class="admin-buttons">
-            <button class="btn-admin btn-edit" (click)="editarBarcoSeleccionado()">
-              ✏️ Editar
-            </button>
-            <button class="btn-admin btn-delete" (click)="eliminarBarcoSeleccionado()">
-              🗑️ Eliminar
-            </button>
-            <button class="btn-admin btn-list" (click)="irAListaBarcos()">
-              📋 Ver Lista
-            </button>
+        <!-- Botones de administración del barco SOLO en modo local -->
+        @if (!modoMultijugador()) {
+          <div class="boat-admin-panel">
+            <h4>⚙️ Administrar Barco</h4>
+            <div class="admin-buttons">
+              <button class="btn-admin btn-edit" (click)="editarBarcoSeleccionado()">
+                ✏️ Editar
+              </button>
+              <button class="btn-admin btn-delete" (click)="eliminarBarcoSeleccionado()">
+                🗑️ Eliminar
+              </button>
+              <button class="btn-admin btn-list" (click)="irAListaBarcos()">
+                📋 Ver Lista
+              </button>
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
   }

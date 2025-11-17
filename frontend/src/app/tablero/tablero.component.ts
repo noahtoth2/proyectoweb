@@ -21,6 +21,7 @@ import { Partida } from '../model/partida';
 export class TableroComponent implements OnInit, OnDestroy {
   currentUser: any = null;
   tablero = signal<Celda[][]>([]);
+  tableroId = signal<number | null>(null); // ID del tablero actual
   barcos = signal<Barco[]>([]);
   jugadores = signal<Jugador[]>([]);
   selectedBarco = signal<Barco | null>(null);
@@ -177,6 +178,7 @@ export class TableroComponent implements OnInit, OnDestroy {
         if (tableros.length > 0) {
           const tableroId = tableros[0].id;
           console.log('Cargando tablero con ID:', tableroId);
+          this.tableroId.set(tableroId!); // ⭐ Guardar el tableroId
           this.loadBoardFromBackend(tableroId!);
         } else {
           // Si no hay tableros, crear uno nuevo
@@ -326,10 +328,44 @@ export class TableroComponent implements OnInit, OnDestroy {
   loadBarcos() {
     this.barcoService.getAllBarcos().subscribe({
       next: (barcos: any[]) => {
+        console.log('📊 BARCOS CRUDOS DEL BACKEND:', barcos);
+        
         // Convertir barcos del backend (con velocidad lineal) a barcos con velocidad vectorial
-        const barcosVectoriales = barcos.map(barco => this.convertFromOldBarco(barco));
-        this.barcos.set(barcosVectoriales);
-        console.log('Barcos recargados desde backend:', barcosVectoriales);
+        const barcosVectoriales = barcos.map(barco => {
+          const converted = this.convertFromOldBarco(barco);
+          console.log('🔄 Barco convertido:', {
+            id: barco.id,
+            jugadorId: converted.jugadorId,
+            original: barco,
+            converted
+          });
+          return converted;
+        });
+        
+        console.log('📦 BARCOS VECTORIALES:', barcosVectoriales);
+        
+        // ⭐ En modo multijugador, cargar TODOS los barcos pero marcar cuáles son míos
+        if (this.modoMultijugador()) {
+          const miId = this.miJugadorId();
+          console.log('🎮 Modo multijugador - Mi ID:', miId);
+          
+          if (miId) {
+            // En multijugador, necesitamos ver TODOS los barcos de TODOS los jugadores
+            // pero solo podemos interactuar con los nuestros
+            console.log('🎮 Modo multijugador - Todos los barcos cargados:', barcosVectoriales.length);
+            console.log('🎮 Mis barcos:', barcosVectoriales.filter(b => b.jugadorId === miId).length);
+            
+            // Usar siempre los datos del backend directamente
+            this.barcos.set(barcosVectoriales);
+          } else {
+            console.warn('⚠️ No se encontró mi jugador ID en modo multijugador');
+            this.barcos.set([]);
+          }
+        } else {
+          // Modo local - cargar todos los barcos
+          console.log('Barcos recargados desde backend:', barcosVectoriales);
+          this.barcos.set(barcosVectoriales);
+        }
       },
       error: (error: any) => {
         console.error('Error loading barcos:', error);
@@ -542,6 +578,15 @@ export class TableroComponent implements OnInit, OnDestroy {
     if (this.modoMultijugador() && !this.esMiTurno()) {
       this.gameMessage.set(`❌ No es tu turno. Esperando...`);
       return;
+    }
+    
+    // ⭐ En multijugador, solo puedes seleccionar TUS barcos
+    if (this.modoMultijugador()) {
+      const miId = this.miJugadorId();
+      if (barco.jugadorId !== miId) {
+        this.gameMessage.set(`❌ No puedes seleccionar barcos de otros jugadores`);
+        return;
+      }
     }
 
     // Verificar si puede seleccionar este barco (sistema de turnos)
@@ -779,8 +824,9 @@ export class TableroComponent implements OnInit, OnDestroy {
               console.log('✅ MOVIMIENTO ACEPTADO POR BACKEND');
               
               // Verificar si la posición del backend coincide con la UI
-              if (movResult.nuevaPosicion.x !== barco.posicion?.x || 
-                  movResult.nuevaPosicion.y !== barco.posicion?.y) {
+              if (movResult.nuevaPosicion && 
+                  (movResult.nuevaPosicion.x !== barco.posicion?.x || 
+                   movResult.nuevaPosicion.y !== barco.posicion?.y)) {
                 console.log('Corrigiendo posición - Backend vs UI:', movResult.nuevaPosicion, barco.posicion);
                 // Corregir si hay diferencia
                 this.barcos.update(boats => 
@@ -1039,9 +1085,15 @@ export class TableroComponent implements OnInit, OnDestroy {
    * Coloca un barco sin posición en el tablero por primera vez
    */
   colocarBarcoInicial(x: number, y: number) {
+    console.log('🚢 === COLOCAR BARCO INICIAL ===');
     const barco = this.selectedBarco();
+    console.log('Barco a colocar:', barco);
+    console.log('Posición destino:', x, y);
+    
     if (!barco || barco.posicion) {
-      console.log('No hay barco seleccionado o ya tiene posición');
+      console.log('❌ No hay barco seleccionado o ya tiene posición');
+      console.log('  - Barco:', barco);
+      console.log('  - Tiene posición:', barco?.posicion);
       return;
     }
 
@@ -1059,39 +1111,55 @@ export class TableroComponent implements OnInit, OnDestroy {
 
     console.log('Colocando barco en casilla de partida:', x, y);
 
-    // Crear nueva posición
-    const nuevaPosicion: Posicion = { x, y };
+    // Pausar polling temporalmente durante la colocación
+    const pollingEstabaPausado = !this.pollingInterval;
+    if (!pollingEstabaPausado) {
+      this.detenerPollingMultijugador();
+    }
 
-    // Actualizar el barco localmente primero
-    this.barcos.update(boats => 
-      boats.map(b => 
-        b.id === barco.id 
-          ? { ...b, posicion: nuevaPosicion }
-          : b
-      )
-    );
-
-    // Actualizar barco seleccionado
-    this.selectedBarco.update(b => b ? { ...b, posicion: nuevaPosicion } : null);
-
-    // Intentar actualizar en el backend si el barco tiene ID
+    // Intentar crear en el backend
     if (barco.id) {
+      const currentTableroId = this.tableroId();
       this.posicionService.createPosicion({
         x,
         y,
-        barcoId: barco.id
+        barcoId: barco.id,
+        tableroId: currentTableroId ?? undefined // ⭐ Convertir null a undefined
       }).subscribe({
         next: (posicion) => {
-          console.log('Posición creada en backend:', posicion);
+          console.log('✅ Posición creada en backend:', posicion);
+          
+          // Recargar todos los barcos desde el backend para tener estado fresco
+          this.loadBarcos();
+          
           this.gameMessage.set(`🚢 Barco colocado en línea de partida (${x}, ${y}). ¡Listo para la regata!`);
+          
+          // Reanudar polling después de un delay
+          setTimeout(() => {
+            if (!pollingEstabaPausado && this.modoMultijugador()) {
+              this.iniciarPollingMultijugador();
+            }
+          }, 1000);
         },
         error: (error) => {
-          console.error('Error al crear posición en backend:', error);
-          this.gameMessage.set(`Barco colocado localmente en partida (${x}, ${y})`);
+          console.error('❌ Error al crear posición en backend:', error);
+          this.gameMessage.set(`Error al colocar barco. Intenta de nuevo.`);
+          
+          // Reanudar polling incluso si hay error
+          setTimeout(() => {
+            if (!pollingEstabaPausado && this.modoMultijugador()) {
+              this.iniciarPollingMultijugador();
+            }
+          }, 1000);
         }
       });
     } else {
       this.gameMessage.set(`🚢 Barco colocado en línea de partida (${x}, ${y}). ¡Listo para la regata!`);
+      
+      // Reanudar polling
+      if (!pollingEstabaPausado && this.modoMultijugador()) {
+        this.iniciarPollingMultijugador();
+      }
     }
   }
 
@@ -1252,15 +1320,23 @@ export class TableroComponent implements OnInit, OnDestroy {
   }
 
   onCeldaClick(celda: Celda) {
+    console.log('🖱️ === CLICK EN CELDA ===');
+    console.log('Coordenadas:', celda.x, celda.y);
+    console.log('Tipo de celda:', celda.tipocelda);
+    console.log('Modo multijugador:', this.modoMultijugador());
+    console.log('Es mi turno:', this.esMiTurno());
+    console.log('Partida actual:', this.partidaActual());
+    console.log('Mi jugador ID:', this.miJugadorId());
+    
     // Verificar modo multijugador y turno
     if (this.modoMultijugador() && !this.esMiTurno()) {
+      console.log('❌ No es mi turno');
       this.gameMessage.set(`❌ No es tu turno. Esperando...`);
       return;
     }
 
-    console.log('Clic en celda:', celda);
     console.log('Barco seleccionado:', this.selectedBarco());
-    console.log('Tipo de celda:', celda.tipocelda);
+    console.log('Mis barcos disponibles:', this.barcos());
     
     const barco = this.getBarcoAtPosition(celda.x, celda.y);
     console.log('Barco en posición:', barco);
@@ -1288,6 +1364,17 @@ export class TableroComponent implements OnInit, OnDestroy {
   getJugadorName(jugadorId: number): string {
     const jugador = this.jugadores().find(j => j.id === jugadorId);
     return jugador?.nombre || 'Desconocido';
+  }
+  
+  // Métodos helper para selector de barcos en multijugador
+  tieneBarcosSinPosicion(): boolean {
+    const miId = this.miJugadorId();
+    return this.barcos().some(b => b.jugadorId === miId && !b.posicion);
+  }
+  
+  getBarcosSinPosicion(): Barco[] {
+    const miId = this.miJugadorId();
+    return this.barcos().filter(b => b.jugadorId === miId && !b.posicion);
   }
 
   logout() {
@@ -1335,14 +1422,18 @@ export class TableroComponent implements OnInit, OnDestroy {
   }
 
   siguienteTurno() {
+    console.log('🎯 === SIGUIENTETURNO LLAMADO ===');
+    console.log('Modo multijugador:', this.modoMultijugador());
+    
     // Si estamos en modo multijugador, usar el método del servidor
     if (this.modoMultijugador()) {
+      console.log('➡️ Delegando a siguienteTurnoMultijugador()');
       this.siguienteTurnoMultijugador();
       return;
     }
 
     // Modo local - lógica existente
-    console.log('🔄 === AVANZANDO TURNO ===');
+    console.log('🔄 === AVANZANDO TURNO LOCAL ===');
     console.log('Turno actual antes:', this.turnoActual());
     console.log('Jugador actual antes:', this.jugadorActual()?.nombre);
     
@@ -1597,17 +1688,34 @@ export class TableroComponent implements OnInit, OnDestroy {
   
   siguienteTurnoMultijugador(): void {
     const partida = this.partidaActual();
-    if (!partida || !this.modoMultijugador()) return;
+    if (!partida || !this.modoMultijugador()) {
+      console.log('❌ No se puede avanzar turno - partida:', partida, 'modoMulti:', this.modoMultijugador());
+      return;
+    }
+    
+    console.log('🔄 === AVANZANDO TURNO MULTIJUGADOR ===');
+    console.log('Partida ID:', partida.id);
+    console.log('Turno actual antes:', partida.turnoActualId);
+    console.log('Jugador actual antes:', this.jugadorActual()?.nombre);
     
     this.partidaService.siguienteTurno(partida.id).subscribe({
       next: (partidaActualizada) => {
+        console.log('✅ Respuesta del servidor - turno avanzado');
+        console.log('Nuevo turno ID:', partidaActualizada.turnoActualId);
+        
         this.partidaActual.set(partidaActualizada);
         
         if (partidaActualizada.turnoActualId) {
           const jugadorTurno = this.jugadores().find(j => j.id === partidaActualizada.turnoActualId);
+          console.log('Jugadores disponibles:', this.jugadores().map(j => ({ id: j.id, nombre: j.nombre })));
+          console.log('Jugador del turno encontrado:', jugadorTurno);
+          
           if (jugadorTurno) {
             this.jugadorActual.set(jugadorTurno);
-            this.gameMessage.set(` Turno de: ${jugadorTurno.nombre}`);
+            this.gameMessage.set(`🔄 Turno de: ${jugadorTurno.nombre}`);
+            console.log('✅ Turno asignado a:', jugadorTurno.nombre);
+          } else {
+            console.error('❌ No se encontró el jugador con ID:', partidaActualizada.turnoActualId);
           }
         }
         
@@ -1616,10 +1724,12 @@ export class TableroComponent implements OnInit, OnDestroy {
         this.faseDelTurno.set('seleccionar-barco');
         this.selectedBarco.set(null);
         this.validMoves.set([]);
+        
+        console.log('✅ Estado del turno actualizado');
       },
       error: (error) => {
-        console.error('Error al pasar turno:', error);
-        this.gameMessage.set(' Error al pasar el turno');
+        console.error('❌ Error al pasar turno:', error);
+        this.gameMessage.set('❌ Error al pasar el turno');
       }
     });
   }

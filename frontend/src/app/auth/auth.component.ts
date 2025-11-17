@@ -73,11 +73,14 @@ export class AuthComponent implements OnDestroy {
         return;
       }
       
-      // Guardar info de usuario en localStorage
-      localStorage.setItem('currentUser', this.username);
+      // Guardar JWT token y info de usuario en localStorage
+      if (data.token) {
+        localStorage.setItem('jwt_token', data.token);
+        console.log('✅ JWT Token guardado');
+      }
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
       localStorage.setItem('userId', data.user.id.toString());
       localStorage.setItem('userRoles', JSON.stringify(data.user.roles));
-      localStorage.setItem('authToken', data.token);
       
       console.log('Roles del usuario:', data.user.roles);
       console.log('Barco seleccionado:', data.user.barcoSeleccionado);

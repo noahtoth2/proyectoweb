@@ -244,8 +244,20 @@ export class RegisterComponent implements OnDestroy {
       if (data.message && data.message.startsWith('Error')) {
         this.errorMessage.set(data.message);
       } else {
-        alert('Cuenta creada exitosamente. Por favor inicia sesión.');
-        this.router.navigate(['/login']);
+        // Guardar JWT token automáticamente después del registro
+        if (data.token) {
+          localStorage.setItem('jwt_token', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+          localStorage.setItem('userId', data.user.id.toString());
+          localStorage.setItem('userRoles', JSON.stringify(data.user.roles));
+          console.log('✅ Usuario registrado y JWT guardado');
+          
+          // Redirigir al lobby directamente
+          this.router.navigate(['/lobby']);
+        } else {
+          alert('Cuenta creada exitosamente. Por favor inicia sesión.');
+          this.router.navigate(['/login']);
+        }
       }
     })
     .catch(error => {

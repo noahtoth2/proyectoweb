@@ -1,6 +1,22 @@
 package com.proyecto.demo.services;
 
-import com.proyecto.demo.dto.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.proyecto.demo.dto.AuthResponse;
+import com.proyecto.demo.dto.LoginRequest;
+import com.proyecto.demo.dto.RegisterRequest;
+import com.proyecto.demo.dto.UserDTO;
 import com.proyecto.demo.mappers.UserMapper;
 import com.proyecto.demo.models.Barco;
 import com.proyecto.demo.models.Role;
@@ -9,13 +25,7 @@ import com.proyecto.demo.models.User;
 import com.proyecto.demo.repository.BarcoRepository;
 import com.proyecto.demo.repository.RoleRepository;
 import com.proyecto.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.proyecto.demo.security.JwtService;
 
 @Service
 public class UserService {
@@ -32,6 +42,15 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
     
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private JwtService jwtService;
+    
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         // Validar usuario único
@@ -43,11 +62,11 @@ public class UserService {
             return new AuthResponse("Error: El email ya está registrado");
         }
         
-        // Crear nuevo usuario
+        // Crear nuevo usuario con contraseña encriptada
         User user = new User(
             request.getUsername(),
             request.getEmail(),
-            request.getPassword() // En producción, usar BCrypt
+            passwordEncoder.encode(request.getPassword())
         );
         
         // Asignar roles
@@ -74,28 +93,39 @@ public class UserService {
         user.setRoles(roles);
         user = userRepository.save(user);
         
+        // Generar JWT token
+        String jwtToken = jwtService.generateToken(user);
+        
         UserDTO userDTO = userMapper.toDTO(user);
-        return new AuthResponse("fake-token-" + user.getId(), userDTO);
+        return new AuthResponse(jwtToken, userDTO);
     }
     
     public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
-            .orElse(null);
+        // Autenticar usando Spring Security
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.getUsername(),
+                request.getPassword()
+            )
+        );
         
-        if (user == null || !user.getPassword().equals(request.getPassword())) {
-            return new AuthResponse("Error: Credenciales inválidas");
-        }
+        // Si llega aquí, la autenticación fue exitosa
+        User user = userRepository.findByUsername(request.getUsername())
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         
         if (!user.getActivo()) {
-            return new AuthResponse("Error: Usuario desactivado");
+            throw new RuntimeException("Error: Usuario desactivado");
         }
         
         // Actualizar último acceso
         user.setUltimoAcceso(LocalDateTime.now());
         userRepository.save(user);
         
+        // Generar JWT token
+        String jwtToken = jwtService.generateToken(user);
+        
         UserDTO userDTO = userMapper.toDTO(user);
-        return new AuthResponse("fake-token-" + user.getId(), userDTO);
+        return new AuthResponse(jwtToken, userDTO);
     }
     
     public List<UserDTO> getAllUsers() {

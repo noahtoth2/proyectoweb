@@ -130,11 +130,19 @@ public class TableroController {
             @Parameter(description = "ID del barco") @PathVariable Long barcoId) {
         try {
             Tablero.ResultadoMovimiento resultado = tableroService.moverBarco(tableroId, barcoId);
-            return ResponseEntity.ok(Map.of(
-                "exitoso", resultado.isExitoso(),
-                "mensaje", resultado.getMensaje(),
-                "tipo", resultado.getTipo().toString()
-            ));
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("exitoso", resultado.isExitoso());
+            response.put("mensaje", resultado.getMensaje());
+            response.put("tipo", resultado.getTipo().toString());
+            
+            if (resultado.getNuevaPosicion() != null) {
+                response.put("nuevaPosicion", Map.of(
+                    "x", resultado.getNuevaPosicion().getX(),
+                    "y", resultado.getNuevaPosicion().getY()
+                ));
+            }
+            
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "Error al mover el barco"));

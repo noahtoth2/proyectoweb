@@ -78,31 +78,31 @@ public class Tablero {
         // Verificar límites del tablero (21x21)
         if (nuevaPosicion.getX() < 0 || nuevaPosicion.getX() >= 21 || 
             nuevaPosicion.getY() < 0 || nuevaPosicion.getY() >= 21) {
-            return new ResultadoMovimiento(false, "Fuera de los límites del tablero", TipoResultado.DESTRUIDO);
+            return new ResultadoMovimiento(false, "Fuera de los límites del tablero", TipoResultado.DESTRUIDO, nuevaPosicion);
         }
 
         // Buscar la celda en la nueva posición
         Celda celdaDestino = obtenerCelda(nuevaPosicion.getX(), nuevaPosicion.getY());
         if (celdaDestino == null) {
-            return new ResultadoMovimiento(false, "Celda no encontrada", TipoResultado.DESTRUIDO);
+            return new ResultadoMovimiento(false, "Celda no encontrada", TipoResultado.DESTRUIDO, nuevaPosicion);
         }
 
         // Aplicar reglas según el tipo de celda
         switch (celdaDestino.getTipoCelda()) {
             case 'A': // Agua - puede navegar sin problema
-                return new ResultadoMovimiento(true, "Movimiento válido en agua", TipoResultado.CONTINUA);
+                return new ResultadoMovimiento(true, "Movimiento válido en agua", TipoResultado.CONTINUA, nuevaPosicion);
             
             case 'P': // Partida - puede navegar sin problema (son casillas de inicio)
-                return new ResultadoMovimiento(true, "Movimiento válido en zona de partida", TipoResultado.CONTINUA);
+                return new ResultadoMovimiento(true, "Movimiento válido en zona de partida", TipoResultado.CONTINUA, nuevaPosicion);
             
             case 'X': // Pared/Obstáculo - barco destruido
-                return new ResultadoMovimiento(false, "¡Barco destruido por colisión con pared!", TipoResultado.DESTRUIDO);
+                return new ResultadoMovimiento(false, "¡Barco destruido por colisión con pared!", TipoResultado.DESTRUIDO, nuevaPosicion);
             
             case 'M': // Meta - termina el trayecto
-                return new ResultadoMovimiento(true, "¡Meta alcanzada! Carrera terminada", TipoResultado.META_ALCANZADA);
+                return new ResultadoMovimiento(true, "¡Meta alcanzada! Carrera terminada", TipoResultado.META_ALCANZADA, nuevaPosicion);
             
             default:
-                return new ResultadoMovimiento(false, "Tipo de celda desconocido", TipoResultado.DESTRUIDO);
+                return new ResultadoMovimiento(false, "Tipo de celda desconocido", TipoResultado.DESTRUIDO, nuevaPosicion);
         }
     }
 
@@ -119,7 +119,13 @@ public class Tablero {
             barco.getPosicion().setY(nuevaPosicion.getY());
         }
         
-        return resultado;
+        // Crear nuevo resultado con la posición actualizada
+        return new ResultadoMovimiento(
+            resultado.isExitoso(),
+            resultado.getMensaje(),
+            resultado.getTipo(),
+            nuevaPosicion
+        );
     }
 
     /**
@@ -180,16 +186,19 @@ public class Tablero {
         private final boolean exitoso;
         private final String mensaje;
         private final TipoResultado tipo;
+        private final Posicion nuevaPosicion;
 
-        public ResultadoMovimiento(boolean exitoso, String mensaje, TipoResultado tipo) {
+        public ResultadoMovimiento(boolean exitoso, String mensaje, TipoResultado tipo, Posicion nuevaPosicion) {
             this.exitoso = exitoso;
             this.mensaje = mensaje;
             this.tipo = tipo;
+            this.nuevaPosicion = nuevaPosicion;
         }
 
         public boolean isExitoso() { return exitoso; }
         public String getMensaje() { return mensaje; }
         public TipoResultado getTipo() { return tipo; }
+        public Posicion getNuevaPosicion() { return nuevaPosicion; }
     }
 
     public enum TipoResultado {

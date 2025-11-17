@@ -15,6 +15,7 @@ import com.proyecto.demo.dto.UnirsePartidaRequest;
 import com.proyecto.demo.mappers.PartidaMapper;
 import com.proyecto.demo.models.Jugador;
 import com.proyecto.demo.models.Partida;
+import com.proyecto.demo.repository.BarcoRepository;
 import com.proyecto.demo.repository.JugadorRepository;
 import com.proyecto.demo.repository.PartidaRepository;
 
@@ -23,13 +24,16 @@ public class PartidaService {
     
     private final PartidaRepository partidaRepository;
     private final JugadorRepository jugadorRepository;
+    private final BarcoRepository barcoRepository;
     private final PartidaMapper partidaMapper;
     
     public PartidaService(PartidaRepository partidaRepository, 
                          JugadorRepository jugadorRepository,
+                         BarcoRepository barcoRepository,
                          PartidaMapper partidaMapper) {
         this.partidaRepository = partidaRepository;
         this.jugadorRepository = jugadorRepository;
+        this.barcoRepository = barcoRepository;
         this.partidaMapper = partidaMapper;
     }
     
@@ -145,6 +149,12 @@ public class PartidaService {
                 throw new RuntimeException("Este barco ya fue seleccionado por otro jugador");
             }
         }
+        
+        // ⭐ Asignar el jugador al barco para que se cargue correctamente en el tablero
+        com.proyecto.demo.models.Barco barco = barcoRepository.findById(request.getBarcoId())
+            .orElseThrow(() -> new RuntimeException("Barco no encontrado"));
+        barco.setJugador(jugador);
+        barcoRepository.save(barco);
         
         // Asignar el barco al jugador
         jugador.setBarcoSeleccionadoId(request.getBarcoId());

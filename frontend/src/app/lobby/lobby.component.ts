@@ -2,6 +2,7 @@ import { Component, OnInit, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { PartidaService } from '../shared/partida.service';
 import { Partida, CrearPartidaRequest, UnirsePartidaRequest } from '../model/partida';
 
@@ -50,7 +51,8 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
   constructor(
     private partidaService: PartidaService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -151,8 +153,20 @@ export class LobbyComponent implements OnInit, OnDestroy {
   }
 
   unirseAPartidaActiva(partida: Partida): void {
-    const nombreJugador = prompt('Ingresa tu nombre:');
-    if (!nombreJugador) return;
+    // ⭐ Obtener el usuario autenticado desde localStorage
+    const userDataStr = localStorage.getItem('currentUser');
+    let nombreJugador: string;
+    
+    if (userDataStr) {
+      const userData = JSON.parse(userDataStr);
+      nombreJugador = userData.nombre;
+      console.log('✅ Usando nombre de usuario autenticado:', nombreJugador);
+    } else {
+      // Fallback: pedir nombre si no hay usuario autenticado (no debería pasar)
+      const nombre = prompt('Ingresa tu nombre:');
+      if (!nombre) return;
+      nombreJugador = nombre;
+    }
 
     this.cargando.set(true);
     this.partidaService.unirsePartida({
@@ -256,16 +270,15 @@ export class LobbyComponent implements OnInit, OnDestroy {
   // ========== SELECCIÓN DE BARCOS ==========
   
   cargarBarcosDisponibles(): void {
-    // ⭐ Cambiar a endpoint que devuelve TODOS los barcos
-    fetch('http://localhost:8080/api/barco/disponibles')
-      .then(response => response.json())
-      .then((barcos: Barco[]) => {
+    this.http.get<Barco[]>('http://localhost:8080/api/barco/disponibles').subscribe({
+      next: (barcos) => {
         console.log('Barcos cargados:', barcos);
         this.barcosDisponibles.set(barcos);
-      })
-      .catch(error => {
+      },
+      error: (error) => {
         console.error('Error al cargar barcos:', error);
-      });
+      }
+    });
   }
 
   seleccionarBarco(barcoId: number): void {

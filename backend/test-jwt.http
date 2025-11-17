@@ -1,0 +1,40 @@
+### Test JWT Authentication
+
+### 1. Registrar un nuevo usuario
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 2. Login con el usuario
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+### 3. Obtener barcos disponibles SIN token (debería dar error 401)
+GET http://localhost:8080/api/barco/disponibles
+
+### 4. Obtener barcos disponibles CON token (reemplaza el token abajo)
+GET http://localhost:8080/api/barco/disponibles
+Authorization: Bearer AQUI_TU_TOKEN_JWT
+
+### 5. Ver todos los modelos SIN token (debería dar error 401)
+GET http://localhost:8080/api/modelo
+
+### 6. Ver todos los modelos CON token
+GET http://localhost:8080/api/modelo
+Authorization: Bearer AQUI_TU_TOKEN_JWT
+
+### Instrucciones:
+# 1. Ejecuta el request de register (paso 1)
+# 2. Copia el "token" que recibes en la respuesta
+# 3. Reemplaza "AQUI_TU_TOKEN_JWT" en los requests 4 y 6
+# 4. Ejecuta los requests con y sin token para ver la diferencia
