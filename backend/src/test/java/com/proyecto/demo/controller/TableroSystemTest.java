@@ -106,7 +106,7 @@ public class TableroSystemTest {
       return;
     }
     
-    System.out.println("✅ Frontend accesible en " + FRONTEND_BASE_URL);
+    System.out.println("Frontend accesible en " + FRONTEND_BASE_URL);
     
     // Esperar a que cargue la página - puede ser login o directamente auth
     try {
@@ -195,7 +195,7 @@ public class TableroSystemTest {
     assertTrue(finalUrl.contains("/lobby") || finalUrl.contains("/tablero") || finalUrl.contains("/sala"),
       "La aplicación debería estar en lobby, sala de espera o tablero después de crear partida");
     
-    System.out.println("✅ Test completado - URL final: " + finalUrl);
+    System.out.println("Test completado - URL final: " + finalUrl);
   }
 }
 

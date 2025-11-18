@@ -51,7 +51,6 @@ public class PosicionService {
         Posicion entity = PosicionMapper.toEntity(posicionDTO);
         entity.setId(null);
         
-        // ⭐ Si viene un barcoId, vincular el barco a la posición
         if (posicionDTO.getBarcoId() != null) {
             Barco barco = barcoRepository.findById(posicionDTO.getBarcoId())
                 .orElseThrow(() -> new RuntimeException("Barco no encontrado"));
@@ -64,7 +63,6 @@ public class PosicionService {
             // Actualizar el barco con la nueva posición
             barco.setPosicion(saved);
             
-            // ⭐ Si viene tableroId, asignar el tablero al barco
             if (posicionDTO.getTableroId() != null) {
                 Tablero tablero = tableroRepository.findById(posicionDTO.getTableroId())
                     .orElseThrow(() -> new RuntimeException("Tablero no encontrado"));

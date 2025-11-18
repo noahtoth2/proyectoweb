@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,6 +31,7 @@ public class TableroControllerTest {
     @Autowired private RoleRepository roleRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private WebTestClient webTestClient;
+    @Autowired private PasswordEncoder passwordEncoder;
 
 
     @BeforeEach
@@ -53,11 +55,11 @@ public class TableroControllerTest {
         roleRepository.save(roleUser);
 
         // Crear usuarios con roles
-        User admin = new User("admin", "admin@regata.com", "admin123");
+        User admin = new User("admin", "admin@regata.com", passwordEncoder.encode("admin123"));
         admin.setRoles(Set.of(roleAdmin));
         userRepository.save(admin);
 
-        User jugador = new User("jugador", "jugador@regata.com", "jugador123");
+        User jugador = new User("jugador", "jugador@regata.com", passwordEncoder.encode("jugador123"));
         jugador.setRoles(Set.of(roleUser));
         userRepository.save(jugador);
 
@@ -187,18 +189,18 @@ public class TableroControllerTest {
 
     
     private String loginAndGetToken(String username, String password) {
-      return webTestClient.post()
-        .uri("http://localhost:8081/api/auth/login")
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody()
-        .jsonPath("$.token")
-        .value(tokenObj -> {})
-        .returnResult()
-        .getResponseBody()
-        .toString();
+        String[] tokenHolder = new String[1];
+        
+        webTestClient.post()
+            .uri("http://localhost:8081/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.token").value(token -> tokenHolder[0] = (String) token);
+        
+        return tokenHolder[0];
     }
 
 }

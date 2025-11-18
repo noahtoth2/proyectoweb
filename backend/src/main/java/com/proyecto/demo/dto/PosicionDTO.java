@@ -4,8 +4,8 @@ public class PosicionDTO{
     private Long id;
     private Integer x;
     private Integer y;
-    private Long barcoId;  // ⭐ Agregar barcoId para vincular posición con barco
-    private Long tableroId; // ⭐ Agregar tableroId para vincular barco con tablero
+    private Long barcoId;
+    private Long tableroId;
 
 
 

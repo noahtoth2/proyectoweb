@@ -142,7 +142,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         test2.setRoles(roles);
         userRepository.save(test2);
         
-        System.out.println("✅ Usuarios de prueba creados:");
+        System.out.println("Usuarios de prueba creados:");
         System.out.println("   - Username: test1, Password: 123456");
         System.out.println("   - Username: test2, Password: 123456");
     }

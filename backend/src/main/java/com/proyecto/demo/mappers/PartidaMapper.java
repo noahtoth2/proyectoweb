@@ -56,7 +56,6 @@ public class PartidaMapper {
                 .collect(Collectors.toList()));
             dto.setCantidadJugadores(partida.getJugadores().size());
             
-            // ⭐ Mapear selecciones de barcos
             Map<Long, Long> selecciones = new HashMap<>();
             for (Jugador jugador : partida.getJugadores()) {
                 if (jugador.getBarcoSeleccionadoId() != null) {

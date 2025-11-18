@@ -252,8 +252,17 @@ export class RegisterComponent implements OnDestroy {
           localStorage.setItem('userRoles', JSON.stringify(data.user.roles));
           console.log('✅ Usuario registrado y JWT guardado');
           
-          // Redirigir al lobby directamente
-          this.router.navigate(['/lobby']);
+          // Redirigir según el rol del usuario
+          if (data.user.roles.includes('ADMIN')) {
+            console.log('Redirigiendo a admin panel');
+            this.router.navigate(['/admin']);
+          } else if (data.user.roles.includes('USER')) {
+            console.log('Redirigiendo a lobby');
+            this.router.navigate(['/lobby']);
+          } else {
+            console.log('Usuario sin roles reconocidos:', data.user.roles);
+            this.errorMessage.set('El usuario no tiene roles asignados');
+          }
         } else {
           alert('Cuenta creada exitosamente. Por favor inicia sesión.');
           this.router.navigate(['/login']);

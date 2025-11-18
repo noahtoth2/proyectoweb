@@ -105,7 +105,6 @@ public class PartidaService {
             throw new RuntimeException("Se necesitan al menos 2 jugadores");
         }
         
-        // ⭐ Validar que todos los jugadores hayan seleccionado un barco
         for (Jugador jugador : partida.getJugadores()) {
             if (jugador.getBarcoSeleccionadoId() == null) {
                 throw new RuntimeException("Todos los jugadores deben seleccionar un barco antes de iniciar");
@@ -150,7 +149,6 @@ public class PartidaService {
             }
         }
         
-        // ⭐ Asignar el jugador al barco para que se cargue correctamente en el tablero
         com.proyecto.demo.models.Barco barco = barcoRepository.findById(request.getBarcoId())
             .orElseThrow(() -> new RuntimeException("Barco no encontrado"));
         barco.setJugador(jugador);
